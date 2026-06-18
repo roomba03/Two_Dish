@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
+/* The app uses its own warm cream palette — lock out OS dark mode globally. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light only;
+  --background: #FDF8F2;
+  --foreground: #1C1008;
 }
 
 @theme inline {
@@ -12,15 +14,65 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ── Homepage animations ─────────────────────────────────────────────────── */
+
+@keyframes tfb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tfb-drift {
+  0%,
+  100% {
+    transform: translateY(-50%) translateX(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-51.5%) translateX(-8px) rotate(1deg);
+  }
+}
+
+@keyframes tfb-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tfb-rise {
+  animation: tfb-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.tfb-delay-1 {
+  animation-delay: 80ms;
+}
+.tfb-delay-2 {
+  animation-delay: 180ms;
+}
+.tfb-delay-3 {
+  animation-delay: 280ms;
+}
+.tfb-delay-4 {
+  animation-delay: 380ms;
+}
+.tfb-delay-5 {
+  animation-delay: 460ms;
+}
+.tfb-drift {
+  animation: tfb-drift 10s ease-in-out infinite;
+}
+.tfb-spin-slow {
+  animation: tfb-spin-slow 24s linear infinite;
 }
