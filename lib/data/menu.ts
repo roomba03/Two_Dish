@@ -18,10 +18,16 @@ export type ScheduleRow = {
   menu_items: MenuItem;
 };
 
+export type GeoJsonPolygon = {
+  type: "Polygon";
+  coordinates: [number, number][][]; // outer ring: [lng, lat][]
+};
+
 export type Kitchen = {
   id: string;
   name: string;
   active_zips: string[];
+  delivery_zone: GeoJsonPolygon | null;
 };
 
 // React.cache deduplicates this across the render tree — any server component
@@ -31,7 +37,7 @@ export const getDefaultKitchen = cache(async (): Promise<Kitchen | null> => {
   const supabase = createServerClient();
   const { data, error } = await supabase
     .from("kitchens")
-    .select("id, name, active_zips")
+    .select("id, name, active_zips, delivery_zone")
     .limit(1)
     .single();
   if (error) {

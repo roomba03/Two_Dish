@@ -1,5 +1,7 @@
 import { Fraunces, DM_Sans } from "next/font/google";
 import Link from "next/link";
+import { getDefaultKitchen } from "@/lib/data/menu";
+import DeliveryZoneChecker from "@/app/components/DeliveryZoneChecker";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -46,7 +48,8 @@ function ArrowRight() {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
-export default function HomePage() {
+export default async function HomePage() {
+  const kitchen = await getDefaultKitchen();
   return (
     <div
       className={`${fraunces.variable} ${dmSans.variable}`}
@@ -136,6 +139,12 @@ export default function HomePage() {
         </div>
       </nav>
 
+      {/* ── DELIVERY ZONE CHECKER ───────────────────────────────────── */}
+      <DeliveryZoneChecker
+        zone={kitchen?.delivery_zone ?? null}
+        activeZips={kitchen?.active_zips ?? []}
+      />
+
       {/* ── HERO ────────────────────────────────────────────────────── */}
       <section
         style={{
@@ -192,43 +201,6 @@ export default function HomePage() {
             padding: "5rem 1.5rem 6rem",
           }}
         >
-          {/* Delivery pill */}
-          <div
-            className="tfb-rise tfb-delay-1"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              marginBottom: "2.75rem",
-              padding: "0.4375rem 1rem 0.4375rem 0.5625rem",
-              borderRadius: "999px",
-              border: `1px solid ${C.border}`,
-              background: C.sand,
-            }}
-          >
-            <span
-              style={{
-                width: "7px",
-                height: "7px",
-                borderRadius: "50%",
-                background: C.rust,
-                flexShrink: 0,
-              }}
-            />
-            <span
-              style={{
-                fontFamily: "var(--font-dm-sans)",
-                fontSize: "0.75rem",
-                fontWeight: 600,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: C.muted,
-              }}
-            >
-              Now Delivering · ZIP 66221
-            </span>
-          </div>
-
           {/* Headline */}
           <h1
             className="tfb-rise tfb-delay-2"
@@ -455,72 +427,6 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ── DELIVERY BAND ───────────────────────────────────────────── */}
-      <section
-        style={{
-          background: C.sand,
-          borderTop: `1px solid ${C.border}`,
-          borderBottom: `1px solid ${C.border}`,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "1280px",
-            margin: "0 auto",
-            padding: "3.5rem 1.5rem",
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "1.5rem",
-          }}
-        >
-          <div>
-            <p
-              style={{
-                fontFamily: "var(--font-dm-sans)",
-                fontSize: "0.6875rem",
-                fontWeight: 700,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: C.rust,
-                marginBottom: "0.5rem",
-              }}
-            >
-              Delivery coverage
-            </p>
-            <p
-              style={{
-                fontFamily: "var(--font-fraunces)",
-                fontSize: "clamp(1.5rem, 2.75vw, 2.125rem)",
-                fontWeight: 400,
-                letterSpacing: "-0.015em",
-                color: C.ink,
-                lineHeight: 1.1,
-              }}
-            >
-              Currently serving{" "}
-              <em style={{ fontStyle: "italic", color: C.rust }}>
-                ZIP 66221
-              </em>
-            </p>
-          </div>
-
-          <p
-            style={{
-              fontFamily: "var(--font-dm-sans)",
-              fontSize: "0.875rem",
-              color: C.muted,
-              maxWidth: "30ch",
-              lineHeight: 1.65,
-            }}
-          >
-            Enter your ZIP at checkout — we&apos;ll confirm if we deliver to
-            your address. Expanding soon.
-          </p>
         </div>
       </section>
 

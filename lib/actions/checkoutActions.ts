@@ -4,7 +4,9 @@ import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
 import { createAuthClient } from "@/lib/supabase/auth";
 import { OrderCheckoutSchema, type OrderCheckoutInput } from "@/lib/validations";
-import { getDefaultKitchen } from "@/lib/data/menu";
+import { getDefaultKitchen, type GeoJsonPolygon } from "@/lib/data/menu";
+import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
+import { point, polygon } from "@turf/helpers";
 
 // ── Timezone ──────────────────────────────────────────────────────────────────
 const KITCHEN_TZ = "America/Chicago";
@@ -56,6 +58,41 @@ function generateOrderNumber(dateStr: string): string {
   return `TFB-${compact}-${suffix}`;
 }
 
+// ── Delivery area helpers ─────────────────────────────────────────────────────
+
+async function geocodeAddress(
+  street: string,
+  city: string,
+  zip: string
+): Promise<[number, number] | null> {
+  try {
+    const q = encodeURIComponent(`${street}, ${city}, ${zip}, US`);
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1&countrycodes=us`,
+      {
+        headers: { "User-Agent": "TheFamilyBusiness/1.0" },
+        cache: "no-store",
+        signal: AbortSignal.timeout(5000),
+      }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.length) return null;
+    return [parseFloat(data[0].lon), parseFloat(data[0].lat)]; // [lng, lat] GeoJSON order
+  } catch {
+    return null;
+  }
+}
+
+function isAddressInZone(
+  lngLat: [number, number],
+  zone: GeoJsonPolygon
+): boolean {
+  const pt = point(lngLat);
+  const poly = polygon(zone.coordinates as number[][][]);
+  return booleanPointInPolygon(pt, poly);
+}
+
 // ── Public: Date eligibility check ───────────────────────────────────────────
 
 export async function checkDeliveryDateEligibility(
@@ -102,14 +139,48 @@ export async function submitCheckoutOrder(
   if (!kitchen) {
     return { success: false, error: "Service temporarily unavailable." };
   }
-  if (!kitchen.active_zips.includes(data.deliveryZip)) {
-    return {
-      success: false,
-      error: `We don't deliver to ZIP ${data.deliveryZip} yet. We currently serve: ${kitchen.active_zips.join(", ")}.`,
-      fieldErrors: {
-        deliveryZip: [`ZIP ${data.deliveryZip} is outside our delivery area`],
-      },
-    };
+
+  if (kitchen.delivery_zone) {
+    // Polygon zone defined — geocode and check containment.
+    // Fall back to ZIP check if geocoding is unavailable.
+    const lngLat = await geocodeAddress(
+      data.deliveryStreet,
+      data.deliveryCity,
+      data.deliveryZip
+    );
+    if (lngLat) {
+      if (!isAddressInZone(lngLat, kitchen.delivery_zone)) {
+        return {
+          success: false,
+          error: "We don't deliver to that address yet. Please check that your address is within our delivery area.",
+          fieldErrors: {
+            deliveryStreet: ["Address is outside our delivery zone"],
+          },
+        };
+      }
+    } else {
+      // Geocoding failed — fall back to ZIP validation
+      if (!kitchen.active_zips.includes(data.deliveryZip)) {
+        return {
+          success: false,
+          error: `We don't deliver to ZIP ${data.deliveryZip} yet. We currently serve: ${kitchen.active_zips.join(", ")}.`,
+          fieldErrors: {
+            deliveryZip: [`ZIP ${data.deliveryZip} is outside our delivery area`],
+          },
+        };
+      }
+    }
+  } else {
+    // No polygon zone yet — use ZIP list
+    if (!kitchen.active_zips.includes(data.deliveryZip)) {
+      return {
+        success: false,
+        error: `We don't deliver to ZIP ${data.deliveryZip} yet. We currently serve: ${kitchen.active_zips.join(", ")}.`,
+        fieldErrors: {
+          deliveryZip: [`ZIP ${data.deliveryZip} is outside our delivery area`],
+        },
+      };
+    }
   }
 
   const supabase = createServerClient();

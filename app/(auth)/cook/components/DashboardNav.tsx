@@ -41,6 +41,9 @@ export default function DashboardNav() {
           >
             Ingredients
           </Link>
+          <Link href="/cook/zone" className={linkClass("/cook/zone")}>
+            Zone
+          </Link>
         </nav>
 
         <form action={logoutCook}>
