@@ -123,9 +123,9 @@ export default async function HomePage() {
           <p className="tfb-rise tfb-delay-3 mb-12 max-w-[36ch] text-lg leading-relaxed text-herb">
             No long lines. No long drives.
             <br />
-            Just order the dish a day ahead and enjoy it
+            Order the dish a day ahead and enjoy it
             <br className="hidden sm:block" />
-            with friends and family in the comfort of your home.
+            in the comfort of your home.
           </p>
 
           {/* CTA row */}
