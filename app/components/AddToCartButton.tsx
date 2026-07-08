@@ -1,44 +1,23 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useAddToCart, type AddToCartParams } from "@/app/hooks/useAddToCart";
 
-type Props = {
-  scheduleId: string;
-  menuItemId: string;
-  kitchenId: string;
-  dishName: string;
-  price: number;
-  deliveryDate: string;
-};
+type Props = AddToCartParams;
 
-export default function AddToCartButton({
-  scheduleId,
-  menuItemId,
-  kitchenId,
-  dishName,
-  price,
-  deliveryDate,
-}: Props) {
-  const router = useRouter();
+export default function AddToCartButton(props: Props) {
+  const addToCart = useAddToCart();
+  const { dishName } = props;
 
   function handleClick() {
-    const params = new URLSearchParams({
-      scheduleId,
-      menuItemId,
-      kitchenId,
-      dishName,
-      price: price.toString(),
-      deliveryDate,
-    });
-    router.push(`/order?${params.toString()}`);
+    addToCart(props);
   }
 
   return (
     <button
       onClick={handleClick}
-      className="w-full rounded-xl bg-neutral-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-neutral-700 active:scale-95"
+      className="w-full rounded-lg bg-terracotta py-3 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta active:scale-[0.98]"
     >
-      Add {dishName} to Cart
+      Add {dishName} to cart
     </button>
   );
 }

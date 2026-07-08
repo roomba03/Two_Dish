@@ -14,7 +14,7 @@ export default function DeleteDishButton({
     <form action={boundDelete}>
       <button
         type="submit"
-        className="text-sm font-medium text-red-500 transition-opacity hover:opacity-60"
+        className="text-sm font-medium text-rust transition-opacity hover:opacity-70"
         onClick={(e) => {
           if (!confirm(`Delete "${name}"? This cannot be undone.`))
             e.preventDefault();

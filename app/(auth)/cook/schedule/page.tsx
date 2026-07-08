@@ -37,18 +37,14 @@ export default async function SchedulePage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <p className="font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-          Partner Dashboard
-        </p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-neutral-900">
-          Schedule
-        </h1>
+        <p className="tfb-eyebrow">Partner dashboard</p>
+        <h1 className="mt-1 text-2xl text-deep-leaf">Schedule</h1>
       </div>
 
       {/* Schedule form */}
       {menuItems.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-neutral-300 py-10 text-center">
-          <p className="text-sm text-neutral-400">
+        <div className="rounded-lg border border-dashed border-herb/30 py-10 text-center">
+          <p className="text-sm text-herb">
             Add dishes first before scheduling them.
           </p>
         </div>
@@ -57,33 +53,21 @@ export default async function SchedulePage() {
       )}
 
       {/* 14-day calendar */}
-      <div className="mt-8 overflow-hidden rounded-2xl border border-neutral-200 bg-white">
-        <div className="border-b border-neutral-100 px-6 py-4">
-          <h2 className="text-base font-semibold text-neutral-900">
-            Next 14 Days
-          </h2>
+      <div className="tfb-card mt-8 overflow-hidden">
+        <div className="border-b border-herb/20 px-6 py-4">
+          <h2 className="text-lg text-deep-leaf">Next 14 days</h2>
         </div>
         <table className="w-full">
           <thead>
-            <tr className="border-b border-neutral-100">
-              <th className="px-6 py-3 text-left font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                Date
-              </th>
-              <th className="px-6 py-3 text-left font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                Dish
-              </th>
-              <th className="px-6 py-3 text-right font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                Capacity
-              </th>
-              <th className="px-6 py-3 text-right font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                Orders
-              </th>
-              <th className="px-6 py-3 text-right font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                &nbsp;
-              </th>
+            <tr className="border-b border-herb/20">
+              <th className="tfb-eyebrow px-6 py-3 text-left">Date</th>
+              <th className="tfb-eyebrow px-6 py-3 text-left">Dish</th>
+              <th className="tfb-eyebrow px-6 py-3 text-right">Capacity</th>
+              <th className="tfb-eyebrow px-6 py-3 text-right">Orders</th>
+              <th className="tfb-eyebrow px-6 py-3 text-right">&nbsp;</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-100">
+          <tbody className="divide-y divide-herb/10">
             {days.map((day) => {
               const entry = scheduleByDate[day];
               const isToday = day === today;
@@ -91,15 +75,15 @@ export default async function SchedulePage() {
               return (
                 <tr
                   key={day}
-                  className={`transition-colors hover:bg-neutral-50 ${isToday ? "bg-neutral-50" : ""}`}
+                  className={`transition-colors hover:bg-midsage/20 ${isToday ? "bg-midsage/20" : ""}`}
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-neutral-900">
+                      <span className="text-sm font-medium text-deep-leaf">
                         {formatDate(day)}
                       </span>
                       {isToday && (
-                        <span className="rounded-full bg-neutral-900 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                        <span className="rounded-md border border-terracotta/40 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-terracotta">
                           Today
                         </span>
                       )}
@@ -107,25 +91,23 @@ export default async function SchedulePage() {
                   </td>
                   <td className="px-6 py-4">
                     {entry ? (
-                      <span className="text-sm text-neutral-900">
+                      <span className="text-sm text-deep-leaf">
                         {entry.menu_items.name}
                       </span>
                     ) : (
-                      <span className="text-sm text-neutral-400">
+                      <span className="text-sm text-warmgray">
                         No dish scheduled
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-right text-sm text-neutral-500">
+                  <td className="px-6 py-4 text-right text-sm text-herb">
                     {entry ? entry.max_capacity : "—"}
                   </td>
-                  <td className="px-6 py-4 text-right text-sm text-neutral-500">
+                  <td className="px-6 py-4 text-right text-sm text-herb">
                     {entry ? entry.orders_count : "—"}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    {entry && (
-                      <RemoveScheduleButton scheduleId={entry.id} />
-                    )}
+                    {entry && <RemoveScheduleButton scheduleId={entry.id} />}
                   </td>
                 </tr>
               );

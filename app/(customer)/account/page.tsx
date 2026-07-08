@@ -16,18 +16,17 @@ function formatDate(dateStr: string): string {
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    authorized: "bg-amber-50 text-amber-700 border-amber-200",
-    paid: "bg-green-50 text-green-700 border-green-200",
-    preparing: "bg-sky-50 text-sky-700 border-sky-200",
-    delivered: "bg-neutral-100 text-neutral-500 border-neutral-200",
-    pending: "bg-neutral-50 text-neutral-400 border-neutral-200",
-    cancelled: "bg-red-50 text-red-400 border-red-200",
-    refunded: "bg-red-50 text-red-500 border-red-200",
+    authorized: "border-warmgray/40 text-warmgray",
+    paid: "border-herb/40 text-herb",
+    preparing: "border-herb/40 text-herb",
+    delivered: "border-herb/40 text-herb",
+    pending: "border-warmgray/40 text-warmgray",
+    cancelled: "border-rust/40 text-rust",
+    refunded: "border-rust/40 text-rust",
   };
-  const cls =
-    styles[status] ?? "bg-neutral-50 text-neutral-400 border-neutral-200";
+  const cls = styles[status] ?? "border-warmgray/40 text-warmgray";
   return (
-    <span className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${cls}`}>
+    <span className={`rounded-md border px-2.5 py-0.5 text-xs font-medium ${cls}`}>
       {status}
     </span>
   );
@@ -46,21 +45,15 @@ export default async function AccountPage() {
     <div className="flex flex-col gap-6">
       {/* Header */}
       <div>
-        <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400">
-          My Account
-        </p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-neutral-900">
-          Welcome back, {firstName}
-        </h1>
+        <p className="tfb-eyebrow">My account</p>
+        <h1 className="mt-1 text-2xl text-deep-leaf">Welcome back, {firstName}</h1>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[380px_1fr] lg:items-start">
         {/* ── Delivery address ────────────────────────────────────── */}
-        <div className="rounded-2xl border border-neutral-200 bg-white">
-          <div className="border-b border-neutral-100 px-6 py-4">
-            <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400">
-              Delivery Address
-            </p>
+        <div className="tfb-card">
+          <div className="border-b border-herb/20 px-6 py-4">
+            <p className="tfb-eyebrow">Delivery address</p>
           </div>
           <div className="p-6">
             <SavedAddressForm profile={profile} />
@@ -68,21 +61,17 @@ export default async function AccountPage() {
         </div>
 
         {/* ── Order history ────────────────────────────────────────── */}
-        <div className="rounded-2xl border border-neutral-200 bg-white">
-          <div className="border-b border-neutral-100 px-6 py-4">
-            <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400">
-              Order History
-            </p>
+        <div className="tfb-card">
+          <div className="border-b border-herb/20 px-6 py-4">
+            <p className="tfb-eyebrow">Order history</p>
           </div>
 
           {orders.length === 0 ? (
             <div className="py-20 text-center">
-              <p className="text-sm font-medium text-neutral-500">
-                No orders yet.
-              </p>
+              <p className="text-sm font-medium text-herb">No orders yet.</p>
               <Link
                 href="/menu"
-                className="mt-3 inline-block text-sm font-medium text-neutral-900 underline underline-offset-2 hover:opacity-70"
+                className="mt-3 inline-block text-sm font-medium text-terracotta underline underline-offset-2 hover:opacity-70"
               >
                 Browse this week&apos;s menu
               </Link>
@@ -91,12 +80,12 @@ export default async function AccountPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-neutral-100">
+                  <tr className="border-b border-herb/20">
                     {["Order", "Dish", "Delivery", "Qty", "Status", "Total"].map(
                       (h) => (
                         <th
                           key={h}
-                          className={`px-6 py-3 text-xs font-semibold uppercase tracking-widest text-neutral-400 ${
+                          className={`tfb-eyebrow px-6 py-3 ${
                             h === "Total" ? "text-right" : "text-left"
                           }`}
                         >
@@ -106,28 +95,28 @@ export default async function AccountPage() {
                     )}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-neutral-100">
+                <tbody className="divide-y divide-herb/10">
                   {orders.map((order) => (
                     <tr
                       key={order.order_number}
-                      className="transition-colors hover:bg-neutral-50/60"
+                      className="transition-colors hover:bg-midsage/20"
                     >
-                      <td className="px-6 py-4 font-mono text-xs text-neutral-400">
+                      <td className="px-6 py-4 text-xs text-warmgray">
                         {order.order_number}
                       </td>
-                      <td className="px-6 py-4 font-medium text-neutral-900">
+                      <td className="px-6 py-4 font-medium text-deep-leaf">
                         {order.snapshot_dish_name}
                       </td>
-                      <td className="px-6 py-4 text-neutral-500">
+                      <td className="px-6 py-4 text-herb">
                         {formatDate(order.menu_schedule.delivery_date)}
                       </td>
-                      <td className="px-6 py-4 font-mono font-bold text-neutral-900">
+                      <td className="px-6 py-4 font-medium text-deep-leaf">
                         {order.quantity}
                       </td>
                       <td className="px-6 py-4">
                         <StatusBadge status={order.status} />
                       </td>
-                      <td className="px-6 py-4 text-right font-mono font-medium text-neutral-900">
+                      <td className="px-6 py-4 text-right font-medium text-deep-leaf">
                         ${Number(order.total_price).toFixed(2)}
                       </td>
                     </tr>

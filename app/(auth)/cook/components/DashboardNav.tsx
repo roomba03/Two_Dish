@@ -11,23 +11,21 @@ export default function DashboardNav() {
     const isActive =
       href === "/cook" ? pathname === href : pathname.startsWith(href);
     return [
-      "text-sm font-medium transition-colors",
+      "text-sm font-medium transition-opacity",
       isActive
-        ? "text-neutral-900 underline underline-offset-4 decoration-neutral-900"
-        : "text-neutral-500 hover:text-neutral-900",
+        ? "text-terracotta underline underline-offset-4 decoration-terracotta"
+        : "text-herb hover:opacity-70",
     ].join(" ");
   };
 
   return (
-    <header className="sticky top-0 z-10 border-b border-neutral-200 bg-[var(--background)]">
+    <header className="sticky top-0 z-10 border-b border-herb/20 bg-sage">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <span className="font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-          Two Dish
-        </span>
+        <span className="font-heading text-lg text-deep-leaf">Two Dish</span>
 
         <nav className="flex items-center gap-8">
           <Link href="/cook" className={linkClass("/cook")}>
-            Today&apos;s Run
+            Today&apos;s run
           </Link>
           <Link href="/cook/menu" className={linkClass("/cook/menu")}>
             Menu
@@ -49,7 +47,7 @@ export default function DashboardNav() {
         <form action={logoutCook}>
           <button
             type="submit"
-            className="text-xs font-medium text-neutral-400 transition-colors hover:text-neutral-900"
+            className="text-sm font-medium text-herb transition-opacity hover:opacity-70"
           >
             Sign out
           </button>

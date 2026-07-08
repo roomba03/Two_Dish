@@ -8,16 +8,8 @@ type Props = { item: MenuItem };
 
 const initial: ActionState = {};
 
-function inputClass() {
-  return "w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900";
-}
-
 function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-neutral-400">
-      {children}
-    </label>
-  );
+  return <label className="tfb-label">{children}</label>;
 }
 
 export default function EditMenuItemForm({ item }: Props) {
@@ -28,25 +20,25 @@ export default function EditMenuItemForm({ item }: Props) {
       <input type="hidden" name="id" value={item.id} />
 
       {state.error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-lg border border-rust/40 bg-sage px-4 py-3 text-sm text-rust">
           {state.error}
         </div>
       )}
       {state.success && (
-        <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+        <div className="rounded-lg border border-herb/30 bg-midsage/30 px-4 py-3 text-sm text-herb">
           Saved.
         </div>
       )}
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <Label>Dish Name</Label>
+          <Label>Dish name</Label>
           <input
             name="name"
             type="text"
             required
             defaultValue={item.name}
-            className={inputClass()}
+            className="tfb-input w-full"
           />
         </div>
 
@@ -59,7 +51,7 @@ export default function EditMenuItemForm({ item }: Props) {
             min="0.01"
             required
             defaultValue={item.price}
-            className={inputClass()}
+            className="tfb-input w-full"
           />
         </div>
 
@@ -70,7 +62,7 @@ export default function EditMenuItemForm({ item }: Props) {
             required
             rows={3}
             defaultValue={item.description}
-            className={`${inputClass()} resize-none`}
+            className="tfb-input w-full resize-none"
           />
         </div>
 
@@ -81,18 +73,14 @@ export default function EditMenuItemForm({ item }: Props) {
             type="url"
             defaultValue={item.image_url ?? ""}
             placeholder="https://..."
-            className={inputClass()}
+            className="tfb-input w-full"
           />
         </div>
       </div>
 
       <div>
-        <button
-          type="submit"
-          disabled={isPending}
-          className="rounded-xl bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {isPending ? "Saving…" : "Save Changes"}
+        <button type="submit" disabled={isPending} className="tfb-btn-primary w-auto">
+          {isPending ? "Saving…" : "Save changes"}
         </button>
       </div>
     </form>

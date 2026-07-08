@@ -7,16 +7,8 @@ import PasswordInput from "@/app/components/PasswordInput";
 
 const initial: AuthState = {};
 
-function inputClass() {
-  return "w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900";
-}
-
 function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-neutral-400">
-      {children}
-    </label>
-  );
+  return <label className="tfb-label">{children}</label>;
 }
 
 export default function SignupForm() {
@@ -29,26 +21,26 @@ export default function SignupForm() {
   return (
     <form action={action} className="flex flex-col gap-5">
       {state.error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-lg border border-rust/40 bg-sage px-4 py-3 text-sm text-rust">
           {state.error}
         </div>
       )}
 
       {state.message && (
-        <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+        <div className="rounded-lg border border-herb/30 bg-midsage/30 px-4 py-3 text-sm text-herb">
           {state.message}
         </div>
       )}
 
       <div>
-        <Label>Full Name</Label>
+        <Label>Full name</Label>
         <input
           name="name"
           type="text"
           autoComplete="name"
           required
           placeholder="Jane Smith"
-          className={inputClass()}
+          className="tfb-input w-full"
         />
       </div>
 
@@ -60,19 +52,19 @@ export default function SignupForm() {
           autoComplete="email"
           required
           placeholder="you@example.com"
-          className={inputClass()}
+          className="tfb-input w-full"
         />
       </div>
 
       <div>
-        <Label>Phone Number</Label>
+        <Label>Phone number</Label>
         <input
           name="phone"
           type="tel"
           autoComplete="tel"
           required
           placeholder="+1 555 000 0000"
-          className={inputClass()}
+          className="tfb-input w-full"
         />
       </div>
 
@@ -84,23 +76,19 @@ export default function SignupForm() {
           required
           minLength={8}
           placeholder="At least 8 characters"
-          className={inputClass()}
+          className="tfb-input w-full"
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="mt-1 w-full rounded-xl bg-neutral-900 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
-      >
+      <button type="submit" disabled={isPending} className="tfb-btn-primary w-full mt-1">
         {isPending ? "Creating account…" : "Create account"}
       </button>
 
-      <p className="text-center text-sm text-neutral-500">
+      <p className="text-center text-sm text-herb">
         Already have an account?{" "}
         <Link
           href="/account/login"
-          className="font-medium text-neutral-900 underline underline-offset-2 hover:opacity-70"
+          className="font-medium text-terracotta underline underline-offset-2 hover:opacity-70"
         >
           Sign in
         </Link>

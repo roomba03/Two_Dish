@@ -12,16 +12,8 @@ type Props = { menuItemId: string; ingredients: IngredientRow[] };
 
 const initial: ActionState = {};
 
-function inputClass() {
-  return "w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900";
-}
-
 function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-neutral-400">
-      {children}
-    </label>
-  );
+  return <label className="tfb-label">{children}</label>;
 }
 
 export default function IngredientsManager({ menuItemId, ingredients }: Props) {
@@ -36,30 +28,22 @@ export default function IngredientsManager({ menuItemId, ingredients }: Props) {
     <div className="flex flex-col gap-6">
       {/* Existing ingredients */}
       {ingredients.length === 0 ? (
-        <p className="text-sm text-neutral-400">
+        <p className="text-sm text-herb">
           No ingredients added yet. Add them below so the grocery calculator
           works.
         </p>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-neutral-100">
+        <div className="overflow-hidden rounded-lg border border-herb/20">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-neutral-100 bg-neutral-50">
-                <th className="px-4 py-3 text-left font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                  Ingredient
-                </th>
-                <th className="px-4 py-3 text-right font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                  Qty / meal
-                </th>
-                <th className="px-4 py-3 text-right font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                  Unit
-                </th>
-                <th className="px-4 py-3 text-right font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                  &nbsp;
-                </th>
+              <tr className="border-b border-herb/20 bg-midsage/20">
+                <th className="tfb-eyebrow px-4 py-3 text-left">Ingredient</th>
+                <th className="tfb-eyebrow px-4 py-3 text-right">Qty / meal</th>
+                <th className="tfb-eyebrow px-4 py-3 text-right">Unit</th>
+                <th className="tfb-eyebrow px-4 py-3 text-right">&nbsp;</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100">
+            <tbody className="divide-y divide-herb/10">
               {ingredients.map((ing) => {
                 const boundDelete = deleteIngredient.bind(
                   null,
@@ -67,21 +51,21 @@ export default function IngredientsManager({ menuItemId, ingredients }: Props) {
                   menuItemId
                 );
                 return (
-                  <tr key={ing.id} className="hover:bg-neutral-50">
-                    <td className="px-4 py-3 text-sm text-neutral-900">
+                  <tr key={ing.id} className="hover:bg-midsage/20">
+                    <td className="px-4 py-3 text-sm text-deep-leaf">
                       {ing.name}
                     </td>
-                    <td className="px-4 py-3 text-right text-sm text-neutral-500">
+                    <td className="px-4 py-3 text-right text-sm text-herb">
                       {ing.per_unit_quantity}
                     </td>
-                    <td className="px-4 py-3 text-right text-sm text-neutral-500">
+                    <td className="px-4 py-3 text-right text-sm text-herb">
                       {ing.unit}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <form action={boundDelete}>
                         <button
                           type="submit"
-                          className="text-xs font-medium text-red-400 transition-opacity hover:opacity-70"
+                          className="text-xs font-medium text-rust transition-opacity hover:opacity-70"
                         >
                           Remove
                         </button>
@@ -100,20 +84,20 @@ export default function IngredientsManager({ menuItemId, ingredients }: Props) {
         <input type="hidden" name="menu_item_id" value={menuItemId} />
 
         {state.error && (
-          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="rounded-lg border border-rust/40 bg-sage px-4 py-3 text-sm text-rust">
             {state.error}
           </div>
         )}
 
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
-            <Label>Ingredient Name</Label>
+            <Label>Ingredient name</Label>
             <input
               name="name"
               type="text"
               required
               placeholder="e.g. Chicken breast"
-              className={inputClass()}
+              className="tfb-input w-full"
             />
           </div>
 
@@ -126,7 +110,7 @@ export default function IngredientsManager({ menuItemId, ingredients }: Props) {
               min="0.01"
               required
               placeholder="0.5"
-              className={inputClass()}
+              className="tfb-input w-full"
             />
           </div>
 
@@ -137,18 +121,14 @@ export default function IngredientsManager({ menuItemId, ingredients }: Props) {
               type="text"
               required
               placeholder="lbs, cups, oz…"
-              className={inputClass()}
+              className="tfb-input w-full"
             />
           </div>
         </div>
 
         <div>
-          <button
-            type="submit"
-            disabled={isPending}
-            className="rounded-xl border border-neutral-200 bg-white px-5 py-2.5 text-sm font-medium text-neutral-900 transition-colors hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isPending ? "Adding…" : "+ Add Ingredient"}
+          <button type="submit" disabled={isPending} className="tfb-btn-secondary w-auto">
+            {isPending ? "Adding…" : "+ Add ingredient"}
           </button>
         </div>
       </form>

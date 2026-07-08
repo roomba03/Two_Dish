@@ -44,10 +44,11 @@ function formatDeliveryDate(dateStr: string): string {
 
 function inputClass(hasError: boolean): string {
   return [
-    "w-full rounded-xl border px-4 py-3 text-sm text-neutral-900 outline-none transition-colors",
+    "w-full rounded-lg border bg-sage px-4 py-3 text-sm text-deep-leaf outline-none transition-colors",
     hasError
-      ? "border-red-400 bg-red-50 focus:ring-1 focus:ring-red-400"
-      : "border-neutral-200 focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900",
+      ? "border-rust focus:border-rust"
+      : "border-herb/30 focus:border-terracotta",
+    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta",
   ].join(" ");
 }
 
@@ -61,18 +62,16 @@ function Label({
   optional?: boolean;
 }) {
   return (
-    <label className="mb-1.5 block text-sm font-medium text-neutral-700">
+    <label className="mb-1.5 block text-sm font-medium text-deep-leaf">
       {children}
-      {optional && (
-        <span className="ml-1 font-normal text-neutral-400">(optional)</span>
-      )}
+      {optional && <span className="ml-1 font-normal text-warmgray">(optional)</span>}
     </label>
   );
 }
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <p className="mt-1.5 text-xs text-red-500">{message}</p>;
+  return <p className="mt-1.5 text-xs text-rust">{message}</p>;
 }
 
 function SectionCard({
@@ -83,10 +82,8 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-neutral-200 bg-white p-6">
-      <h2 className="mb-5 text-xs font-semibold uppercase tracking-widest text-neutral-400">
-        {title}
-      </h2>
+    <div className="rounded-lg border border-herb/25 bg-sage p-6">
+      <h2 className="tfb-eyebrow mb-5">{title}</h2>
       {children}
     </div>
   );
@@ -97,9 +94,9 @@ function SubmitButton({ loading }: { loading: boolean }) {
     <button
       type="submit"
       disabled={loading}
-      className="w-full rounded-xl bg-neutral-900 py-4 text-sm font-semibold text-white transition-colors hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
+      className="w-full rounded-lg bg-terracotta py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
     >
-      {loading ? "Placing order…" : "Place Order"}
+      {loading ? "Placing order…" : "Place order"}
     </button>
   );
 }
@@ -115,55 +112,45 @@ function ConfirmationView({
 }: Confirmed & { dishName: string; deliveryDate: string }) {
   return (
     <div className="mx-auto max-w-lg py-16 text-center">
-      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-50">
+      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-herb/30 bg-midsage/50">
         <svg
-          className="h-10 w-10 text-green-500"
+          className="h-10 w-10 text-herb"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          strokeWidth={2}
+          strokeWidth={1.5}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M5 13l4 4L19 7"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
       </div>
 
-      <h1 className="mb-2 text-2xl font-bold tracking-tight text-neutral-900">
-        Order Confirmed
-      </h1>
-      <p className="mb-8 text-neutral-500">We will confirm shortly.</p>
+      <h1 className="mb-2 text-3xl text-deep-leaf">Order confirmed</h1>
+      <p className="mb-8 text-herb">We will confirm shortly.</p>
 
-      <div className="mb-6 rounded-2xl border border-neutral-200 bg-neutral-50 px-6 py-5">
-        <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-neutral-400">
-          Order Number
-        </p>
-        <p className="font-mono text-2xl font-bold tracking-tight text-neutral-900">
-          {orderNumber}
-        </p>
+      <div className="mb-6 rounded-lg border border-herb/25 bg-midsage/30 px-6 py-5">
+        <p className="tfb-eyebrow mb-1">Order number</p>
+        <p className="text-2xl font-medium text-deep-leaf">{orderNumber}</p>
       </div>
 
-      <div className="rounded-2xl border border-neutral-200 bg-white p-6 text-left">
+      <div className="rounded-lg border border-herb/25 bg-sage p-6 text-left">
         <div className="flex flex-col gap-3 text-sm">
           <div className="flex justify-between">
-            <span className="text-neutral-500">Dish</span>
-            <span className="font-medium text-neutral-900">{dishName}</span>
+            <span className="text-herb">Dish</span>
+            <span className="font-medium text-deep-leaf">{dishName}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-neutral-500">Delivery date</span>
-            <span className="font-medium text-neutral-900">
+            <span className="text-herb">Delivery date</span>
+            <span className="font-medium text-deep-leaf">
               {formatDeliveryDate(deliveryDate)}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-neutral-500">Quantity</span>
-            <span className="font-medium text-neutral-900">{quantity}</span>
+            <span className="text-herb">Quantity</span>
+            <span className="font-medium text-deep-leaf">{quantity}</span>
           </div>
-          <div className="flex justify-between border-t border-neutral-100 pt-3">
-            <span className="font-bold text-neutral-900">Total</span>
-            <span className="font-bold text-neutral-900">
+          <div className="flex justify-between border-t border-herb/20 pt-3">
+            <span className="font-medium text-deep-leaf">Total</span>
+            <span className="font-medium text-deep-leaf">
               ${total.toFixed(2)}
             </span>
           </div>
@@ -241,16 +228,16 @@ export default function CheckoutForm({
         {/* ── Left column: form sections ──────────────────────────────── */}
         <div className="flex flex-col gap-5">
           {serverError && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="rounded-lg border border-rust/40 bg-sage px-4 py-3 text-sm text-rust">
               {serverError}
             </div>
           )}
 
           {/* 1. Customer Details */}
-          <SectionCard title="Customer Details">
+          <SectionCard title="Customer details">
             <div className="flex flex-col gap-4">
               <div>
-                <Label>Full Name</Label>
+                <Label>Full name</Label>
                 <input
                   {...register("customerName")}
                   placeholder="Jane Smith"
@@ -260,7 +247,7 @@ export default function CheckoutForm({
                 <FieldError message={errors.customerName?.message} />
               </div>
               <div>
-                <Label>Phone Number</Label>
+                <Label>Phone number</Label>
                 <input
                   {...register("customerPhone")}
                   type="tel"
@@ -285,10 +272,10 @@ export default function CheckoutForm({
           </SectionCard>
 
           {/* 2. Delivery Address */}
-          <SectionCard title="Delivery Address">
+          <SectionCard title="Delivery address">
             <div className="flex flex-col gap-4">
               <div>
-                <Label>Street Address</Label>
+                <Label>Street address</Label>
                 <input
                   {...register("deliveryStreet")}
                   placeholder="123 Main St"
@@ -325,12 +312,11 @@ export default function CheckoutForm({
           </SectionCard>
 
           {/* 3. Order Details */}
-          <SectionCard title="Order Details">
+          <SectionCard title="Order details">
             <div className="flex flex-col gap-4">
               <div>
                 <Label>
-                  Quantity{" "}
-                  <span className="font-normal text-neutral-400">(1–15)</span>
+                  Quantity <span className="font-normal text-warmgray">(1–15)</span>
                 </Label>
                 <input
                   {...register("quantity", { valueAsNumber: true })}
@@ -342,7 +328,7 @@ export default function CheckoutForm({
                 <FieldError message={errors.quantity?.message} />
               </div>
               <div>
-                <Label>Delivery Time</Label>
+                <Label>Delivery time</Label>
                 <select
                   {...register("timeSlot")}
                   className={inputClass(!!errors.timeSlot) + " cursor-pointer"}
@@ -358,18 +344,17 @@ export default function CheckoutForm({
           {/* 4. Payment (mock) */}
           <SectionCard title="Payment">
             <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-2 rounded-xl bg-amber-50 px-4 py-3">
-                <span className="text-base">⚠</span>
-                <p className="text-xs font-medium text-amber-700">
+              <div className="flex items-center gap-2 rounded-lg border border-herb/25 bg-midsage/30 px-4 py-3">
+                <p className="text-xs font-medium text-herb">
                   Test mode — no charge will be made
                 </p>
               </div>
               <div>
-                <Label>Card Number</Label>
+                <Label>Card number</Label>
                 <input
                   value="4242 4242 4242 4242"
                   readOnly
-                  className="w-full cursor-not-allowed rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm tracking-widest text-neutral-400"
+                  className="w-full cursor-not-allowed rounded-lg border border-herb/20 bg-midsage/20 px-4 py-3 text-sm tracking-widest text-warmgray"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -378,7 +363,7 @@ export default function CheckoutForm({
                   <input
                     value="12 / 29"
                     readOnly
-                    className="w-full cursor-not-allowed rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-400"
+                    className="w-full cursor-not-allowed rounded-lg border border-herb/20 bg-midsage/20 px-4 py-3 text-sm text-warmgray"
                   />
                 </div>
                 <div>
@@ -386,7 +371,7 @@ export default function CheckoutForm({
                   <input
                     value="•••"
                     readOnly
-                    className="w-full cursor-not-allowed rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-400"
+                    className="w-full cursor-not-allowed rounded-lg border border-herb/20 bg-midsage/20 px-4 py-3 text-sm text-warmgray"
                   />
                 </div>
               </div>
@@ -401,31 +386,29 @@ export default function CheckoutForm({
 
         {/* ── Right column: order summary ──────────────────────────────── */}
         <div className="lg:sticky lg:top-8">
-          <div className="rounded-2xl border border-neutral-200 bg-white p-6">
-            <h2 className="mb-5 text-xs font-semibold uppercase tracking-widest text-neutral-400">
-              Order Summary
-            </h2>
+          <div className="rounded-lg border border-herb/25 bg-sage p-6">
+            <h2 className="tfb-eyebrow mb-5">Order summary</h2>
 
             {/* Locked dish info */}
-            <div className="mb-5 rounded-xl bg-neutral-50 px-4 py-3">
-              <p className="text-sm font-semibold text-neutral-900">{dishName}</p>
-              <p className="mt-0.5 text-xs text-neutral-500">
+            <div className="mb-5 rounded-lg border border-herb/20 bg-midsage/30 px-4 py-3">
+              <p className="text-sm font-medium text-deep-leaf">{dishName}</p>
+              <p className="mt-0.5 text-xs text-herb">
                 {formatDeliveryDate(deliveryDate)}
               </p>
             </div>
 
             <div className="flex flex-col gap-2.5 text-sm">
               <div className="flex justify-between">
-                <span className="text-neutral-500">Unit price</span>
-                <span className="text-neutral-900">${price.toFixed(2)}</span>
+                <span className="text-herb">Unit price</span>
+                <span className="text-deep-leaf">${price.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-neutral-500">Quantity</span>
-                <span className="text-neutral-900">{safeQty}</span>
+                <span className="text-herb">Quantity</span>
+                <span className="text-deep-leaf">{safeQty}</span>
               </div>
-              <div className="mt-1 flex justify-between border-t border-neutral-100 pt-3">
-                <span className="font-bold text-neutral-900">Total</span>
-                <span className="font-bold text-neutral-900">
+              <div className="mt-1 flex justify-between border-t border-herb/20 pt-3">
+                <span className="font-medium text-deep-leaf">Total</span>
+                <span className="font-medium text-deep-leaf">
                   ${total.toFixed(2)}
                 </span>
               </div>

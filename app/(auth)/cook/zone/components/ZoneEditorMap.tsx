@@ -46,7 +46,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
           ([lng, lat]) => [lat, lng] as [number, number]
         );
         const poly = L.polygon(latLngs, {
-          color: "#16a34a",
+          color: "#3B6D11",
           weight: 2,
           fillOpacity: 0.15,
         }).addTo(map);
@@ -62,8 +62,8 @@ export default function ZoneEditorMap({ existingZone }: Props) {
 
         const marker = L.circleMarker([lat, lng], {
           radius: 6,
-          color: "#1d4ed8",
-          fillColor: "#3b82f6",
+          color: "#D97C4A",
+          fillColor: "#D97C4A",
           fillOpacity: 1,
           weight: 2,
         }).addTo(map);
@@ -78,7 +78,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
           }
           if (next.length >= 3) {
             drawnPolyRef.current = L.polygon(next, {
-              color: "#1d4ed8",
+              color: "#D97C4A",
               weight: 2,
               fillOpacity: 0.1,
               dashArray: "6 4",
@@ -129,7 +129,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
             .map(([lng, lat]) => [lat, lng] as [number, number]);
           const L = await import("leaflet");
           existingPolyRef.current = L.polygon(latLngs, {
-            color: "#16a34a",
+            color: "#3B6D11",
             weight: 2,
             fillOpacity: 0.15,
           }).addTo(mapRef.current);
@@ -161,11 +161,11 @@ export default function ZoneEditorMap({ existingZone }: Props) {
     <div className="flex flex-col gap-4">
       <div
         ref={containerRef}
-        className="h-[500px] w-full overflow-hidden rounded-2xl border border-neutral-200"
+        className="h-[500px] w-full overflow-hidden rounded-lg border border-herb/25"
       />
 
       <div className="flex flex-wrap items-center gap-3">
-        <span className="text-sm text-neutral-500">
+        <span className="text-sm text-herb">
           {points.length === 0
             ? "Click the map to place zone vertices."
             : `${points.length} point${points.length !== 1 ? "s" : ""} placed${points.length >= 3 ? " — ready to save" : " — need at least 3"}`}
@@ -176,7 +176,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
             type="button"
             onClick={clearDrawing}
             disabled={isPending}
-            className="rounded-lg border border-neutral-200 px-3 py-1.5 text-sm font-medium text-neutral-600 transition-colors hover:border-neutral-400 disabled:opacity-50"
+            className="tfb-btn-secondary w-auto px-3 py-1.5 text-sm disabled:opacity-50"
           >
             Clear drawing
           </button>
@@ -187,7 +187,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
             type="button"
             onClick={handleSave}
             disabled={isPending}
-            className="rounded-lg bg-neutral-900 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-700 disabled:opacity-50"
+            className="tfb-btn-primary w-auto px-4 py-1.5 text-sm disabled:opacity-50"
           >
             {isPending ? "Saving…" : "Save zone"}
           </button>
@@ -198,26 +198,28 @@ export default function ZoneEditorMap({ existingZone }: Props) {
             type="button"
             onClick={handleClearZone}
             disabled={isPending}
-            className="rounded-lg border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 transition-colors hover:border-red-400 disabled:opacity-50"
+            className="rounded-lg border border-rust/40 px-3 py-1.5 text-sm font-medium text-rust transition-opacity hover:opacity-70 disabled:opacity-50"
           >
             Remove zone
           </button>
         )}
 
         {status === "saved" && (
-          <span className="text-sm font-medium text-green-600">Zone saved.</span>
+          <span className="text-sm font-medium text-herb">Zone saved.</span>
         )}
         {status === "cleared" && (
-          <span className="text-sm font-medium text-neutral-500">Zone removed. Falling back to ZIP list.</span>
+          <span className="text-sm font-medium text-warmgray">
+            Zone removed. Falling back to ZIP list.
+          </span>
         )}
         {status === "error" && errorMsg && (
-          <span className="text-sm font-medium text-red-600">{errorMsg}</span>
+          <span className="text-sm font-medium text-rust">{errorMsg}</span>
         )}
       </div>
 
-      <p className="text-xs text-neutral-400">
-        The green polygon is your current saved delivery zone. Blue outlines your new drawing.
-        Drawing a new zone replaces the existing one.
+      <p className="text-xs text-warmgray">
+        The herb-green polygon is your current saved delivery zone. Terracotta
+        outlines your new drawing. Drawing a new zone replaces the existing one.
       </p>
     </div>
   );

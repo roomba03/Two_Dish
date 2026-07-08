@@ -12,7 +12,7 @@ export default function RemoveScheduleButton({
     <form action={boundUnschedule}>
       <button
         type="submit"
-        className="text-xs font-medium text-red-400 transition-opacity hover:opacity-70"
+        className="text-xs font-medium text-rust transition-opacity hover:opacity-70"
         onClick={(e) => {
           if (!confirm("Remove this date from the schedule?"))
             e.preventDefault();

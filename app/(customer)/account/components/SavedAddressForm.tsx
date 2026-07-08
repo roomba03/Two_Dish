@@ -6,16 +6,8 @@ import type { CustomerProfile } from "@/lib/data/account";
 
 const initial: AddressState = {};
 
-function inputClass() {
-  return "w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900";
-}
-
 function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-neutral-400">
-      {children}
-    </label>
-  );
+  return <label className="tfb-label">{children}</label>;
 }
 
 export default function SavedAddressForm({
@@ -28,25 +20,25 @@ export default function SavedAddressForm({
   return (
     <form action={action} className="flex flex-col gap-4">
       {state.error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-lg border border-rust/40 bg-sage px-4 py-3 text-sm text-rust">
           {state.error}
         </div>
       )}
       {state.success && (
-        <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+        <div className="rounded-lg border border-herb/30 bg-midsage/30 px-4 py-3 text-sm text-herb">
           Address saved.
         </div>
       )}
 
       <div>
-        <Label>Street Address</Label>
+        <Label>Street address</Label>
         <input
           name="delivery_street"
           type="text"
           defaultValue={profile.delivery_street ?? ""}
           placeholder="123 Main St"
           autoComplete="street-address"
-          className={inputClass()}
+          className="tfb-input w-full"
         />
       </div>
 
@@ -59,7 +51,7 @@ export default function SavedAddressForm({
             defaultValue={profile.delivery_city ?? ""}
             placeholder="Overland Park"
             autoComplete="address-level2"
-            className={inputClass()}
+            className="tfb-input w-full"
           />
         </div>
         <div>
@@ -72,16 +64,12 @@ export default function SavedAddressForm({
             maxLength={5}
             inputMode="numeric"
             autoComplete="postal-code"
-            className={inputClass()}
+            className="tfb-input w-full"
           />
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="w-full rounded-xl bg-neutral-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
-      >
+      <button type="submit" disabled={isPending} className="tfb-btn-primary w-full">
         {isPending ? "Saving…" : "Save address"}
       </button>
     </form>

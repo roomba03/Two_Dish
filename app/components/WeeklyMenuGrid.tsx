@@ -1,4 +1,5 @@
 import DishImage from "./DishImage";
+import { CalendarIcon } from "./icons/DishIcons";
 import { checkDeliveryDateEligibility } from "@/lib/actions/checkoutActions";
 import { getDefaultKitchen, getWeekMenuSchedule } from "@/lib/data/menu";
 import type { ScheduleRow } from "@/lib/data/menu";
@@ -59,18 +60,12 @@ function DishImageArea({
   closed: boolean;
 }) {
   return (
-    <div className="relative aspect-[4/3] overflow-hidden bg-amber-50">
-      {imageUrl ? (
-        <DishImage src={imageUrl} alt={dishName} />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-orange-100">
-          <span className="text-4xl">🍽️</span>
-        </div>
-      )}
+    <div className="relative">
+      <DishImage src={imageUrl} alt={dishName} className="rounded-none" />
       {closed && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-          <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-widest text-neutral-600">
-            Orders Closed
+        <div className="absolute inset-0 flex items-center justify-center bg-warmgray/40">
+          <span className="rounded-md border border-warmgray/50 bg-sage px-3 py-1 text-sm text-warmgray">
+            Orders closed
           </span>
         </div>
       )}
@@ -86,31 +81,37 @@ function NoMenuCard({
   shortDate: string;
 }) {
   return (
-    <div className="flex min-w-[260px] flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50 lg:min-w-0">
-      <div className="relative aspect-[4/3] bg-neutral-100">
-        <div className="flex h-full items-center justify-center">
-          <span className="text-3xl opacity-30">📅</span>
-        </div>
+    <div className="flex flex-col overflow-hidden rounded-lg border border-herb/25 bg-sage">
+      <div className="flex aspect-[4/3] w-full items-center justify-center bg-midsage">
+        <CalendarIcon className="h-10 w-10 text-herb" aria-hidden />
       </div>
       <div className="flex flex-col gap-2 p-4">
         <div className="flex items-baseline gap-2">
-          <span className="text-sm font-semibold text-neutral-900">{label}</span>
-          <span className="text-xs text-neutral-400">{shortDate}</span>
+          <span className="text-sm font-medium text-deep-leaf">{label}</span>
+          <span className="text-xs text-warmgray">{shortDate}</span>
         </div>
-        <p className="text-sm text-neutral-400">No meal scheduled</p>
+        <p className="text-sm text-herb">No meal scheduled</p>
       </div>
     </div>
   );
 }
 
+type CheckedAddress = {
+  street?: string;
+  city?: string;
+  zip?: string;
+};
+
 async function DayCard({
   dateStr,
   todayStr,
   schedule,
+  address,
 }: {
   dateStr: string;
   todayStr: string;
   schedule: ScheduleRow | null;
+  address?: CheckedAddress;
 }) {
   const { label, shortDate } = getDayMeta(dateStr, todayStr);
 
@@ -124,7 +125,7 @@ async function DayCard({
   const item = schedule.menu_items;
 
   return (
-    <article className="flex min-w-[260px] flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-shadow hover:shadow-md lg:min-w-0">
+    <article className="flex flex-col overflow-hidden rounded-lg border border-herb/25 bg-sage">
       <DishImageArea
         imageUrl={item.image_url}
         dishName={item.name}
@@ -134,34 +135,32 @@ async function DayCard({
       <div className="flex flex-1 flex-col gap-3 p-4">
         {/* Day header */}
         <div className="flex items-baseline gap-2">
-          <span className="text-sm font-semibold text-neutral-900">{label}</span>
-          <span className="text-xs text-neutral-400">{shortDate}</span>
+          <span className="text-sm font-medium text-deep-leaf">{label}</span>
+          <span className="text-xs text-warmgray">{shortDate}</span>
         </div>
 
         {/* Dish info */}
         <div className="flex flex-col gap-1">
-          <h3 className="text-base font-bold leading-tight text-neutral-900">
-            {item.name}
-          </h3>
-          <p className="line-clamp-2 text-sm leading-relaxed text-neutral-500">
+          <h3 className="text-lg leading-tight text-deep-leaf">{item.name}</h3>
+          <p className="line-clamp-2 text-sm leading-relaxed text-herb">
             {item.description}
           </p>
         </div>
 
         {/* Price + CTA */}
-        <div className="mt-auto flex flex-col gap-3 border-t border-neutral-100 pt-3">
-          <span className="text-base font-semibold text-neutral-800">
+        <div className="mt-auto flex flex-col gap-3 border-t border-herb/20 pt-3">
+          <span className="text-base font-medium text-terracotta">
             ${Number(item.price).toFixed(2)}{" "}
-            <span className="text-xs font-normal text-neutral-400">/ meal</span>
+            <span className="text-xs font-normal text-warmgray">/ meal</span>
           </span>
 
           {closed ? (
-            <div className="w-full rounded-xl bg-neutral-100 py-3 text-center text-xs font-bold uppercase tracking-widest text-neutral-400">
-              Orders Closed
+            <div className="w-full rounded-md border border-warmgray/40 py-3 text-center text-sm text-warmgray">
+              Orders closed
             </div>
           ) : soldOut ? (
-            <div className="w-full rounded-xl bg-red-50 py-3 text-center text-xs font-bold uppercase tracking-widest text-red-400">
-              Sold Out
+            <div className="w-full rounded-md border border-warmgray/40 py-3 text-center text-sm text-warmgray">
+              Sold out
             </div>
           ) : (
             <AddToCartButton
@@ -171,6 +170,9 @@ async function DayCard({
               dishName={item.name}
               price={Number(item.price)}
               deliveryDate={dateStr}
+              street={address?.street}
+              city={address?.city}
+              zip={address?.zip}
             />
           )}
         </div>
@@ -183,19 +185,19 @@ async function DayCard({
 
 export function WeeklyMenuGridSkeleton() {
   return (
-    <div className="flex gap-4 overflow-x-auto pb-4 lg:grid lg:grid-cols-4 lg:overflow-visible xl:grid-cols-7">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 7 }).map((_, i) => (
         <div
           key={i}
-          className="min-w-[260px] animate-pulse overflow-hidden rounded-2xl border border-neutral-200 bg-white lg:min-w-0"
+          className="animate-pulse overflow-hidden rounded-lg border border-herb/25 bg-sage"
         >
-          <div className="aspect-[4/3] bg-neutral-200" />
+          <div className="aspect-[4/3] bg-midsage" />
           <div className="flex flex-col gap-3 p-4">
-            <div className="h-3 w-24 rounded bg-neutral-200" />
-            <div className="h-4 w-36 rounded bg-neutral-200" />
-            <div className="h-3 w-full rounded bg-neutral-100" />
-            <div className="h-3 w-3/4 rounded bg-neutral-100" />
-            <div className="mt-2 h-10 w-full rounded-xl bg-neutral-200" />
+            <div className="h-3 w-24 rounded-md bg-midsage" />
+            <div className="h-4 w-36 rounded-md bg-midsage" />
+            <div className="h-3 w-full rounded-md bg-midsage/70" />
+            <div className="h-3 w-3/4 rounded-md bg-midsage/70" />
+            <div className="mt-2 h-10 w-full rounded-md bg-midsage" />
           </div>
         </div>
       ))}
@@ -205,12 +207,16 @@ export function WeeklyMenuGridSkeleton() {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 
-export default async function WeeklyMenuGrid() {
+export default async function WeeklyMenuGrid({
+  address,
+}: {
+  address?: CheckedAddress;
+} = {}) {
   const kitchen = await getDefaultKitchen();
 
   if (!kitchen) {
     return (
-      <p className="py-12 text-center text-neutral-500">
+      <p className="py-12 text-center text-herb">
         Menu temporarily unavailable. Please check back soon.
       </p>
     );
@@ -226,13 +232,14 @@ export default async function WeeklyMenuGrid() {
   );
 
   return (
-    <div className="flex gap-4 overflow-x-auto pb-4 lg:grid lg:grid-cols-4 lg:overflow-visible xl:grid-cols-7">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {dates.map((date) => (
         <DayCard
           key={date}
           dateStr={date}
           todayStr={todayStr}
           schedule={scheduleByDate.get(date) ?? null}
+          address={address}
         />
       ))}
     </div>

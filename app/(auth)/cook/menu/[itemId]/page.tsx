@@ -20,37 +20,26 @@ export default async function MenuItemPage({
     <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
       <Link
         href="/cook/menu"
-        className="mb-8 inline-flex items-center gap-1.5 text-sm text-neutral-500 transition-colors hover:text-neutral-900"
+        className="mb-8 inline-flex items-center gap-1.5 text-sm text-herb transition-opacity hover:opacity-70"
       >
-        ← Back to Dishes
+        ← Back to dishes
       </Link>
 
       <div className="mb-8">
-        <p className="font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-          Partner Dashboard
-        </p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-neutral-900">
-          {item.name}
-        </h1>
+        <p className="tfb-eyebrow">Partner dashboard</p>
+        <h1 className="mt-1 text-2xl text-deep-leaf">{item.name}</h1>
       </div>
 
       {/* Edit dish details */}
-      <div className="rounded-2xl border border-neutral-200 bg-white p-6">
-        <p className="mb-5 font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-          Dish Details
-        </p>
+      <div className="tfb-card p-6">
+        <p className="tfb-eyebrow mb-5">Dish details</p>
         <EditMenuItemForm item={item} />
       </div>
 
       {/* Ingredients */}
-      <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-6">
-        <p className="mb-5 font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-          Ingredients
-        </p>
-        <IngredientsManager
-          menuItemId={item.id}
-          ingredients={ingredients}
-        />
+      <div className="tfb-card mt-6 p-6">
+        <p className="tfb-eyebrow mb-5">Ingredients</p>
+        <IngredientsManager menuItemId={item.id} ingredients={ingredients} />
       </div>
     </main>
   );

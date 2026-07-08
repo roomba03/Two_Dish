@@ -25,36 +25,45 @@ export default async function OrderPage({
     redirect("/menu");
   }
 
-  // Pre-fill checkout fields from the customer's saved profile if signed in.
+  // Address carried forward from the delivery-zone checker, if the customer
+  // just verified their address is within the delivery area.
+  const checkedStreet =
+    typeof params.street === "string" ? decodeURIComponent(params.street) : "";
+  const checkedCity =
+    typeof params.city === "string" ? decodeURIComponent(params.city) : "";
+  const checkedZip =
+    typeof params.zip === "string" ? decodeURIComponent(params.zip) : "";
+
+  // Pre-fill checkout fields from the customer's saved profile if signed in,
+  // preferring the address just checked for delivery over the saved one.
   const profile = await getCustomerFromCookie();
-  const prefill = profile
-    ? {
-        name: profile.name,
-        phone: profile.phone,
-        email: profile.email,
-        street: profile.delivery_street ?? "",
-        city: profile.delivery_city ?? "",
-        zip: profile.delivery_zip ?? "",
-      }
-    : undefined;
+  const prefill =
+    profile || checkedStreet || checkedCity || checkedZip
+      ? {
+          name: profile?.name ?? "",
+          phone: profile?.phone ?? "",
+          email: profile?.email ?? "",
+          street: checkedStreet || profile?.delivery_street || "",
+          city: checkedCity || profile?.delivery_city || "",
+          zip: checkedZip || profile?.delivery_zip || "",
+        }
+      : undefined;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-8">
         <Link
           href="/menu"
-          className="mb-4 inline-flex items-center gap-1.5 text-sm text-neutral-500 transition-colors hover:text-neutral-900"
+          className="mb-4 inline-flex items-center gap-1.5 text-sm text-herb transition-opacity hover:opacity-70"
         >
           ← Back to menu
         </Link>
-        <h1 className="text-3xl font-bold tracking-tight text-neutral-900">
-          Checkout
-        </h1>
-        <p className="mt-2 text-neutral-500">
+        <h1 className="text-3xl text-deep-leaf">Checkout</h1>
+        <p className="mt-2 text-herb">
           Complete your order for{" "}
-          <span className="font-semibold text-neutral-800">{dishName}</span>
+          <span className="font-medium text-deep-leaf">{dishName}</span>
           {" "}on{" "}
-          <span className="font-semibold text-neutral-800">
+          <span className="font-medium text-deep-leaf">
             {new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(
               (() => { const [y, m, d] = deliveryDate.split("-").map(Number); return new Date(y, m - 1, d); })()
             )}

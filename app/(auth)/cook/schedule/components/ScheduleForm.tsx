@@ -8,16 +8,8 @@ type Props = { menuItems: MenuItem[]; today: string };
 
 const initial: ActionState = {};
 
-function inputClass() {
-  return "w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm text-neutral-900 outline-none transition-colors focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900";
-}
-
 function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-neutral-400">
-      {children}
-    </label>
-  );
+  return <label className="tfb-label">{children}</label>;
 }
 
 export default function ScheduleForm({ menuItems, today }: Props) {
@@ -29,38 +21,36 @@ export default function ScheduleForm({ menuItems, today }: Props) {
   }, [state.success]);
 
   return (
-    <div className="rounded-2xl border border-neutral-200 bg-white px-6 py-6">
-      <p className="mb-5 font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-        Schedule a Dish
-      </p>
+    <div className="tfb-card px-6 py-6">
+      <p className="tfb-eyebrow mb-5">Schedule a dish</p>
 
       <form key={formKey} action={action}>
         {state.error && (
-          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-4 rounded-lg border border-rust/40 bg-sage px-4 py-3 text-sm text-rust">
             {state.error}
           </div>
         )}
         {state.success && (
-          <div className="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+          <div className="mb-4 rounded-lg border border-herb/30 bg-midsage/30 px-4 py-3 text-sm text-herb">
             Schedule updated.
           </div>
         )}
 
         <div className="grid gap-5 sm:grid-cols-3">
           <div>
-            <Label>Delivery Date</Label>
+            <Label>Delivery date</Label>
             <input
               name="delivery_date"
               type="date"
               required
               min={today}
-              className={inputClass()}
+              className="tfb-input w-full"
             />
           </div>
 
           <div>
             <Label>Dish</Label>
-            <select name="menu_item_id" required className={inputClass()}>
+            <select name="menu_item_id" required className="tfb-input w-full cursor-pointer">
               <option value="">Select a dish…</option>
               {menuItems.map((item) => (
                 <option key={item.id} value={item.id}>
@@ -71,25 +61,21 @@ export default function ScheduleForm({ menuItems, today }: Props) {
           </div>
 
           <div>
-            <Label>Max Capacity</Label>
+            <Label>Max capacity</Label>
             <input
               name="max_capacity"
               type="number"
               min="1"
               defaultValue="50"
               required
-              className={inputClass()}
+              className="tfb-input w-full"
             />
           </div>
         </div>
 
         <div className="mt-5">
-          <button
-            type="submit"
-            disabled={isPending}
-            className="rounded-xl bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isPending ? "Saving…" : "Save Schedule"}
+          <button type="submit" disabled={isPending} className="tfb-btn-primary w-auto">
+            {isPending ? "Saving…" : "Save schedule"}
           </button>
         </div>
       </form>

@@ -14,12 +14,8 @@ export default async function MenuPage() {
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <p className="font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-            Partner Dashboard
-          </p>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight text-neutral-900">
-            Dishes
-          </h1>
+          <p className="tfb-eyebrow">Partner dashboard</p>
+          <h1 className="mt-1 text-2xl text-deep-leaf">Dishes</h1>
         </div>
       </div>
 
@@ -29,54 +25,46 @@ export default async function MenuPage() {
       {/* Dish list */}
       <div className="mt-8">
         {items.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-neutral-300 py-16 text-center">
-            <p className="text-sm text-neutral-400">
+          <div className="rounded-lg border border-dashed border-herb/30 py-16 text-center">
+            <p className="text-sm text-herb">
               No dishes yet. Add your first dish above.
             </p>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white">
+          <div className="tfb-card overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-neutral-100">
-                  <th className="px-6 py-4 text-left font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                    Dish
-                  </th>
-                  <th className="px-6 py-4 text-left font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                    Description
-                  </th>
-                  <th className="px-6 py-4 text-right font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                    Price
-                  </th>
-                  <th className="px-6 py-4 text-right font-mono text-xs font-semibold uppercase tracking-widest text-neutral-400">
-                    Actions
-                  </th>
+                <tr className="border-b border-herb/20">
+                  <th className="tfb-eyebrow px-6 py-4 text-left">Dish</th>
+                  <th className="tfb-eyebrow px-6 py-4 text-left">Description</th>
+                  <th className="tfb-eyebrow px-6 py-4 text-right">Price</th>
+                  <th className="tfb-eyebrow px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-100">
+              <tbody className="divide-y divide-herb/10">
                 {items.map((item) => (
                   <tr
                     key={item.id}
-                    className="transition-colors hover:bg-neutral-50"
+                    className="transition-colors hover:bg-midsage/20"
                   >
                     <td className="px-6 py-4">
-                      <span className="font-medium text-neutral-900">
+                      <span className="font-medium text-deep-leaf">
                         {item.name}
                       </span>
                     </td>
                     <td className="max-w-xs px-6 py-4">
-                      <span className="line-clamp-1 text-sm text-neutral-500">
+                      <span className="line-clamp-1 text-sm text-herb">
                         {item.description}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right text-sm font-medium text-neutral-900">
+                    <td className="px-6 py-4 text-right text-sm font-medium text-terracotta">
                       {fmt(item.price)}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-4">
                         <Link
                           href={`/cook/menu/${item.id}`}
-                          className="text-sm font-medium text-neutral-900 transition-opacity hover:opacity-60"
+                          className="text-sm font-medium text-terracotta transition-opacity hover:opacity-70"
                         >
                           Edit
                         </Link>
