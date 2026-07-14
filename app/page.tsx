@@ -112,9 +112,7 @@ export default async function HomePage() {
             >
               Order now
             </Link>
-            <Link href="/menu" aria-label="Cart" className="transition-opacity hover:opacity-70">
-              <CartIcon />
-            </Link>
+            <CartIcon />
           </div>
         </div>
       </nav>
@@ -124,6 +122,7 @@ export default async function HomePage() {
         <div className="flex flex-col items-center text-center">
           {tomorrowSchedule && (
             <div className="tfb-rise tfb-delay-3 mb-12 w-full">
+              <p className="mb-3 text-left text-xl text-deep-leaf">We serve one dish a day.</p>
               <TomorrowDishSpotlight
                 scheduleId={tomorrowSchedule.id}
                 menuItemId={tomorrowSchedule.menu_items.id}

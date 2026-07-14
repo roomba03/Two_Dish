@@ -20,18 +20,15 @@ export function useAddToCart() {
   const { addItem } = useCart();
 
   return (params: AddToCartParams) => {
-    addItem();
-    const search = new URLSearchParams({
+    addItem({
       scheduleId: params.scheduleId,
-      menuItemId: params.menuItemId,
-      kitchenId: params.kitchenId,
       dishName: params.dishName,
-      price: params.price.toString(),
+      price: params.price,
       deliveryDate: params.deliveryDate,
+      street: params.street,
+      city: params.city,
+      zip: params.zip,
     });
-    if (params.street) search.set("street", params.street);
-    if (params.city) search.set("city", params.city);
-    if (params.zip) search.set("zip", params.zip);
-    router.push(`/order?${search.toString()}`);
+    router.push("/cart");
   };
 }

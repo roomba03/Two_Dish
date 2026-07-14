@@ -1,12 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useCart } from "./CartContext";
 
 export default function CartIcon() {
   const { count } = useCart();
 
   return (
-    <div className="relative">
+    <Link
+      href="/cart"
+      aria-label="Cart"
+      className="relative inline-flex transition-opacity hover:opacity-70"
+    >
       <svg
         width="22"
         height="22"
@@ -28,6 +33,6 @@ export default function CartIcon() {
           {count}
         </span>
       )}
-    </div>
+    </Link>
   );
 }

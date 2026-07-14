@@ -260,19 +260,6 @@ export default function CheckoutForm({
       <input type="hidden" {...register("scheduleId")} />
       <input type="hidden" {...register("stripePaymentMethodId")} />
 
-      {/* ── Cart summary ──────────────────────────────────────────── */}
-      <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-herb bg-sage px-6 py-4">
-        <div>
-          <p className="font-medium text-deep-leaf">{dishName}</p>
-          <p className="mt-0.5 text-xs text-warmgray">
-            {formatDeliveryDate(deliveryDate)} · Qty {safeQty}
-          </p>
-        </div>
-        <p className="text-lg font-medium text-deep-leaf">
-          ${total.toFixed(2)}
-        </p>
-      </div>
-
       <div className="grid gap-8 lg:grid-cols-[1fr_360px] lg:items-start">
         {/* ── Left column: form sections ──────────────────────────────── */}
         <div className="flex flex-col gap-5">
