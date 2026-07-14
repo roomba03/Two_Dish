@@ -73,12 +73,11 @@ function SlotPill({ slot }: { slot: "early" | "late" }) {
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 type SlotFilter = "all" | "early" | "late";
-type RangeFilter = "week" | "today" | "3" | "5" | "allWithOrders" | "custom";
+type RangeFilter = "week" | "today" | "3" | "allWithOrders" | "custom";
 
 const RANGE_LABELS: Record<RangeFilter, string> = {
   today: "Today",
   "3": "Next 3 days",
-  "5": "Next 5 days",
   week: "This week",
   allWithOrders: "All upcoming orders",
   custom: "Custom range",
@@ -115,8 +114,6 @@ export default function ProductionBoard({
         return today;
       case "3":
         return addDays(today, 2);
-      case "5":
-        return addDays(today, 4);
       case "allWithOrders":
         return lastOrderDate;
       case "custom":
@@ -234,7 +231,6 @@ export default function ProductionBoard({
         <div className="flex flex-wrap gap-1">
           {rangeBtn("today")}
           {rangeBtn("3")}
-          {rangeBtn("5")}
           {rangeBtn("week")}
           {rangeBtn("allWithOrders")}
           {rangeBtn("custom")}
