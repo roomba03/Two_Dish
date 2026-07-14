@@ -38,7 +38,12 @@ export default function TomorrowDishSpotlight({
       className="group relative flex w-full flex-col text-left transition-colors disabled:cursor-not-allowed"
     >
       <div className="flex items-center justify-between gap-3 pb-3">
-        <span className="tfb-eyebrow">Order tomorrow&apos;s dish</span>
+        <div className="flex items-baseline gap-2">
+          <span className="tfb-eyebrow">Tomorrow&apos;s dish:</span>
+          <span className="text-xs font-medium uppercase tracking-[0.05em] text-deep-leaf">
+            {dishName}
+          </span>
+        </div>
         <span className="text-sm font-medium text-terracotta">
           ${price.toFixed(2)}{" "}
           <span className="text-xs font-normal text-warmgray">/ meal</span>
@@ -65,11 +70,8 @@ export default function TomorrowDishSpotlight({
         )}
       </div>
 
-      <div className="flex items-center justify-between gap-3 pt-4">
-        <h3 className="text-xl leading-tight text-deep-leaf">{dishName}</h3>
-        <p className="line-clamp-1 max-w-[50%] text-sm leading-relaxed text-warmgray">
-          {description}
-        </p>
+      <div className="pt-4">
+        <p className="text-sm leading-relaxed text-warmgray">{description}</p>
       </div>
     </button>
   );

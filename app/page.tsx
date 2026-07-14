@@ -125,7 +125,6 @@ export default async function HomePage() {
         <div className="flex flex-col items-center text-center">
           {tomorrowSchedule && (
             <div className="tfb-rise tfb-delay-3 mb-12 w-full">
-              <p className="mb-3 text-left text-xl text-deep-leaf">We serve one dish a day.</p>
               <TomorrowDishSpotlight
                 scheduleId={tomorrowSchedule.id}
                 menuItemId={tomorrowSchedule.menu_items.id}
