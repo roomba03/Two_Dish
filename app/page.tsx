@@ -92,6 +92,14 @@ export default async function HomePage() {
             )}
             {!profile && (
               <Link
+                href="/account/login"
+                className="text-sm font-medium text-warmgray transition-opacity hover:opacity-70"
+              >
+                Sign in
+              </Link>
+            )}
+            {!profile && (
+              <Link
                 href="/account/signup"
                 className="text-sm font-medium text-warmgray transition-opacity hover:opacity-70"
               >

@@ -153,7 +153,7 @@ export async function loginCustomer(
 export async function logoutCustomer(): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.delete("customer-session");
-  redirect("/account/login");
+  redirect("/");
 }
 
 // ── Update saved delivery address ─────────────────────────────────────────────
