@@ -19,6 +19,9 @@ const SignupSchema = z.object({
     "Enter a valid phone number (e.g. +1 555 000 0000)"
   ),
   password: z.string().min(8, "Password must be at least 8 characters"),
+  deliveryStreet: z.string().min(5, "Enter a full street address"),
+  deliveryCity: z.string().min(2, "Enter a city"),
+  deliveryZip: z.string().length(5, "ZIP code must be exactly 5 digits"),
 });
 
 // ── Cookie helper ─────────────────────────────────────────────────────────────
@@ -45,6 +48,9 @@ export async function signupCustomer(
     email: ((formData.get("email") as string) ?? "").trim(),
     phone: ((formData.get("phone") as string) ?? "").trim(),
     password: (formData.get("password") as string) ?? "",
+    deliveryStreet: ((formData.get("delivery_street") as string) ?? "").trim(),
+    deliveryCity: ((formData.get("delivery_city") as string) ?? "").trim(),
+    deliveryZip: ((formData.get("delivery_zip") as string) ?? "").trim(),
   };
 
   const parsed = SignupSchema.safeParse(raw);
@@ -53,7 +59,8 @@ export async function signupCustomer(
     return { error: first ?? "Please check your details." };
   }
 
-  const { name, email, phone, password } = parsed.data;
+  const { name, email, phone, password, deliveryStreet, deliveryCity, deliveryZip } =
+    parsed.data;
 
   const authClient = createAuthClient();
   const { data, error } = await authClient.auth.signUp({ email, password });
@@ -81,6 +88,9 @@ export async function signupCustomer(
     name,
     phone,
     role: "customer",
+    delivery_street: deliveryStreet,
+    delivery_city: deliveryCity,
+    delivery_zip: deliveryZip,
   });
 
   // Email confirmation is enabled — no session returned yet.
@@ -92,7 +102,7 @@ export async function signupCustomer(
   }
 
   await setCustomerSession(data.session.access_token);
-  return { success: true };
+  redirect("/account");
 }
 
 // ── Login ─────────────────────────────────────────────────────────────────────

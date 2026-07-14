@@ -20,7 +20,7 @@ export default async function MenuItemPage({
     <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
       <Link
         href="/cook/menu"
-        className="mb-8 inline-flex items-center gap-1.5 text-sm text-herb transition-opacity hover:opacity-70"
+        className="mb-8 inline-flex items-center gap-1.5 text-sm text-warmgray transition-opacity hover:opacity-70"
       >
         ← Back to dishes
       </Link>

@@ -1,23 +1,22 @@
 @import "tailwindcss";
 
 /* ── Design tokens ────────────────────────────────────────────────────────────
-   Soft-sage palette. One accent (terracotta) used sparingly. Never pure
-   black/white, never a second accent, never drop shadows. */
+   See DESIGN.md. Warm cream, one amber-gold accent. Never pure black/white,
+   never a second accent, never a gradient, never green, never drop shadows. */
 :root {
   color-scheme: light only;
 
-  --background: #EAF3DE; /* soft sage — default everywhere, incl. checkout/account/admin */
-  --foreground: #173404; /* deep leaf — primary text/headlines */
-  --border-hairline: rgb(59 109 17 / 0.22);
+  --background: #F3EFE4; /* warm cream — default everywhere, incl. checkout/account/admin */
+  --foreground: #3A2B2E; /* plum-charcoal — primary text/headlines */
 }
 
 @theme {
-  --color-sage: #EAF3DE;
-  --color-deep-leaf: #173404;
-  --color-herb: #3B6D11; /* secondary text, line art, labels, dividers */
-  --color-terracotta: #D97C4A; /* CTAs, prices, active/selected, links — sparingly */
-  --color-warmgray: #3A3935; /* captions, metadata, disabled */
-  --color-midsage: #C0DD97; /* placeholder blocks, one step darker than bg */
+  --color-sage: #F3EFE4; /* background/page */
+  --color-deep-leaf: #3A2B2E; /* primary text/headlines */
+  --color-herb: #DDD3CC; /* card/surface hairline border */
+  --color-terracotta: #A9773F; /* accent: CTAs, prices, links, active states, line art */
+  --color-warmgray: #6B564F; /* secondary text, captions, metadata, disabled */
+  --color-midsage: #D9C9BC; /* placeholder image blocks */
   --color-rust: #8C4331; /* error states — muted brick, never stock red */
 
   --font-sans: var(--font-karla);
@@ -39,6 +38,21 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), Karla, "Work Sans", Arial, sans-serif;
   font-weight: 400;
+  position: relative;
+}
+
+/* Subtle film-grain texture over the whole app — a fixed SVG fractal-noise
+   layer blended with `overlay` so it reads as paper grain, not a flat tint. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 h1,
@@ -48,10 +62,10 @@ h3 {
   font-weight: 500;
 }
 
-/* Hairline dividers — herb green at low opacity, never a hard box border */
+/* Hairline dividers — the border color, never a hard box border */
 .tfb-divider {
   border: none;
-  border-top: 1px solid var(--border-hairline);
+  border-top: 1px solid var(--color-herb);
 }
 
 /* Eyebrow labels — the only sanctioned all-caps treatment */
@@ -60,14 +74,14 @@ h3 {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   font-weight: 500;
-  color: var(--color-herb);
+  color: var(--color-warmgray);
 }
 
 /* Shared form/button primitives — keeps every input & button on the same
    hairline-border, 6–10px-radius, single-accent treatment. */
 .tfb-input {
   border-radius: var(--radius-lg);
-  border: 1px solid rgb(59 109 17 / 0.3);
+  border: 1px solid var(--color-herb);
   background: var(--color-sage);
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
@@ -90,8 +104,8 @@ h3 {
 .tfb-input:read-only {
   cursor: not-allowed;
   color: var(--color-warmgray);
-  background: rgb(192 221 151 / 0.2);
-  border-color: rgb(59 109 17 / 0.2);
+  background: rgb(217 201 188 / 0.35);
+  border-color: var(--color-herb);
 }
 
 .tfb-label {
@@ -125,12 +139,12 @@ h3 {
 
 .tfb-btn-secondary {
   border-radius: var(--radius-lg);
-  border: 1px solid rgb(59 109 17 / 0.4);
+  border: 1px solid var(--color-terracotta);
   background: transparent;
   padding: 0.875rem 1.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-herb);
+  color: var(--color-terracotta);
   transition: opacity 0.15s;
 }
 .tfb-btn-secondary:hover {
@@ -141,13 +155,13 @@ h3 {
   opacity: 0.5;
 }
 .tfb-btn-secondary:focus-visible {
-  outline: 2px solid var(--color-herb);
+  outline: 2px solid var(--color-terracotta);
   outline-offset: 2px;
 }
 
 .tfb-card {
   border-radius: var(--radius-lg);
-  border: 1px solid rgb(59 109 17 / 0.25);
+  border: 1px solid var(--color-herb);
   background: var(--color-sage);
 }
 

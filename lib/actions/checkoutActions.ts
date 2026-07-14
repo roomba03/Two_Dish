@@ -4,7 +4,11 @@ import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
 import { createAuthClient } from "@/lib/supabase/auth";
 import { OrderCheckoutSchema, type OrderCheckoutInput } from "@/lib/validations";
-import { getDefaultKitchen, type GeoJsonPolygon } from "@/lib/data/menu";
+import {
+  getDefaultKitchen,
+  getScheduleTimeSlotCounts,
+  type GeoJsonPolygon,
+} from "@/lib/data/menu";
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
 import { point, polygon } from "@turf/helpers";
 
@@ -220,6 +224,18 @@ export async function submitCheckoutOrder(
         remaining === 0
           ? "This day is sold out."
           : `Only ${remaining} meal${remaining === 1 ? "" : "s"} left. Please reduce your quantity.`,
+    };
+  }
+
+  // ── 4b. Check time slot capacity ────────────────────────────────────────────
+  // A slot fills up once it reaches half the day's capacity — the other half
+  // is reserved for the other slot.
+  const slotCounts = await getScheduleTimeSlotCounts(data.scheduleId);
+  const halfCapacity = schedule.max_capacity / 2;
+  if (slotCounts[data.timeSlot] >= halfCapacity) {
+    return {
+      success: false,
+      error: "This time slot is full. Please choose the other delivery time.",
     };
   }
 

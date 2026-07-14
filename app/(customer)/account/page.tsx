@@ -17,9 +17,9 @@ function formatDate(dateStr: string): string {
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     authorized: "border-warmgray/40 text-warmgray",
-    paid: "border-herb/40 text-herb",
-    preparing: "border-herb/40 text-herb",
-    delivered: "border-herb/40 text-herb",
+    paid: "border-warmgray/40 text-warmgray",
+    preparing: "border-warmgray/40 text-warmgray",
+    delivered: "border-warmgray/40 text-warmgray",
     pending: "border-warmgray/40 text-warmgray",
     cancelled: "border-rust/40 text-rust",
     refunded: "border-rust/40 text-rust",
@@ -52,7 +52,7 @@ export default async function AccountPage() {
       <div className="grid gap-6 lg:grid-cols-[380px_1fr] lg:items-start">
         {/* ── Delivery address ────────────────────────────────────── */}
         <div className="tfb-card">
-          <div className="border-b border-herb/20 px-6 py-4">
+          <div className="border-b border-herb px-6 py-4">
             <p className="tfb-eyebrow">Delivery address</p>
           </div>
           <div className="p-6">
@@ -62,13 +62,13 @@ export default async function AccountPage() {
 
         {/* ── Order history ────────────────────────────────────────── */}
         <div className="tfb-card">
-          <div className="border-b border-herb/20 px-6 py-4">
+          <div className="border-b border-herb px-6 py-4">
             <p className="tfb-eyebrow">Order history</p>
           </div>
 
           {orders.length === 0 ? (
             <div className="py-20 text-center">
-              <p className="text-sm font-medium text-herb">No orders yet.</p>
+              <p className="text-sm font-medium text-warmgray">No orders yet.</p>
               <Link
                 href="/menu"
                 className="mt-3 inline-block text-sm font-medium text-terracotta underline underline-offset-2 hover:opacity-70"
@@ -80,7 +80,7 @@ export default async function AccountPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-herb/20">
+                  <tr className="border-b border-herb">
                     {["Order", "Dish", "Delivery", "Qty", "Status", "Total"].map(
                       (h) => (
                         <th
@@ -95,7 +95,7 @@ export default async function AccountPage() {
                     )}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-herb/10">
+                <tbody className="divide-y divide-herb">
                   {orders.map((order) => (
                     <tr
                       key={order.order_number}
@@ -107,7 +107,7 @@ export default async function AccountPage() {
                       <td className="px-6 py-4 font-medium text-deep-leaf">
                         {order.snapshot_dish_name}
                       </td>
-                      <td className="px-6 py-4 text-herb">
+                      <td className="px-6 py-4 text-warmgray">
                         {formatDate(order.menu_schedule.delivery_date)}
                       </td>
                       <td className="px-6 py-4 font-medium text-deep-leaf">

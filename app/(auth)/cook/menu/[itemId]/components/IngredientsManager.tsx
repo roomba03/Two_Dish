@@ -28,22 +28,22 @@ export default function IngredientsManager({ menuItemId, ingredients }: Props) {
     <div className="flex flex-col gap-6">
       {/* Existing ingredients */}
       {ingredients.length === 0 ? (
-        <p className="text-sm text-herb">
+        <p className="text-sm text-warmgray">
           No ingredients added yet. Add them below so the grocery calculator
           works.
         </p>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-herb/20">
+        <div className="overflow-hidden rounded-lg border border-herb">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-herb/20 bg-midsage/20">
+              <tr className="border-b border-herb bg-midsage/20">
                 <th className="tfb-eyebrow px-4 py-3 text-left">Ingredient</th>
                 <th className="tfb-eyebrow px-4 py-3 text-right">Qty / meal</th>
                 <th className="tfb-eyebrow px-4 py-3 text-right">Unit</th>
                 <th className="tfb-eyebrow px-4 py-3 text-right">&nbsp;</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-herb/10">
+            <tbody className="divide-y divide-herb">
               {ingredients.map((ing) => {
                 const boundDelete = deleteIngredient.bind(
                   null,
@@ -55,10 +55,10 @@ export default function IngredientsManager({ menuItemId, ingredients }: Props) {
                     <td className="px-4 py-3 text-sm text-deep-leaf">
                       {ing.name}
                     </td>
-                    <td className="px-4 py-3 text-right text-sm text-herb">
+                    <td className="px-4 py-3 text-right text-sm text-warmgray">
                       {ing.per_unit_quantity}
                     </td>
-                    <td className="px-4 py-3 text-right text-sm text-herb">
+                    <td className="px-4 py-3 text-right text-sm text-warmgray">
                       {ing.unit}
                     </td>
                     <td className="px-4 py-3 text-right">

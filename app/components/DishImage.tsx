@@ -7,7 +7,7 @@ import { getDishIcon } from "./icons/DishIcons";
 export default function DishImage({
   src,
   alt,
-  className = "rounded-lg",
+  className = "aspect-[4/3] rounded-lg",
 }: {
   src: string | null | undefined;
   alt: string;
@@ -19,11 +19,11 @@ export default function DishImage({
 
   return (
     <div
-      className={`relative aspect-[4/3] w-full overflow-hidden bg-midsage ${className}`}
+      className={`relative w-full overflow-hidden bg-midsage ${className}`}
     >
       {showPlaceholder ? (
         <div className="flex h-full w-full items-center justify-center">
-          <Icon className="h-12 w-12 text-herb" aria-hidden />
+          <Icon className="h-12 w-12 text-terracotta" aria-hidden />
         </div>
       ) : (
         <Image

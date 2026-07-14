@@ -55,5 +55,5 @@ export async function loginCook(
 export async function logoutCook(): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.delete("cook-session");
-  redirect("/cook/login");
+  redirect("/");
 }

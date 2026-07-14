@@ -61,13 +61,13 @@ export default async function IngredientsPage({
 
       {/* ── Grocery list ────────────────────────────────────────────── */}
       <div className="tfb-card">
-        <div className="border-b border-herb/20 px-6 py-4">
+        <div className="border-b border-herb px-6 py-4">
           <p className="tfb-eyebrow">Grocery list</p>
         </div>
 
         {ingredients.length === 0 ? (
           <div className="py-20 text-center">
-            <p className="text-sm font-medium text-herb">
+            <p className="text-sm font-medium text-warmgray">
               No orders locked for this date yet.
             </p>
             <p className="mt-1 text-xs text-warmgray">
@@ -79,7 +79,7 @@ export default async function IngredientsPage({
           <>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-herb/20">
+                <tr className="border-b border-herb">
                   <th className="tfb-eyebrow px-6 py-3 text-left">Ingredient</th>
                   <th className="tfb-eyebrow px-6 py-3 text-left">Unit</th>
                   <th className="tfb-eyebrow px-6 py-3 text-right">
@@ -87,7 +87,7 @@ export default async function IngredientsPage({
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-herb/10">
+              <tbody className="divide-y divide-herb">
                 {ingredients.map((ing) => (
                   <tr
                     key={ing.name}
@@ -96,7 +96,7 @@ export default async function IngredientsPage({
                     <td className="px-6 py-4 font-medium text-deep-leaf">
                       {ing.name}
                     </td>
-                    <td className="px-6 py-4 text-herb">{ing.unit}</td>
+                    <td className="px-6 py-4 text-warmgray">{ing.unit}</td>
                     <td className="px-6 py-4 text-right text-lg font-medium text-terracotta">
                       {formatQty(ing.total)}
                     </td>
@@ -105,7 +105,7 @@ export default async function IngredientsPage({
               </tbody>
             </table>
 
-            <div className="border-t border-herb/20 px-6 py-4 text-right text-xs text-warmgray">
+            <div className="border-t border-herb px-6 py-4 text-right text-xs text-warmgray">
               {ingredients.length} ingredient{ingredients.length !== 1 ? "s" : ""}{" "}
               calculated from locked order volumes
             </div>

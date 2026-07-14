@@ -43,8 +43,8 @@ export default async function SchedulePage() {
 
       {/* Schedule form */}
       {menuItems.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-herb/30 py-10 text-center">
-          <p className="text-sm text-herb">
+        <div className="rounded-lg border border-dashed border-herb py-10 text-center">
+          <p className="text-sm text-warmgray">
             Add dishes first before scheduling them.
           </p>
         </div>
@@ -54,12 +54,12 @@ export default async function SchedulePage() {
 
       {/* 14-day calendar */}
       <div className="tfb-card mt-8 overflow-hidden">
-        <div className="border-b border-herb/20 px-6 py-4">
+        <div className="border-b border-herb px-6 py-4">
           <h2 className="text-lg text-deep-leaf">Next 14 days</h2>
         </div>
         <table className="w-full">
           <thead>
-            <tr className="border-b border-herb/20">
+            <tr className="border-b border-herb">
               <th className="tfb-eyebrow px-6 py-3 text-left">Date</th>
               <th className="tfb-eyebrow px-6 py-3 text-left">Dish</th>
               <th className="tfb-eyebrow px-6 py-3 text-right">Capacity</th>
@@ -67,7 +67,7 @@ export default async function SchedulePage() {
               <th className="tfb-eyebrow px-6 py-3 text-right">&nbsp;</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-herb/10">
+          <tbody className="divide-y divide-herb">
             {days.map((day) => {
               const entry = scheduleByDate[day];
               const isToday = day === today;
@@ -100,14 +100,19 @@ export default async function SchedulePage() {
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-right text-sm text-herb">
+                  <td className="px-6 py-4 text-right text-sm text-warmgray">
                     {entry ? entry.max_capacity : "—"}
                   </td>
-                  <td className="px-6 py-4 text-right text-sm text-herb">
+                  <td className="px-6 py-4 text-right text-sm text-warmgray">
                     {entry ? entry.orders_count : "—"}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    {entry && <RemoveScheduleButton scheduleId={entry.id} />}
+                    {entry && (
+                      <RemoveScheduleButton
+                        scheduleId={entry.id}
+                        ordersCount={entry.orders_count}
+                      />
+                    )}
                   </td>
                 </tr>
               );

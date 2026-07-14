@@ -48,6 +48,69 @@ function firstError(result: z.ZodSafeParseError<unknown>): string {
   return result.error.issues[0]?.message ?? "Please check your details.";
 }
 
+// ── Dish image upload ─────────────────────────────────────────────────────────
+
+const DISH_IMAGES_BUCKET = "dish-images";
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
+function extractStoragePath(url: string): string | null {
+  const marker = `/storage/v1/object/public/${DISH_IMAGES_BUCKET}/`;
+  const idx = url.indexOf(marker);
+  return idx === -1 ? null : url.slice(idx + marker.length);
+}
+
+async function uploadDishImage(
+  supabase: ReturnType<typeof createServerClient>,
+  file: File
+): Promise<{ url?: string; error?: string }> {
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    return { error: "Image must be a JPEG, PNG, WebP, or GIF." };
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    return { error: "Image must be smaller than 5MB." };
+  }
+
+  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  const path = `${crypto.randomUUID()}.${ext}`;
+
+  const { error } = await supabase.storage
+    .from(DISH_IMAGES_BUCKET)
+    .upload(path, file, { contentType: file.type });
+
+  if (error) return { error: "Failed to upload image." };
+
+  const { data } = supabase.storage.from(DISH_IMAGES_BUCKET).getPublicUrl(path);
+  return { url: data.publicUrl };
+}
+
+// Best-effort — an orphaned file in storage isn't worth failing the request over.
+async function deleteDishImage(
+  supabase: ReturnType<typeof createServerClient>,
+  imageUrl: string | null
+): Promise<void> {
+  if (!imageUrl) return;
+  const path = extractStoragePath(imageUrl);
+  if (!path) return;
+  await supabase.storage.from(DISH_IMAGES_BUCKET).remove([path]);
+}
+
+// Resolves the image for a create/update: an uploaded file takes priority
+// over the manually-entered URL field.
+async function resolveImageUrl(
+  formData: FormData,
+  parsedImageUrl: string | undefined,
+  supabase: ReturnType<typeof createServerClient>
+): Promise<{ url: string | null; error?: string }> {
+  const file = formData.get("image_file");
+  if (file instanceof File && file.size > 0) {
+    const result = await uploadDishImage(supabase, file);
+    if (result.error) return { url: null, error: result.error };
+    return { url: result.url ?? null };
+  }
+  return { url: parsedImageUrl || null };
+}
+
 export async function createMenuItem(
   _prev: ActionState,
   formData: FormData
@@ -59,12 +122,16 @@ export async function createMenuItem(
   if (!parsed.success) return { error: firstError(parsed) };
 
   const supabase = createServerClient();
+
+  const image = await resolveImageUrl(formData, parsed.data.image_url, supabase);
+  if (image.error) return { error: image.error };
+
   const { error } = await supabase.from("menu_items").insert({
     kitchen_id: kitchen.id,
     name: parsed.data.name,
     description: parsed.data.description,
     price: parsed.data.price,
-    image_url: parsed.data.image_url || null,
+    image_url: image.url,
   });
 
   if (error) return { error: "Failed to create dish." };
@@ -84,17 +151,31 @@ export async function updateMenuItem(
   if (!parsed.success) return { error: firstError(parsed) };
 
   const supabase = createServerClient();
+
+  const { data: existing } = await supabase
+    .from("menu_items")
+    .select("image_url")
+    .eq("id", id)
+    .single();
+
+  const image = await resolveImageUrl(formData, parsed.data.image_url, supabase);
+  if (image.error) return { error: image.error };
+
   const { error } = await supabase
     .from("menu_items")
     .update({
       name: parsed.data.name,
       description: parsed.data.description,
       price: parsed.data.price,
-      image_url: parsed.data.image_url || null,
+      image_url: image.url,
     })
     .eq("id", id);
 
   if (error) return { error: "Failed to update dish." };
+
+  if (existing && existing.image_url !== image.url) {
+    await deleteDishImage(supabase, existing.image_url);
+  }
 
   revalidatePath("/cook/menu");
   revalidatePath(`/cook/menu/${id}`);
@@ -103,7 +184,16 @@ export async function updateMenuItem(
 
 export async function deleteMenuItem(id: string, _formData: FormData): Promise<void> {
   const supabase = createServerClient();
+
+  const { data: existing } = await supabase
+    .from("menu_items")
+    .select("image_url")
+    .eq("id", id)
+    .single();
+
   await supabase.from("menu_items").delete().eq("id", id);
+  if (existing) await deleteDishImage(supabase, existing.image_url);
+
   revalidatePath("/cook/menu");
 }
 
@@ -236,6 +326,20 @@ export async function unscheduleDate(
   _formData: FormData
 ): Promise<void> {
   const supabase = createServerClient();
+
+  // Only allow removal if no orders have been placed for this day. Re-check
+  // server-side (rather than trusting the UI) in case an order came in after
+  // the page loaded.
+  const { data: schedule } = await supabase
+    .from("menu_schedule")
+    .select("orders_count")
+    .eq("id", scheduleId)
+    .single();
+
+  if (!schedule || schedule.orders_count > 0) {
+    return;
+  }
+
   await supabase.from("menu_schedule").delete().eq("id", scheduleId);
   revalidatePath("/cook/schedule");
   revalidatePath("/cook");

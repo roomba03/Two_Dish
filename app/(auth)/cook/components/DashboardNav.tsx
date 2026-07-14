@@ -14,14 +14,19 @@ export default function DashboardNav() {
       "text-sm font-medium transition-opacity",
       isActive
         ? "text-terracotta underline underline-offset-4 decoration-terracotta"
-        : "text-herb hover:opacity-70",
+        : "text-warmgray hover:opacity-70",
     ].join(" ");
   };
 
   return (
-    <header className="sticky top-0 z-10 border-b border-herb/20 bg-sage">
+    <header className="sticky top-0 z-10 border-b border-herb bg-sage">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <span className="font-heading text-lg text-deep-leaf">Two Dish</span>
+        <Link
+          href="/"
+          className="font-heading text-lg text-deep-leaf transition-opacity hover:opacity-70"
+        >
+          Two Dish
+        </Link>
 
         <nav className="flex items-center gap-8">
           <Link href="/cook" className={linkClass("/cook")}>
@@ -47,7 +52,7 @@ export default function DashboardNav() {
         <form action={logoutCook}>
           <button
             type="submit"
-            className="text-sm font-medium text-herb transition-opacity hover:opacity-70"
+            className="text-sm font-medium text-warmgray transition-opacity hover:opacity-70"
           >
             Sign out
           </button>

@@ -9,7 +9,7 @@ export default async function ZonePage() {
       <div className="mb-8">
         <p className="tfb-eyebrow">Partner dashboard</p>
         <h1 className="mt-1 text-2xl text-deep-leaf">Delivery zone</h1>
-        <p className="mt-2 text-sm text-herb">
+        <p className="mt-2 text-sm text-warmgray">
           Click the map to draw your delivery boundary. Orders outside this area
           will be rejected at checkout.{" "}
           {!kitchen?.delivery_zone && (

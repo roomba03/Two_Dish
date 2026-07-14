@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { createMenuItem, type ActionState } from "@/lib/actions/menuActions";
+import DishImageField from "./DishImageField";
 
 const initial: ActionState = {};
 
@@ -29,14 +30,14 @@ export default function AddMenuItemForm() {
         className="flex w-full items-center justify-between px-6 py-4 text-left transition-opacity hover:opacity-80"
       >
         <span className="font-medium text-deep-leaf">+ Add new dish</span>
-        <span className="text-sm text-herb">{open ? "Cancel" : ""}</span>
+        <span className="text-sm text-warmgray">{open ? "Cancel" : ""}</span>
       </button>
 
       {open && (
         <form
           key={formKey}
           action={action}
-          className="border-t border-herb/20 px-6 pb-6 pt-5"
+          className="border-t border-herb px-6 pb-6 pt-5"
         >
           {state.error && (
             <div className="mb-4 rounded-lg border border-rust/40 bg-sage px-4 py-3 text-sm text-rust">
@@ -80,15 +81,7 @@ export default function AddMenuItemForm() {
               />
             </div>
 
-            <div className="sm:col-span-2">
-              <Label>Image URL (optional)</Label>
-              <input
-                name="image_url"
-                type="url"
-                placeholder="https://..."
-                className="tfb-input w-full"
-              />
-            </div>
+            <DishImageField />
           </div>
 
           <div className="mt-5 flex items-center gap-4">
@@ -98,7 +91,7 @@ export default function AddMenuItemForm() {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="text-sm text-herb transition-opacity hover:opacity-70"
+              className="text-sm text-warmgray transition-opacity hover:opacity-70"
             >
               Cancel
             </button>

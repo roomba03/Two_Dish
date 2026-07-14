@@ -61,7 +61,7 @@ function DishImageArea({
 }) {
   return (
     <div className="relative">
-      <DishImage src={imageUrl} alt={dishName} className="rounded-none" />
+      <DishImage src={imageUrl} alt={dishName} className="aspect-[4/3] rounded-none" />
       {closed && (
         <div className="absolute inset-0 flex items-center justify-center bg-warmgray/40">
           <span className="rounded-md border border-warmgray/50 bg-sage px-3 py-1 text-sm text-warmgray">
@@ -81,16 +81,16 @@ function NoMenuCard({
   shortDate: string;
 }) {
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg border border-herb/25 bg-sage">
+    <div className="flex flex-col overflow-hidden rounded-lg border border-herb bg-sage">
       <div className="flex aspect-[4/3] w-full items-center justify-center bg-midsage">
-        <CalendarIcon className="h-10 w-10 text-herb" aria-hidden />
+        <CalendarIcon className="h-10 w-10 text-terracotta" aria-hidden />
       </div>
       <div className="flex flex-col gap-2 p-4">
         <div className="flex items-baseline gap-2">
           <span className="text-sm font-medium text-deep-leaf">{label}</span>
           <span className="text-xs text-warmgray">{shortDate}</span>
         </div>
-        <p className="text-sm text-herb">No meal scheduled</p>
+        <p className="text-sm text-warmgray">No meal scheduled</p>
       </div>
     </div>
   );
@@ -121,11 +121,13 @@ async function DayCard({
 
   const eligibility = await checkDeliveryDateEligibility(dateStr);
   const closed = !eligibility.eligible;
-  const soldOut = schedule.orders_count >= schedule.max_capacity;
+  const remaining = schedule.max_capacity - schedule.orders_count;
+  const soldOut = remaining <= 0;
+  const lowStock = !soldOut && remaining < 10;
   const item = schedule.menu_items;
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-lg border border-herb/25 bg-sage">
+    <article className="flex flex-col overflow-hidden rounded-lg border border-herb bg-sage">
       <DishImageArea
         imageUrl={item.image_url}
         dishName={item.name}
@@ -142,17 +144,24 @@ async function DayCard({
         {/* Dish info */}
         <div className="flex flex-col gap-1">
           <h3 className="text-lg leading-tight text-deep-leaf">{item.name}</h3>
-          <p className="line-clamp-2 text-sm leading-relaxed text-herb">
+          <p className="line-clamp-2 text-sm leading-relaxed text-warmgray">
             {item.description}
           </p>
         </div>
 
         {/* Price + CTA */}
-        <div className="mt-auto flex flex-col gap-3 border-t border-herb/20 pt-3">
-          <span className="text-base font-medium text-terracotta">
-            ${Number(item.price).toFixed(2)}{" "}
-            <span className="text-xs font-normal text-warmgray">/ meal</span>
-          </span>
+        <div className="mt-auto flex flex-col gap-3 border-t border-herb pt-3">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="text-base font-medium text-terracotta">
+              ${Number(item.price).toFixed(2)}{" "}
+              <span className="text-xs font-normal text-warmgray">/ meal</span>
+            </span>
+            {!closed && lowStock && (
+              <span className="text-xs font-medium text-terracotta">
+                Only {remaining} left
+              </span>
+            )}
+          </div>
 
           {closed ? (
             <div className="w-full rounded-md border border-warmgray/40 py-3 text-center text-sm text-warmgray">
@@ -189,7 +198,7 @@ export function WeeklyMenuGridSkeleton() {
       {Array.from({ length: 7 }).map((_, i) => (
         <div
           key={i}
-          className="animate-pulse overflow-hidden rounded-lg border border-herb/25 bg-sage"
+          className="animate-pulse overflow-hidden rounded-lg border border-herb bg-sage"
         >
           <div className="aspect-[4/3] bg-midsage" />
           <div className="flex flex-col gap-3 p-4">
@@ -216,7 +225,7 @@ export default async function WeeklyMenuGrid({
 
   if (!kitchen) {
     return (
-      <p className="py-12 text-center text-herb">
+      <p className="py-12 text-center text-warmgray">
         Menu temporarily unavailable. Please check back soon.
       </p>
     );

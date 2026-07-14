@@ -17,7 +17,7 @@ export default function PasswordInput({ className, ...props }: Props) {
       <button
         type="button"
         onClick={() => setVisible((v) => !v)}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-herb transition-opacity hover:opacity-70"
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-warmgray transition-opacity hover:opacity-70"
         aria-label={visible ? "Hide password" : "Show password"}
       >
         {visible ? (

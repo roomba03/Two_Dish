@@ -31,7 +31,7 @@ export default function ScheduleForm({ menuItems, today }: Props) {
           </div>
         )}
         {state.success && (
-          <div className="mb-4 rounded-lg border border-herb/30 bg-midsage/30 px-4 py-3 text-sm text-herb">
+          <div className="mb-4 rounded-lg border border-herb bg-midsage/30 px-4 py-3 text-sm text-warmgray">
             Schedule updated.
           </div>
         )}

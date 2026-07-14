@@ -46,7 +46,7 @@ export default function LoginForm({ error }: { error?: string }) {
         {pending ? "Signing in…" : "Sign in"}
       </button>
 
-      <p className="text-center text-sm text-herb">
+      <p className="text-center text-sm text-warmgray">
         Don&apos;t have an account?{" "}
         <Link
           href="/account/signup"

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCustomerFromCookie } from "@/lib/data/account";
+import { getScheduleCapacity, getScheduleTimeSlotCounts } from "@/lib/data/menu";
 import CheckoutForm from "./CheckoutForm";
 
 export default async function OrderPage({
@@ -34,6 +35,21 @@ export default async function OrderPage({
   const checkedZip =
     typeof params.zip === "string" ? decodeURIComponent(params.zip) : "";
 
+  const [capacity, slotCounts] = await Promise.all([
+    getScheduleCapacity(scheduleId),
+    getScheduleTimeSlotCounts(scheduleId),
+  ]);
+  const remaining = capacity
+    ? Math.max(0, capacity.maxCapacity - capacity.ordersCount)
+    : null;
+
+  // A time slot fills up once it reaches half the day's capacity.
+  const halfCapacity = capacity ? capacity.maxCapacity / 2 : null;
+  const slotFilled = {
+    early: halfCapacity !== null && slotCounts.early >= halfCapacity,
+    late: halfCapacity !== null && slotCounts.late >= halfCapacity,
+  };
+
   // Pre-fill checkout fields from the customer's saved profile if signed in,
   // preferring the address just checked for delivery over the saved one.
   const profile = await getCustomerFromCookie();
@@ -54,12 +70,12 @@ export default async function OrderPage({
       <div className="mb-8">
         <Link
           href="/menu"
-          className="mb-4 inline-flex items-center gap-1.5 text-sm text-herb transition-opacity hover:opacity-70"
+          className="mb-4 inline-flex items-center gap-1.5 text-sm text-warmgray transition-opacity hover:opacity-70"
         >
           ← Back to menu
         </Link>
         <h1 className="text-3xl text-deep-leaf">Checkout</h1>
-        <p className="mt-2 text-herb">
+        <p className="mt-2 text-warmgray">
           Complete your order for{" "}
           <span className="font-medium text-deep-leaf">{dishName}</span>
           {" "}on{" "}
@@ -79,6 +95,8 @@ export default async function OrderPage({
         price={price}
         deliveryDate={deliveryDate}
         prefill={prefill}
+        remaining={remaining}
+        slotFilled={slotFilled}
       />
     </main>
   );

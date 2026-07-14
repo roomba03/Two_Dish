@@ -7,15 +7,20 @@ export default function CookLoginPage() {
       <div className="w-full max-w-sm">
         <Link
           href="/"
-          className="mb-4 inline-flex items-center gap-1.5 text-sm text-herb transition-opacity hover:opacity-70"
+          className="mb-4 inline-flex items-center gap-1.5 text-sm text-warmgray transition-opacity hover:opacity-70"
         >
           ← Back to home
         </Link>
 
         <div className="mb-8 text-center">
-          <p className="font-heading text-lg text-deep-leaf">Two Dish</p>
+          <Link
+            href="/"
+            className="font-heading text-lg text-deep-leaf transition-opacity hover:opacity-70"
+          >
+            Two Dish
+          </Link>
           <h1 className="mt-2 text-2xl text-deep-leaf">Kitchen staff login</h1>
-          <p className="mt-1 text-sm text-herb">
+          <p className="mt-1 text-sm text-warmgray">
             For family kitchen members only
           </p>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useCart } from "@/app/components/CartContext";
 
 export type AddToCartParams = {
   scheduleId: string;
@@ -16,8 +17,10 @@ export type AddToCartParams = {
 
 export function useAddToCart() {
   const router = useRouter();
+  const { addItem } = useCart();
 
   return (params: AddToCartParams) => {
+    addItem();
     const search = new URLSearchParams({
       scheduleId: params.scheduleId,
       menuItemId: params.menuItemId,

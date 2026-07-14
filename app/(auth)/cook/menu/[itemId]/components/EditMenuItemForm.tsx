@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { updateMenuItem, type ActionState } from "@/lib/actions/menuActions";
 import type { MenuItem } from "@/lib/data/kitchen";
+import DishImageField from "../../components/DishImageField";
 
 type Props = { item: MenuItem };
 
@@ -25,7 +26,7 @@ export default function EditMenuItemForm({ item }: Props) {
         </div>
       )}
       {state.success && (
-        <div className="rounded-lg border border-herb/30 bg-midsage/30 px-4 py-3 text-sm text-herb">
+        <div className="rounded-lg border border-herb bg-midsage/30 px-4 py-3 text-sm text-warmgray">
           Saved.
         </div>
       )}
@@ -66,16 +67,7 @@ export default function EditMenuItemForm({ item }: Props) {
           />
         </div>
 
-        <div className="sm:col-span-2">
-          <Label>Image URL (optional)</Label>
-          <input
-            name="image_url"
-            type="url"
-            defaultValue={item.image_url ?? ""}
-            placeholder="https://..."
-            className="tfb-input w-full"
-          />
-        </div>
+        <DishImageField currentImageUrl={item.image_url} />
       </div>
 
       <div>

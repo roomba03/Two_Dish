@@ -46,7 +46,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
           ([lng, lat]) => [lat, lng] as [number, number]
         );
         const poly = L.polygon(latLngs, {
-          color: "#3B6D11",
+          color: "#A9773F",
           weight: 2,
           fillOpacity: 0.15,
         }).addTo(map);
@@ -62,8 +62,8 @@ export default function ZoneEditorMap({ existingZone }: Props) {
 
         const marker = L.circleMarker([lat, lng], {
           radius: 6,
-          color: "#D97C4A",
-          fillColor: "#D97C4A",
+          color: "#A9773F",
+          fillColor: "#A9773F",
           fillOpacity: 1,
           weight: 2,
         }).addTo(map);
@@ -78,7 +78,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
           }
           if (next.length >= 3) {
             drawnPolyRef.current = L.polygon(next, {
-              color: "#D97C4A",
+              color: "#A9773F",
               weight: 2,
               fillOpacity: 0.1,
               dashArray: "6 4",
@@ -129,7 +129,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
             .map(([lng, lat]) => [lat, lng] as [number, number]);
           const L = await import("leaflet");
           existingPolyRef.current = L.polygon(latLngs, {
-            color: "#3B6D11",
+            color: "#A9773F",
             weight: 2,
             fillOpacity: 0.15,
           }).addTo(mapRef.current);
@@ -161,11 +161,11 @@ export default function ZoneEditorMap({ existingZone }: Props) {
     <div className="flex flex-col gap-4">
       <div
         ref={containerRef}
-        className="h-[500px] w-full overflow-hidden rounded-lg border border-herb/25"
+        className="h-[500px] w-full overflow-hidden rounded-lg border border-herb"
       />
 
       <div className="flex flex-wrap items-center gap-3">
-        <span className="text-sm text-herb">
+        <span className="text-sm text-warmgray">
           {points.length === 0
             ? "Click the map to place zone vertices."
             : `${points.length} point${points.length !== 1 ? "s" : ""} placed${points.length >= 3 ? " — ready to save" : " — need at least 3"}`}
@@ -205,7 +205,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
         )}
 
         {status === "saved" && (
-          <span className="text-sm font-medium text-herb">Zone saved.</span>
+          <span className="text-sm font-medium text-warmgray">Zone saved.</span>
         )}
         {status === "cleared" && (
           <span className="text-sm font-medium text-warmgray">
@@ -218,8 +218,8 @@ export default function ZoneEditorMap({ existingZone }: Props) {
       </div>
 
       <p className="text-xs text-warmgray">
-        The herb-green polygon is your current saved delivery zone. Terracotta
-        outlines your new drawing. Drawing a new zone replaces the existing one.
+        The solid outline is your current saved delivery zone. The dashed
+        outline is your new drawing. Drawing a new zone replaces the existing one.
       </p>
     </div>
   );

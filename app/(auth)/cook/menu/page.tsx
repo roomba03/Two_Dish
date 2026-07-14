@@ -25,8 +25,8 @@ export default async function MenuPage() {
       {/* Dish list */}
       <div className="mt-8">
         {items.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-herb/30 py-16 text-center">
-            <p className="text-sm text-herb">
+          <div className="rounded-lg border border-dashed border-herb py-16 text-center">
+            <p className="text-sm text-warmgray">
               No dishes yet. Add your first dish above.
             </p>
           </div>
@@ -34,14 +34,14 @@ export default async function MenuPage() {
           <div className="tfb-card overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-herb/20">
+                <tr className="border-b border-herb">
                   <th className="tfb-eyebrow px-6 py-4 text-left">Dish</th>
                   <th className="tfb-eyebrow px-6 py-4 text-left">Description</th>
                   <th className="tfb-eyebrow px-6 py-4 text-right">Price</th>
                   <th className="tfb-eyebrow px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-herb/10">
+              <tbody className="divide-y divide-herb">
                 {items.map((item) => (
                   <tr
                     key={item.id}
@@ -53,7 +53,7 @@ export default async function MenuPage() {
                       </span>
                     </td>
                     <td className="max-w-xs px-6 py-4">
-                      <span className="line-clamp-1 text-sm text-herb">
+                      <span className="line-clamp-1 text-sm text-warmgray">
                         {item.description}
                       </span>
                     </td>

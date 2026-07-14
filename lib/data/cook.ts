@@ -15,17 +15,27 @@ export type OrderRow = {
   time_slot: "early" | "late";
   status: string;
   total_price: number;
+  delivery_date: string;
+  dish_name: string;
 };
 
-export type ProductionRun = {
+export type ProductionDay = {
   date: string;
   dishName: string;
   maxCapacity: number;
+  ordersCount: number;
+};
+
+export type ProductionRun = {
+  startDate: string;
+  endDate: string;
+  totalCapacity: number;
   totalOrders: number;
   totalMeals: number;
   totalRevenue: number;
   earlyMeals: number;
   lateMeals: number;
+  days: ProductionDay[];
   orders: OrderRow[];
 };
 
@@ -37,8 +47,8 @@ export type IngredientLine = {
 
 // ── Queries ────────────────────────────────────────────────────────────────────
 
-export const getProductionRun = cache(
-  async (date: string): Promise<ProductionRun | null> => {
+export const getProductionRunRange = cache(
+  async (startDate: string, endDate: string): Promise<ProductionRun | null> => {
     const kitchen = await getDefaultKitchen();
     if (!kitchen) return null;
 
@@ -46,26 +56,78 @@ export const getProductionRun = cache(
 
     const { data: schedule } = await supabase
       .from("menu_schedule")
-      .select("id, max_capacity, orders_count, menu_items(name)")
+      .select("id, delivery_date, max_capacity, orders_count, menu_items(name)")
       .eq("kitchen_id", kitchen.id)
-      .eq("delivery_date", date)
-      .single();
+      .gte("delivery_date", startDate)
+      .lte("delivery_date", endDate)
+      .order("delivery_date");
 
-    if (!schedule) return null;
+    const scheduleRows = schedule ?? [];
 
-    const menuItem = schedule.menu_items as unknown as { name: string };
+    const days: ProductionDay[] = scheduleRows.map((s) => ({
+      date: s.delivery_date,
+      dishName: (s.menu_items as unknown as { name: string }).name,
+      maxCapacity: s.max_capacity,
+      ordersCount: s.orders_count,
+    }));
+
+    if (scheduleRows.length === 0) {
+      return {
+        startDate,
+        endDate,
+        totalCapacity: 0,
+        totalOrders: 0,
+        totalMeals: 0,
+        totalRevenue: 0,
+        earlyMeals: 0,
+        lateMeals: 0,
+        days,
+        orders: [],
+      };
+    }
+
+    const scheduleMeta = new Map(
+      scheduleRows.map((s) => [
+        s.id,
+        {
+          date: s.delivery_date,
+          dishName: (s.menu_items as unknown as { name: string }).name,
+        },
+      ])
+    );
 
     const { data: orders } = await supabase
       .from("orders")
       .select(
-        "order_number, customer_name, customer_phone, delivery_street, delivery_city, delivery_zip, quantity, time_slot, status, total_price"
+        "order_number, customer_name, customer_phone, delivery_street, delivery_city, delivery_zip, quantity, time_slot, status, total_price, schedule_id"
       )
-      .eq("schedule_id", schedule.id)
+      .in(
+        "schedule_id",
+        scheduleRows.map((s) => s.id)
+      )
       .neq("status", "cancelled")
       .order("time_slot")
       .order("created_at");
 
-    const rows = (orders ?? []) as OrderRow[];
+    const rows: OrderRow[] = (orders ?? []).map((o) => {
+      const meta = scheduleMeta.get(o.schedule_id);
+      return {
+        order_number: o.order_number,
+        customer_name: o.customer_name,
+        customer_phone: o.customer_phone,
+        delivery_street: o.delivery_street,
+        delivery_city: o.delivery_city,
+        delivery_zip: o.delivery_zip,
+        quantity: o.quantity,
+        time_slot: o.time_slot,
+        status: o.status,
+        total_price: o.total_price,
+        delivery_date: meta?.date ?? "",
+        dish_name: meta?.dishName ?? "",
+      };
+    });
+
+    rows.sort((a, b) => a.delivery_date.localeCompare(b.delivery_date));
 
     const totalMeals = rows.reduce((s, o) => s + o.quantity, 0);
     const totalRevenue = rows.reduce((s, o) => s + Number(o.total_price), 0);
@@ -75,16 +137,18 @@ export const getProductionRun = cache(
     const lateMeals = rows
       .filter((o) => o.time_slot === "late")
       .reduce((s, o) => s + o.quantity, 0);
+    const totalCapacity = scheduleRows.reduce((s, sch) => s + sch.max_capacity, 0);
 
     return {
-      date,
-      dishName: menuItem.name,
-      maxCapacity: schedule.max_capacity,
+      startDate,
+      endDate,
+      totalCapacity,
       totalOrders: rows.length,
       totalMeals,
       totalRevenue,
       earlyMeals,
       lateMeals,
+      days,
       orders: rows,
     };
   }

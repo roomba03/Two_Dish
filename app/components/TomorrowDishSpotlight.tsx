@@ -35,7 +35,7 @@ export default function TomorrowDishSpotlight({
       onClick={handleClick}
       disabled={disabled}
       aria-label={disabled ? dishName : `Add ${dishName} to cart`}
-      className="group relative flex w-full flex-col overflow-hidden rounded-lg border border-herb/25 bg-sage text-left transition-colors disabled:cursor-not-allowed"
+      className="group relative flex w-full flex-col overflow-hidden rounded-lg border border-herb bg-sage text-left transition-colors disabled:cursor-not-allowed"
     >
       <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3">
         <span className="tfb-eyebrow">Order tomorrow&apos;s dish</span>
@@ -47,11 +47,11 @@ export default function TomorrowDishSpotlight({
 
       <div className="relative">
         <div className="transition-transform duration-300 group-hover:scale-[1.02]">
-          <DishImage src={imageUrl} alt={dishName} className="rounded-none" />
+          <DishImage src={imageUrl} alt={dishName} className="aspect-[3/1] rounded-none" />
         </div>
         {!disabled && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-deep-leaf/0 transition-colors group-hover:bg-deep-leaf/10">
-            <span className="rounded-md border border-herb/40 bg-sage px-4 py-2 text-sm font-medium text-terracotta opacity-0 transition-opacity group-hover:opacity-100">
+            <span className="rounded-md border border-herb bg-sage px-4 py-2 text-sm font-medium text-terracotta opacity-0 transition-opacity group-hover:opacity-100">
               Add to cart
             </span>
           </div>
@@ -67,7 +67,7 @@ export default function TomorrowDishSpotlight({
 
       <div className="flex items-center justify-between gap-3 px-5 py-4">
         <h3 className="text-xl leading-tight text-deep-leaf">{dishName}</h3>
-        <p className="line-clamp-1 max-w-[50%] text-sm leading-relaxed text-herb">
+        <p className="line-clamp-1 max-w-[50%] text-sm leading-relaxed text-warmgray">
           {description}
         </p>
       </div>

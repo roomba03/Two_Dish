@@ -17,18 +17,23 @@ type Prefill = {
   zip: string;
 };
 
+type SlotFilled = { early: boolean; late: boolean };
+
 type Props = {
   scheduleId: string;
   dishName: string;
   price: number;
   deliveryDate: string;
   prefill?: Prefill;
+  remaining: number | null;
+  slotFilled: SlotFilled;
 };
 
 type Confirmed = {
   orderNumber: string;
   quantity: number;
   total: number;
+  timeSlot: "early" | "late";
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -42,12 +47,17 @@ function formatDeliveryDate(dateStr: string): string {
   }).format(new Date(y, m - 1, d));
 }
 
+const TIME_SLOT_LABELS: Record<"early" | "late", string> = {
+  early: "6:30 PM – 7:30 PM",
+  late: "7:30 PM – 8:30 PM",
+};
+
 function inputClass(hasError: boolean): string {
   return [
     "w-full rounded-lg border bg-sage px-4 py-3 text-sm text-deep-leaf outline-none transition-colors",
     hasError
       ? "border-rust focus:border-rust"
-      : "border-herb/30 focus:border-terracotta",
+      : "border-herb focus:border-terracotta",
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta",
   ].join(" ");
 }
@@ -82,18 +92,24 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border border-herb/25 bg-sage p-6">
+    <div className="rounded-lg border border-herb bg-sage p-6">
       <h2 className="tfb-eyebrow mb-5">{title}</h2>
       {children}
     </div>
   );
 }
 
-function SubmitButton({ loading }: { loading: boolean }) {
+function SubmitButton({
+  loading,
+  disabled,
+}: {
+  loading: boolean;
+  disabled?: boolean;
+}) {
   return (
     <button
       type="submit"
-      disabled={loading}
+      disabled={loading || disabled}
       className="w-full rounded-lg bg-terracotta py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
     >
       {loading ? "Placing order…" : "Place order"}
@@ -109,12 +125,13 @@ function ConfirmationView({
   deliveryDate,
   quantity,
   total,
+  timeSlot,
 }: Confirmed & { dishName: string; deliveryDate: string }) {
   return (
     <div className="mx-auto max-w-lg py-16 text-center">
-      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-herb/30 bg-midsage/50">
+      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-herb bg-midsage/50">
         <svg
-          className="h-10 w-10 text-herb"
+          className="h-10 w-10 text-terracotta"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -125,30 +142,36 @@ function ConfirmationView({
       </div>
 
       <h1 className="mb-2 text-3xl text-deep-leaf">Order confirmed</h1>
-      <p className="mb-8 text-herb">We will confirm shortly.</p>
+      <p className="mb-8 text-warmgray">We will confirm shortly.</p>
 
-      <div className="mb-6 rounded-lg border border-herb/25 bg-midsage/30 px-6 py-5">
+      <div className="mb-6 rounded-lg border border-herb bg-midsage/30 px-6 py-5">
         <p className="tfb-eyebrow mb-1">Order number</p>
         <p className="text-2xl font-medium text-deep-leaf">{orderNumber}</p>
       </div>
 
-      <div className="rounded-lg border border-herb/25 bg-sage p-6 text-left">
+      <div className="rounded-lg border border-herb bg-sage p-6 text-left">
         <div className="flex flex-col gap-3 text-sm">
           <div className="flex justify-between">
-            <span className="text-herb">Dish</span>
+            <span className="text-warmgray">Dish</span>
             <span className="font-medium text-deep-leaf">{dishName}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-herb">Delivery date</span>
+            <span className="text-warmgray">Delivery date</span>
             <span className="font-medium text-deep-leaf">
               {formatDeliveryDate(deliveryDate)}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-herb">Quantity</span>
+            <span className="text-warmgray">Delivery time</span>
+            <span className="font-medium text-deep-leaf">
+              {TIME_SLOT_LABELS[timeSlot]}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-warmgray">Quantity</span>
             <span className="font-medium text-deep-leaf">{quantity}</span>
           </div>
-          <div className="flex justify-between border-t border-herb/20 pt-3">
+          <div className="flex justify-between border-t border-herb pt-3">
             <span className="font-medium text-deep-leaf">Total</span>
             <span className="font-medium text-deep-leaf">
               ${total.toFixed(2)}
@@ -168,6 +191,8 @@ export default function CheckoutForm({
   price,
   deliveryDate,
   prefill,
+  remaining,
+  slotFilled,
 }: Props) {
   const [confirmed, setConfirmed] = useState<Confirmed | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -182,7 +207,7 @@ export default function CheckoutForm({
     defaultValues: {
       scheduleId,
       quantity: 1,
-      timeSlot: "early",
+      timeSlot: slotFilled.early ? "late" : "early",
       stripePaymentMethodId: "mock_pm_test",
       customerName: prefill?.name ?? "",
       customerPhone: prefill?.phone ?? "",
@@ -196,12 +221,23 @@ export default function CheckoutForm({
   const quantity = watch("quantity");
   const safeQty = !quantity || isNaN(Number(quantity)) ? 1 : Number(quantity);
   const total = price * safeQty;
+  const timeSlot = watch("timeSlot");
+
+  const lowStock = remaining !== null && remaining < 10;
+  const overRemaining = remaining !== null && safeQty > remaining;
+  const timeSlotFull = slotFilled[timeSlot];
+  const bothSlotsFull = slotFilled.early && slotFilled.late;
 
   async function onSubmit(data: OrderCheckoutInput) {
     setServerError(null);
     const res = await submitCheckoutOrder(data);
     if (res.success) {
-      setConfirmed({ orderNumber: res.orderNumber, quantity: data.quantity, total });
+      setConfirmed({
+        orderNumber: res.orderNumber,
+        quantity: data.quantity,
+        total,
+        timeSlot: data.timeSlot,
+      });
     } else {
       setServerError(res.error);
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -223,6 +259,19 @@ export default function CheckoutForm({
       {/* Hidden fields */}
       <input type="hidden" {...register("scheduleId")} />
       <input type="hidden" {...register("stripePaymentMethodId")} />
+
+      {/* ── Cart summary ──────────────────────────────────────────── */}
+      <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-herb bg-sage px-6 py-4">
+        <div>
+          <p className="font-medium text-deep-leaf">{dishName}</p>
+          <p className="mt-0.5 text-xs text-warmgray">
+            {formatDeliveryDate(deliveryDate)} · Qty {safeQty}
+          </p>
+        </div>
+        <p className="text-lg font-medium text-deep-leaf">
+          ${total.toFixed(2)}
+        </p>
+      </div>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_360px] lg:items-start">
         {/* ── Left column: form sections ──────────────────────────────── */}
@@ -323,20 +372,45 @@ export default function CheckoutForm({
                   type="number"
                   min={1}
                   max={15}
-                  className={inputClass(!!errors.quantity)}
+                  className={inputClass(!!errors.quantity || overRemaining)}
                 />
                 <FieldError message={errors.quantity?.message} />
+                {!errors.quantity && overRemaining && (
+                  <p className="mt-1.5 text-xs text-rust">
+                    Only {remaining} meal{remaining === 1 ? "" : "s"} left for
+                    this day — please reduce your quantity.
+                  </p>
+                )}
+                {!errors.quantity && !overRemaining && lowStock && (
+                  <p className="mt-1.5 text-xs text-terracotta">
+                    Only {remaining} meal{remaining === 1 ? "" : "s"} left for
+                    this day.
+                  </p>
+                )}
               </div>
               <div>
                 <Label>Delivery time</Label>
                 <select
                   {...register("timeSlot")}
-                  className={inputClass(!!errors.timeSlot) + " cursor-pointer"}
+                  className={
+                    inputClass(!!errors.timeSlot || timeSlotFull) +
+                    " cursor-pointer"
+                  }
                 >
-                  <option value="early">6:30 PM – 7:30 PM</option>
-                  <option value="late">7:30 PM – 8:30 PM</option>
+                  <option value="early" disabled={slotFilled.early}>
+                    6:30 PM – 7:30 PM{slotFilled.early ? " (Full)" : ""}
+                  </option>
+                  <option value="late" disabled={slotFilled.late}>
+                    7:30 PM – 8:30 PM{slotFilled.late ? " (Full)" : ""}
+                  </option>
                 </select>
                 <FieldError message={errors.timeSlot?.message} />
+                {!errors.timeSlot && timeSlotFull && (
+                  <p className="mt-1.5 text-xs text-rust">
+                    This time slot is full — please choose the other
+                    delivery time.
+                  </p>
+                )}
               </div>
             </div>
           </SectionCard>
@@ -344,8 +418,8 @@ export default function CheckoutForm({
           {/* 4. Payment (mock) */}
           <SectionCard title="Payment">
             <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-2 rounded-lg border border-herb/25 bg-midsage/30 px-4 py-3">
-                <p className="text-xs font-medium text-herb">
+              <div className="flex items-center gap-2 rounded-lg border border-herb bg-midsage/30 px-4 py-3">
+                <p className="text-xs font-medium text-warmgray">
                   Test mode — no charge will be made
                 </p>
               </div>
@@ -354,7 +428,7 @@ export default function CheckoutForm({
                 <input
                   value="4242 4242 4242 4242"
                   readOnly
-                  className="w-full cursor-not-allowed rounded-lg border border-herb/20 bg-midsage/20 px-4 py-3 text-sm tracking-widest text-warmgray"
+                  className="w-full cursor-not-allowed rounded-lg border border-herb bg-midsage/20 px-4 py-3 text-sm tracking-widest text-warmgray"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -363,7 +437,7 @@ export default function CheckoutForm({
                   <input
                     value="12 / 29"
                     readOnly
-                    className="w-full cursor-not-allowed rounded-lg border border-herb/20 bg-midsage/20 px-4 py-3 text-sm text-warmgray"
+                    className="w-full cursor-not-allowed rounded-lg border border-herb bg-midsage/20 px-4 py-3 text-sm text-warmgray"
                   />
                 </div>
                 <div>
@@ -371,7 +445,7 @@ export default function CheckoutForm({
                   <input
                     value="•••"
                     readOnly
-                    className="w-full cursor-not-allowed rounded-lg border border-herb/20 bg-midsage/20 px-4 py-3 text-sm text-warmgray"
+                    className="w-full cursor-not-allowed rounded-lg border border-herb bg-midsage/20 px-4 py-3 text-sm text-warmgray"
                   />
                 </div>
               </div>
@@ -380,33 +454,39 @@ export default function CheckoutForm({
 
           {/* Submit (desktop only — mobile submit lives in the summary panel) */}
           <div className="hidden lg:block">
-            <SubmitButton loading={isSubmitting} />
+            <SubmitButton loading={isSubmitting} disabled={overRemaining || timeSlotFull || bothSlotsFull} />
           </div>
         </div>
 
         {/* ── Right column: order summary ──────────────────────────────── */}
         <div className="lg:sticky lg:top-8">
-          <div className="rounded-lg border border-herb/25 bg-sage p-6">
+          <div className="rounded-lg border border-herb bg-sage p-6">
             <h2 className="tfb-eyebrow mb-5">Order summary</h2>
 
             {/* Locked dish info */}
-            <div className="mb-5 rounded-lg border border-herb/20 bg-midsage/30 px-4 py-3">
+            <div className="mb-5 rounded-lg border border-herb bg-midsage/30 px-4 py-3">
               <p className="text-sm font-medium text-deep-leaf">{dishName}</p>
-              <p className="mt-0.5 text-xs text-herb">
+              <p className="mt-0.5 text-xs text-warmgray">
                 {formatDeliveryDate(deliveryDate)}
               </p>
+              {lowStock && (
+                <p className="mt-1.5 text-xs font-medium text-terracotta">
+                  Only {remaining} meal{remaining === 1 ? "" : "s"} left for
+                  this day
+                </p>
+              )}
             </div>
 
             <div className="flex flex-col gap-2.5 text-sm">
               <div className="flex justify-between">
-                <span className="text-herb">Unit price</span>
+                <span className="text-warmgray">Unit price</span>
                 <span className="text-deep-leaf">${price.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-herb">Quantity</span>
+                <span className="text-warmgray">Quantity</span>
                 <span className="text-deep-leaf">{safeQty}</span>
               </div>
-              <div className="mt-1 flex justify-between border-t border-herb/20 pt-3">
+              <div className="mt-1 flex justify-between border-t border-herb pt-3">
                 <span className="font-medium text-deep-leaf">Total</span>
                 <span className="font-medium text-deep-leaf">
                   ${total.toFixed(2)}
@@ -416,7 +496,7 @@ export default function CheckoutForm({
 
             {/* Submit (mobile) */}
             <div className="mt-6 lg:hidden">
-              <SubmitButton loading={isSubmitting} />
+              <SubmitButton loading={isSubmitting} disabled={overRemaining || timeSlotFull || bothSlotsFull} />
             </div>
           </div>
         </div>

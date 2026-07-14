@@ -12,7 +12,7 @@ const ZoneMap = dynamic(() => import("./DeliveryZoneCheckerMap"), {
   ssr: false,
   loading: () => (
     <div className="flex h-full items-center justify-center rounded-[inherit] bg-midsage">
-      <span className="text-sm text-herb">Loading map…</span>
+      <span className="text-sm text-warmgray">Loading map…</span>
     </div>
   ),
 });
@@ -90,7 +90,7 @@ export default function DeliveryZoneChecker({ zone, activeZips }: Props) {
     in: {
       label: "Great news — we deliver there.",
       sublabel: "Your address is inside our delivery zone.",
-      className: "text-herb border-herb/30",
+      className: "text-terracotta border-terracotta/30",
     },
     out: {
       label: "Outside the delivery zone.",
@@ -110,10 +110,10 @@ export default function DeliveryZoneChecker({ zone, activeZips }: Props) {
   };
 
   return (
-    <section className="border-t border-b border-herb/20">
+    <section className="border-t border-b border-herb">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-12 px-6 py-20 md:grid-cols-2">
         {/* ── Map ── */}
-        <div className="h-[420px] overflow-hidden rounded-lg border border-herb/25">
+        <div className="h-[420px] overflow-hidden rounded-lg border border-herb">
           <ZoneMap
             zone={zone}
             resultPoint={resultPoint}
@@ -129,7 +129,7 @@ export default function DeliveryZoneChecker({ zone, activeZips }: Props) {
             Do we deliver to you?
           </h2>
 
-          <p className="mb-8 text-base leading-relaxed text-herb">
+          <p className="mb-8 text-base leading-relaxed text-warmgray">
             Enter your address below and we&apos;ll check instantly if
             you&apos;re inside our delivery zone.
           </p>
@@ -145,7 +145,7 @@ export default function DeliveryZoneChecker({ zone, activeZips }: Props) {
               }}
               placeholder="e.g. 123 Main St, Overland Park, KS 66221"
               required
-              className="w-full rounded-lg border border-herb/30 bg-sage px-4.5 py-3.5 text-base text-deep-leaf outline-none transition-colors focus:border-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+              className="w-full rounded-lg border border-herb bg-sage px-4.5 py-3.5 text-base text-deep-leaf outline-none transition-colors focus:border-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
             />
 
             <button

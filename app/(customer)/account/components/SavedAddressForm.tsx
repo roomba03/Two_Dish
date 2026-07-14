@@ -25,7 +25,7 @@ export default function SavedAddressForm({
         </div>
       )}
       {state.success && (
-        <div className="rounded-lg border border-herb/30 bg-midsage/30 px-4 py-3 text-sm text-herb">
+        <div className="rounded-lg border border-herb bg-midsage/30 px-4 py-3 text-sm text-warmgray">
           Address saved.
         </div>
       )}
