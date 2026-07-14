@@ -7,6 +7,7 @@ import TomorrowDishSpotlight from "@/app/components/TomorrowDishSpotlight";
 import { VegetableIcon } from "@/app/components/icons/DishIcons";
 import CartIcon from "@/app/components/CartIcon";
 import AuthStatusLink from "@/app/components/AuthStatusLink";
+import IntroSplash from "@/app/components/IntroSplash";
 
 const KITCHEN_TZ = "America/Chicago";
 
@@ -72,7 +73,9 @@ export default async function HomePage() {
     : null;
 
   return (
-    <div className="bg-sage text-deep-leaf">
+    <div className="overflow-x-hidden bg-sage text-deep-leaf">
+      <IntroSplash />
+
       {/* ── NAV ─────────────────────────────────────────────────────── */}
       <nav className="tfb-rise sticky top-0 z-50 border-b border-herb bg-sage/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
@@ -118,7 +121,7 @@ export default async function HomePage() {
       </nav>
 
       {/* ── HERO ────────────────────────────────────────────────────── */}
-      <section className="mx-auto w-full max-w-7xl px-6 pt-8 pb-24">
+      <section className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-7xl flex-col justify-center px-6 py-8">
         <div className="flex flex-col items-center text-center">
           {tomorrowSchedule && (
             <div className="tfb-rise tfb-delay-3 mb-12 w-full">

@@ -35,9 +35,9 @@ export default function TomorrowDishSpotlight({
       onClick={handleClick}
       disabled={disabled}
       aria-label={disabled ? dishName : `Add ${dishName} to cart`}
-      className="group relative flex w-full flex-col overflow-hidden rounded-lg border border-herb bg-sage text-left transition-colors disabled:cursor-not-allowed"
+      className="group relative flex w-full flex-col text-left transition-colors disabled:cursor-not-allowed"
     >
-      <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3">
+      <div className="flex items-center justify-between gap-3 pb-3">
         <span className="tfb-eyebrow">Order tomorrow&apos;s dish</span>
         <span className="text-sm font-medium text-terracotta">
           ${price.toFixed(2)}{" "}
@@ -45,7 +45,7 @@ export default function TomorrowDishSpotlight({
         </span>
       </div>
 
-      <div className="relative">
+      <div className="relative ml-[calc(50%-50vw)] mr-[calc(50%-50vw)] w-screen overflow-hidden">
         <div className="transition-transform duration-300 group-hover:scale-[1.02]">
           <DishImage src={imageUrl} alt={dishName} className="aspect-[3/1] rounded-none" />
         </div>
@@ -65,7 +65,7 @@ export default function TomorrowDishSpotlight({
         )}
       </div>
 
-      <div className="flex items-center justify-between gap-3 px-5 py-4">
+      <div className="flex items-center justify-between gap-3 pt-4">
         <h3 className="text-xl leading-tight text-deep-leaf">{dishName}</h3>
         <p className="line-clamp-1 max-w-[50%] text-sm leading-relaxed text-warmgray">
           {description}

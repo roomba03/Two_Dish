@@ -76,9 +76,16 @@ Never a second accent color anywhere in the app, including admin/dashboard views
 - Ingredient callouts (2–4 words, e.g. "saffron, mint") sit under the dish name, below the photo/placeholder
 - Menu/order grids: 3 columns desktop → 2 tablet → 1 mobile, never horizontal scroll to fake more columns
 
+## Glow accents (sanctioned exception)
+
+- Soft amber-gold radial glows are allowed, but only as quiet atmosphere behind hero/splash-style full-bleed moments (e.g. the intro loading screen) — never inside cards, forms, or ordinary content sections
+- Amber-gold only (`#A9773F`), at low opacity (~10–15%), broad and soft (large radius, `transparent` falloff) — a bloom, never a visible band or hard edge
+- Max two blooms per screen, placed off-center so they read as ambient light, not decoration
+- Still no neon colors, no second accent color, no drop shadows (box-shadow) — this exception covers background radial-gradient glows only
+
 ## What to avoid, globally
 
-- No gradients, neon colors, or drop shadows on any page, including admin/internal tools
+- No gradients, neon colors, or drop shadows on any page, including admin/internal tools — except the sanctioned glow accents above
 - No component introducing its own one-off color or radius not covered above
 - No mixing of icon styles anywhere in the product
 - No second accent color, and no green — this palette was deliberately moved away from a green/terracotta system after testing showed it read as cluttered and clashing

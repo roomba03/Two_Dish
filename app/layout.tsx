@@ -6,13 +6,13 @@ import "./globals.css";
 const cormorantGaramond = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["500"],
+  weight: ["500", "700"],
 });
 
 const karla = Karla({
   variable: "--font-karla",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
