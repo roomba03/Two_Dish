@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { getDefaultKitchen, getWeekMenuSchedule } from "@/lib/data/menu";
 import { checkDeliveryDateEligibility } from "@/lib/actions/checkoutActions";
 import { getCustomerFromCookie } from "@/lib/data/account";
@@ -7,6 +8,9 @@ import TomorrowDishSpotlight from "@/app/components/TomorrowDishSpotlight";
 import { VegetableIcon } from "@/app/components/icons/DishIcons";
 import IntroSplash from "@/app/components/IntroSplash";
 import HomeNav from "@/app/components/HomeNav";
+import UpcomingDaysPreview, {
+  UpcomingDaysPreviewSkeleton,
+} from "@/app/components/UpcomingDaysPreview";
 
 const KITCHEN_TZ = "America/Chicago";
 
@@ -79,8 +83,8 @@ export default async function HomePage() {
       <HomeNav profileName={profile?.name ?? null} />
 
       {/* ── HERO ────────────────────────────────────────────────────── */}
-      <section className="mx-auto flex h-[calc(100vh-4rem)] w-full max-w-7xl flex-col justify-center px-6 py-8">
-        <div className="flex h-full flex-col items-center text-center">
+      <section className="mx-auto flex min-h-[80vh] w-full max-w-7xl flex-col justify-center px-6 py-8">
+        <div className="flex flex-col items-center text-center">
           {tomorrowSchedule ? (
             <div className="tfb-rise tfb-delay-3 w-full flex-shrink-0">
               <TomorrowDishSpotlight
@@ -118,9 +122,19 @@ export default async function HomePage() {
             <br className="hidden sm:block" />
             in the comfort of your home.
           </p> */}
+        </div>
+      </section>
+
+      {/* ── UPCOMING DAYS PREVIEW ──────────────────────────────────────── */}
+      <section className="border-t border-herb">
+        <div className="mx-auto max-w-7xl px-6 py-14">
+          <p className="tfb-eyebrow mb-8">Coming up</p>
+          <Suspense fallback={<UpcomingDaysPreviewSkeleton />}>
+            <UpcomingDaysPreview />
+          </Suspense>
 
           {/* CTA row */}
-          <div className="tfb-rise tfb-delay-4 flex w-full flex-1 flex-wrap items-center justify-center gap-3.5">
+          <div className="mt-10 flex w-full flex-wrap items-center justify-center gap-3.5">
             <Link
               href="/menu"
               className="inline-flex items-center gap-2.5 rounded-lg bg-terracotta px-8 py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
@@ -140,8 +154,8 @@ export default async function HomePage() {
 
       {/* ── HOW IT WORKS ────────────────────────────────────────────── */}
       <section className="border-t border-herb">
-        <div className="mx-auto max-w-7xl px-6 py-24">
-          <p className="tfb-eyebrow mb-14">The process</p>
+        <div className="mx-auto max-w-7xl px-6 py-14">
+          <p className="tfb-eyebrow mb-8">The process</p>
 
           <div className="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-herb bg-herb sm:grid-cols-3">
             {steps.map((step) => (
@@ -169,10 +183,10 @@ export default async function HomePage() {
       </section>
 
       {/* ── FINAL CTA ───────────────────────────────────────────────── */}
-      <section className="border-t border-herb px-6 py-32 text-center">
+      <section className="border-t border-herb px-6 py-20 text-center">
         <p className="tfb-eyebrow mb-5">Ready to eat well?</p>
 
-        <h2 className="mx-auto mb-12 max-w-[16ch] text-5xl leading-none text-deep-leaf sm:text-6xl">
+        <h2 className="mx-auto mb-10 max-w-[16ch] text-5xl leading-none text-deep-leaf sm:text-6xl">
           See what&apos;s cooking this week.
         </h2>
 
