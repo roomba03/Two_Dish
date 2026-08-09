@@ -148,13 +148,20 @@ export default function DeliveryZoneChecker({ zone, activeZips }: Props) {
               className="w-full rounded-lg border border-herb bg-sage px-4.5 py-3.5 text-base text-deep-leaf outline-none transition-colors focus:border-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
             />
 
-            <button
-              type="submit"
-              disabled={loading || !address.trim()}
-              className="self-start rounded-lg bg-terracotta px-7 py-3.5 text-sm font-medium text-sage transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-warmgray disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
-            >
-              {loading ? "Checking…" : "Check my address"}
-            </button>
+            <div className="group relative self-start">
+              <button
+                type="submit"
+                disabled={loading || !address.trim()}
+                className="rounded-lg bg-terracotta px-7 py-3.5 text-sm font-medium text-sage transition-opacity hover:opacity-90 disabled:bg-warmgray disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+              >
+                {loading ? "Checking…" : "Check my address"}
+              </button>
+              {!loading && !address.trim() && (
+                <span className="pointer-events-none absolute top-full -right-6 mt-2 whitespace-nowrap text-[11px] font-medium text-warmgray opacity-0 transition-opacity group-hover:opacity-100">
+                  Enter an address
+                </span>
+              )}
+            </div>
           </form>
 
           {/* Result */}

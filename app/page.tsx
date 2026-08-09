@@ -5,9 +5,8 @@ import { getCustomerFromCookie } from "@/lib/data/account";
 import DeliveryZoneChecker from "@/app/components/DeliveryZoneChecker";
 import TomorrowDishSpotlight from "@/app/components/TomorrowDishSpotlight";
 import { VegetableIcon } from "@/app/components/icons/DishIcons";
-import CartIcon from "@/app/components/CartIcon";
-import AuthStatusLink from "@/app/components/AuthStatusLink";
 import IntroSplash from "@/app/components/IntroSplash";
+import HomeNav from "@/app/components/HomeNav";
 
 const KITCHEN_TZ = "America/Chicago";
 
@@ -77,54 +76,13 @@ export default async function HomePage() {
       <IntroSplash />
 
       {/* ── NAV ─────────────────────────────────────────────────────── */}
-      <nav className="tfb-rise sticky top-0 z-50 border-b border-herb bg-sage/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-          <div className="flex items-center gap-4">
-            <span className="font-heading text-xl text-deep-leaf">Two Dish</span>
-            {profile && <AuthStatusLink name={profile.name} />}
-          </div>
-
-          <div className="flex items-center gap-7">
-            {!profile && (
-              <Link
-                href="/cook/login"
-                className="text-sm font-medium text-warmgray transition-opacity hover:opacity-70"
-              >
-                Staff login
-              </Link>
-            )}
-            {!profile && (
-              <Link
-                href="/account/login"
-                className="text-sm font-medium text-warmgray transition-opacity hover:opacity-70"
-              >
-                Sign in
-              </Link>
-            )}
-            {!profile && (
-              <Link
-                href="/account/signup"
-                className="text-sm font-medium text-warmgray transition-opacity hover:opacity-70"
-              >
-                Sign up
-              </Link>
-            )}
-            <Link
-              href="/menu"
-              className="rounded-lg border border-terracotta px-5 py-2 text-sm font-medium text-terracotta transition-opacity hover:opacity-70"
-            >
-              Order now
-            </Link>
-            <CartIcon />
-          </div>
-        </div>
-      </nav>
+      <HomeNav profileName={profile?.name ?? null} />
 
       {/* ── HERO ────────────────────────────────────────────────────── */}
-      <section className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-7xl flex-col justify-center px-6 py-8">
-        <div className="flex flex-col items-center text-center">
-          {tomorrowSchedule && (
-            <div className="tfb-rise tfb-delay-3 mb-12 w-full">
+      <section className="mx-auto flex h-[calc(100vh-4rem)] w-full max-w-7xl flex-col justify-center px-6 py-8">
+        <div className="flex h-full flex-col items-center text-center">
+          {tomorrowSchedule ? (
+            <div className="tfb-rise tfb-delay-3 w-full flex-shrink-0">
               <TomorrowDishSpotlight
                 scheduleId={tomorrowSchedule.id}
                 menuItemId={tomorrowSchedule.menu_items.id}
@@ -140,19 +98,29 @@ export default async function HomePage() {
                 closed={!(tomorrowEligibility?.eligible ?? false)}
               />
             </div>
+          ) : (
+            <div className="tfb-rise tfb-delay-3 w-full flex-shrink-0">
+              <div className="relative ml-[calc(50%-50vw)] mr-[calc(50%-50vw)] w-screen overflow-hidden">
+                <div className="flex aspect-[3/1] w-full items-center justify-center bg-deep-leaf/10 shadow-inner">
+                  <span className="text-sm font-medium text-warmgray">
+                    Nothing scheduled for now
+                  </span>
+                </div>
+              </div>
+            </div>
           )}
 
           {/* Tagline */}
-          <p className="tfb-rise tfb-delay-3 mb-12 max-w-[36ch] text-lg leading-relaxed text-warmgray">
+          {/* <p className="tfb-rise tfb-delay-3 mb-12 max-w-[36ch] text-lg leading-relaxed text-warmgray">
             No long lines. No long drives.
             <br />
             Order the dish a day ahead and enjoy it
             <br className="hidden sm:block" />
             in the comfort of your home.
-          </p>
+          </p> */}
 
           {/* CTA row */}
-          <div className="tfb-rise tfb-delay-4 flex flex-wrap items-center justify-center gap-3.5">
+          <div className="tfb-rise tfb-delay-4 flex w-full flex-1 flex-wrap items-center justify-center gap-3.5">
             <Link
               href="/menu"
               className="inline-flex items-center gap-2.5 rounded-lg bg-terracotta px-8 py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"

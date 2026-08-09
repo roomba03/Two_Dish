@@ -123,7 +123,8 @@ h3 {
   border-color: var(--color-rust);
 }
 .tfb-input:disabled,
-.tfb-input:read-only {
+input.tfb-input:read-only,
+textarea.tfb-input:read-only {
   cursor: not-allowed;
   color: var(--color-warmgray);
   background: rgb(217 201 188 / 0.35);

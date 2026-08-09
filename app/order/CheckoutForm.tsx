@@ -102,18 +102,27 @@ function SectionCard({
 function SubmitButton({
   loading,
   disabled,
+  disabledReason,
 }: {
   loading: boolean;
   disabled?: boolean;
+  disabledReason?: string;
 }) {
   return (
-    <button
-      type="submit"
-      disabled={loading || disabled}
-      className="w-full rounded-lg bg-terracotta py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
-    >
-      {loading ? "Placing order…" : "Place order"}
-    </button>
+    <div className="group relative">
+      <button
+        type="submit"
+        disabled={loading || disabled}
+        className="w-full rounded-lg bg-terracotta py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+      >
+        {loading ? "Placing order…" : "Place order"}
+      </button>
+      {!loading && disabled && disabledReason && (
+        <span className="pointer-events-none absolute top-full left-1/2 mt-1.5 -translate-x-1/2 whitespace-nowrap text-[11px] font-medium text-warmgray opacity-0 transition-opacity group-hover:opacity-100">
+          {disabledReason}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -227,6 +236,14 @@ export default function CheckoutForm({
   const overRemaining = remaining !== null && safeQty > remaining;
   const timeSlotFull = slotFilled[timeSlot];
   const bothSlotsFull = slotFilled.early && slotFilled.late;
+
+  const submitDisabledReason = bothSlotsFull
+    ? "Both delivery windows are full for this day"
+    : timeSlotFull
+    ? "Choose the other delivery time above"
+    : overRemaining
+    ? "Reduce the quantity — not enough meals left"
+    : undefined;
 
   async function onSubmit(data: OrderCheckoutInput) {
     setServerError(null);
@@ -410,30 +427,39 @@ export default function CheckoutForm({
                   Test mode — no charge will be made
                 </p>
               </div>
-              <div>
+              <div className="group relative">
                 <Label>Card number</Label>
                 <input
                   value="4242 4242 4242 4242"
                   readOnly
                   className="w-full cursor-not-allowed rounded-lg border border-herb bg-midsage/20 px-4 py-3 text-sm tracking-widest text-warmgray"
                 />
+                <span className="pointer-events-none absolute top-full left-0 mt-1.5 whitespace-nowrap text-[11px] font-medium text-warmgray opacity-0 transition-opacity group-hover:opacity-100">
+                  Test mode — this field can&apos;t be edited
+                </span>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div>
+                <div className="group relative">
                   <Label>Expiry</Label>
                   <input
                     value="12 / 29"
                     readOnly
                     className="w-full cursor-not-allowed rounded-lg border border-herb bg-midsage/20 px-4 py-3 text-sm text-warmgray"
                   />
+                  <span className="pointer-events-none absolute top-full left-0 mt-1.5 whitespace-nowrap text-[11px] font-medium text-warmgray opacity-0 transition-opacity group-hover:opacity-100">
+                    Test mode — not editable
+                  </span>
                 </div>
-                <div>
+                <div className="group relative">
                   <Label>CVV</Label>
                   <input
                     value="•••"
                     readOnly
                     className="w-full cursor-not-allowed rounded-lg border border-herb bg-midsage/20 px-4 py-3 text-sm text-warmgray"
                   />
+                  <span className="pointer-events-none absolute top-full left-0 mt-1.5 whitespace-nowrap text-[11px] font-medium text-warmgray opacity-0 transition-opacity group-hover:opacity-100">
+                    Test mode — not editable
+                  </span>
                 </div>
               </div>
             </div>
@@ -441,7 +467,11 @@ export default function CheckoutForm({
 
           {/* Submit (desktop only — mobile submit lives in the summary panel) */}
           <div className="hidden lg:block">
-            <SubmitButton loading={isSubmitting} disabled={overRemaining || timeSlotFull || bothSlotsFull} />
+            <SubmitButton
+              loading={isSubmitting}
+              disabled={overRemaining || timeSlotFull || bothSlotsFull}
+              disabledReason={submitDisabledReason}
+            />
           </div>
         </div>
 
@@ -483,7 +513,11 @@ export default function CheckoutForm({
 
             {/* Submit (mobile) */}
             <div className="mt-6 lg:hidden">
-              <SubmitButton loading={isSubmitting} disabled={overRemaining || timeSlotFull || bothSlotsFull} />
+              <SubmitButton
+                loading={isSubmitting}
+                disabled={overRemaining || timeSlotFull || bothSlotsFull}
+                disabledReason={submitDisabledReason}
+              />
             </div>
           </div>
         </div>

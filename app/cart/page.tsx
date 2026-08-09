@@ -102,6 +102,10 @@ export default function CartPage() {
       <p className="mt-4 text-xs text-warmgray">
         Quantity and delivery time are chosen at checkout.
       </p>
+      <p className="mt-1.5 text-xs text-warmgray">
+        Each order covers one delivery day — place a separate order if
+        you&apos;d like to order for another day.
+      </p>
 
       <Link
         href={`/order?${checkoutSearch.toString()}`}
