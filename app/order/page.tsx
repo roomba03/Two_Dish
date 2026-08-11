@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCustomerFromCookie } from "@/lib/data/account";
 import { getScheduleCapacity, getScheduleTimeSlotCounts } from "@/lib/data/menu";
+import HomeNav from "@/app/components/HomeNav";
 import CheckoutForm from "./CheckoutForm";
 
 export default async function OrderPage({
@@ -66,38 +67,41 @@ export default async function OrderPage({
       : undefined;
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <Link
-          href="/menu"
-          className="mb-4 inline-flex items-center gap-1.5 text-sm text-warmgray transition-opacity hover:opacity-70"
-        >
-          ← Back to menu
-        </Link>
-        <h1 className="text-3xl text-deep-leaf">Checkout</h1>
-        <p className="mt-2 text-warmgray">
-          Complete your order for{" "}
-          <span className="font-medium text-deep-leaf">{dishName}</span>
-          {" "}on{" "}
-          <span className="font-medium text-deep-leaf">
-            {new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(
-              (() => { const [y, m, d] = deliveryDate.split("-").map(Number); return new Date(y, m - 1, d); })()
-            )}
-          </span>
-          . Each order covers one delivery day — return to the menu to order
-          for another date.
-        </p>
-      </div>
+    <div className="min-h-screen">
+      <HomeNav profileName={profile?.name ?? null} showAuthLinks={false} />
+      <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <Link
+            href="/menu"
+            className="mb-4 inline-flex items-center gap-1.5 text-sm text-warmgray transition-opacity hover:opacity-70"
+          >
+            ← Back to menu
+          </Link>
+          <h1 className="text-3xl text-deep-leaf">Checkout</h1>
+          <p className="mt-2 text-warmgray">
+            Complete your order for{" "}
+            <span className="font-medium text-deep-leaf">{dishName}</span>
+            {" "}on{" "}
+            <span className="font-medium text-deep-leaf">
+              {new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(
+                (() => { const [y, m, d] = deliveryDate.split("-").map(Number); return new Date(y, m - 1, d); })()
+              )}
+            </span>
+            . Each order covers one delivery day — return to the menu to order
+            for another date.
+          </p>
+        </div>
 
-      <CheckoutForm
-        scheduleId={scheduleId}
-        dishName={dishName}
-        price={price}
-        deliveryDate={deliveryDate}
-        prefill={prefill}
-        remaining={remaining}
-        slotFilled={slotFilled}
-      />
-    </main>
+        <CheckoutForm
+          scheduleId={scheduleId}
+          dishName={dishName}
+          price={price}
+          deliveryDate={deliveryDate}
+          prefill={prefill}
+          remaining={remaining}
+          slotFilled={slotFilled}
+        />
+      </main>
+    </div>
   );
 }

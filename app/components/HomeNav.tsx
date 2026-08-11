@@ -30,7 +30,13 @@ function MenuIcon({ open }: { open: boolean }) {
   );
 }
 
-export default function HomeNav({ profileName }: { profileName: string | null }) {
+export default function HomeNav({
+  profileName,
+  showAuthLinks = true,
+}: {
+  profileName: string | null;
+  showAuthLinks?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
 
@@ -38,7 +44,12 @@ export default function HomeNav({ profileName }: { profileName: string | null })
     <nav className="tfb-rise sticky top-0 z-50 border-b border-herb bg-sage/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <div className="flex items-center gap-4">
-          <span className="font-heading text-xl text-deep-leaf">Two Dish</span>
+          <Link
+            href="/"
+            className="font-heading text-xl text-deep-leaf transition-opacity hover:opacity-70"
+          >
+            Two Dish Catering Services
+          </Link>
           {profileName && (
             <span className="hidden md:block">
               <AuthStatusLink name={profileName} />
@@ -48,7 +59,7 @@ export default function HomeNav({ profileName }: { profileName: string | null })
 
         {/* Desktop nav */}
         <div className="hidden items-center gap-7 md:flex">
-          {!profileName && (
+          {!profileName && showAuthLinks && (
             <Link
               href="/cook/login"
               className="text-sm font-medium text-warmgray transition-all hover:text-[16px] hover:opacity-70"
@@ -56,7 +67,7 @@ export default function HomeNav({ profileName }: { profileName: string | null })
               Staff login
             </Link>
           )}
-          {!profileName && (
+          {!profileName && showAuthLinks && (
             <Link
               href="/account/login"
               className="text-sm font-medium text-warmgray transition-all hover:text-[16px] hover:opacity-70"
@@ -64,7 +75,7 @@ export default function HomeNav({ profileName }: { profileName: string | null })
               Sign in
             </Link>
           )}
-          {!profileName && (
+          {!profileName && showAuthLinks && (
             <Link
               href="/account/signup"
               className="text-sm font-medium text-warmgray transition-all hover:text-[16px] hover:opacity-70"
@@ -73,10 +84,16 @@ export default function HomeNav({ profileName }: { profileName: string | null })
             </Link>
           )}
           <Link
+            href="/#delivery-area"
+            className="text-sm font-medium text-warmgray transition-all hover:text-[16px] hover:opacity-70"
+          >
+            Delivery area
+          </Link>
+          <Link
             href="/menu"
             className="rounded-lg border border-terracotta px-5 py-2 text-sm font-medium text-terracotta transition-all hover:text-[16px] hover:opacity-70"
           >
-            Order now
+            Order online
           </Link>
           <CartIcon />
         </div>
@@ -101,7 +118,7 @@ export default function HomeNav({ profileName }: { profileName: string | null })
         <div className="border-t border-herb bg-sage px-6 py-5 md:hidden">
           <div className="flex flex-col gap-4">
             {profileName && <AuthStatusLink name={profileName} />}
-            {!profileName && (
+            {!profileName && showAuthLinks && (
               <Link
                 href="/cook/login"
                 onClick={close}
@@ -110,7 +127,7 @@ export default function HomeNav({ profileName }: { profileName: string | null })
                 Staff login
               </Link>
             )}
-            {!profileName && (
+            {!profileName && showAuthLinks && (
               <Link
                 href="/account/login"
                 onClick={close}
@@ -119,7 +136,7 @@ export default function HomeNav({ profileName }: { profileName: string | null })
                 Sign in
               </Link>
             )}
-            {!profileName && (
+            {!profileName && showAuthLinks && (
               <Link
                 href="/account/signup"
                 onClick={close}
@@ -129,11 +146,18 @@ export default function HomeNav({ profileName }: { profileName: string | null })
               </Link>
             )}
             <Link
+              href="/#delivery-area"
+              onClick={close}
+              className="text-sm font-medium text-warmgray transition-all hover:text-[16px] hover:opacity-70"
+            >
+              Delivery area
+            </Link>
+            <Link
               href="/menu"
               onClick={close}
               className="rounded-lg border border-terracotta px-5 py-2 text-center text-sm font-medium text-terracotta transition-all hover:text-[16px] hover:opacity-70"
             >
-              Order now
+              Order online
             </Link>
           </div>
         </div>
