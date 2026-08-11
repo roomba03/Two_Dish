@@ -39,6 +39,7 @@ body {
   font-family: var(--font-sans), Karla, "Work Sans", Arial, sans-serif;
   font-weight: 400;
   position: relative;
+  overflow-x: hidden;
 }
 
 /* Subtle film-grain texture — a fixed SVG fractal-noise layer blended with

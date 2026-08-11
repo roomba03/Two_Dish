@@ -24,9 +24,18 @@ type CheckedAddress = { street: string; city: string; zip: string };
 type Props = {
   zone: GeoJsonPolygon | null;
   activeZips: string[];
+  // "embedded" drops the outer section/id and stacks map above form,
+  // for reuse inside another section's layout — see the "What we offer"
+  // section on the homepage. "section" (default) is the standalone,
+  // full-width delivery-coverage section further down the homepage.
+  variant?: "section" | "embedded";
 };
 
-export default function DeliveryZoneChecker({ zone, activeZips }: Props) {
+export default function DeliveryZoneChecker({
+  zone,
+  activeZips,
+  variant = "section",
+}: Props) {
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CheckResult | null>(null);
@@ -109,90 +118,104 @@ export default function DeliveryZoneChecker({ zone, activeZips }: Props) {
     },
   };
 
+  const content = (
+    <>
+      {/* ── Map ── */}
+      <div
+        className={`overflow-hidden rounded-lg border border-herb ${
+          variant === "embedded" ? "h-72" : "h-[420px]"
+        }`}
+      >
+        <ZoneMap
+          zone={zone}
+          resultPoint={resultPoint}
+          resultInZone={result === "in"}
+        />
+      </div>
+
+      {/* ── Form side ── */}
+      <div className={variant === "embedded" ? undefined : "pt-2"}>
+        <p className="tfb-eyebrow mb-3.5">Delivery coverage</p>
+
+        <h2 className="mb-4 text-4xl leading-tight text-deep-leaf">
+          Do we deliver to you?
+        </h2>
+
+        <p className="mb-8 text-base leading-relaxed text-warmgray">
+          Enter your address below and we&apos;ll check instantly if
+          you&apos;re inside our delivery zone.
+        </p>
+
+        <form onSubmit={handleCheck} className="flex flex-col gap-3">
+          <input
+            type="text"
+            value={address}
+            onChange={(e) => {
+              setAddress(e.target.value);
+              setResult(null);
+              setResultPoint(null);
+            }}
+            placeholder="e.g. 123 Main St, Overland Park, KS 66221"
+            required
+            className="w-full rounded-lg border border-herb bg-sage px-4.5 py-3.5 text-base text-deep-leaf outline-none transition-colors focus:border-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+          />
+
+          <div className="group relative self-start">
+            <button
+              type="submit"
+              disabled={loading || !address.trim()}
+              className="rounded-lg bg-terracotta px-7 py-3.5 text-sm font-medium text-sage transition-opacity hover:opacity-90 disabled:bg-warmgray disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+            >
+              {loading ? "Checking…" : "Check my address"}
+            </button>
+            {!loading && !address.trim() && (
+              <span className="pointer-events-none absolute top-full -right-6 mt-2 whitespace-nowrap text-[11px] font-medium text-warmgray opacity-0 transition-opacity group-hover:opacity-100">
+                Enter an address
+              </span>
+            )}
+          </div>
+        </form>
+
+        {/* Result */}
+        {result && (
+          <div
+            className={`mt-5 flex items-start gap-3 rounded-lg border bg-sage px-5 py-4 ${resultConfig[result].className}`}
+          >
+            <span className="mt-px shrink-0 text-lg leading-none">
+              {result === "in" ? "✓" : result === "out" ? "✕" : "–"}
+            </span>
+            <div>
+              <p className="font-medium">{resultConfig[result].label}</p>
+              <p className="mt-1 text-sm text-warmgray">
+                {resultConfig[result].sublabel}
+              </p>
+              {result === "in" && checkedAddress && (
+                <Link
+                  href={`/menu?${new URLSearchParams({
+                    street: checkedAddress.street,
+                    city: checkedAddress.city,
+                    zip: checkedAddress.zip,
+                  }).toString()}`}
+                  className="mt-3 inline-flex items-center gap-1.5 border-b border-terracotta text-sm font-medium text-terracotta"
+                >
+                  Continue to order →
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+
+  if (variant === "embedded") {
+    return <div className="flex flex-col gap-8">{content}</div>;
+  }
+
   return (
     <section id="delivery-area" className="border-t border-b border-herb">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-12 px-6 py-20 md:grid-cols-2">
-        {/* ── Map ── */}
-        <div className="h-[420px] overflow-hidden rounded-lg border border-herb">
-          <ZoneMap
-            zone={zone}
-            resultPoint={resultPoint}
-            resultInZone={result === "in"}
-          />
-        </div>
-
-        {/* ── Form side ── */}
-        <div className="pt-2">
-          <p className="tfb-eyebrow mb-3.5">Delivery coverage</p>
-
-          <h2 className="mb-4 text-4xl leading-tight text-deep-leaf">
-            Do we deliver to you?
-          </h2>
-
-          <p className="mb-8 text-base leading-relaxed text-warmgray">
-            Enter your address below and we&apos;ll check instantly if
-            you&apos;re inside our delivery zone.
-          </p>
-
-          <form onSubmit={handleCheck} className="flex flex-col gap-3">
-            <input
-              type="text"
-              value={address}
-              onChange={(e) => {
-                setAddress(e.target.value);
-                setResult(null);
-                setResultPoint(null);
-              }}
-              placeholder="e.g. 123 Main St, Overland Park, KS 66221"
-              required
-              className="w-full rounded-lg border border-herb bg-sage px-4.5 py-3.5 text-base text-deep-leaf outline-none transition-colors focus:border-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
-            />
-
-            <div className="group relative self-start">
-              <button
-                type="submit"
-                disabled={loading || !address.trim()}
-                className="rounded-lg bg-terracotta px-7 py-3.5 text-sm font-medium text-sage transition-opacity hover:opacity-90 disabled:bg-warmgray disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
-              >
-                {loading ? "Checking…" : "Check my address"}
-              </button>
-              {!loading && !address.trim() && (
-                <span className="pointer-events-none absolute top-full -right-6 mt-2 whitespace-nowrap text-[11px] font-medium text-warmgray opacity-0 transition-opacity group-hover:opacity-100">
-                  Enter an address
-                </span>
-              )}
-            </div>
-          </form>
-
-          {/* Result */}
-          {result && (
-            <div
-              className={`mt-5 flex items-start gap-3 rounded-lg border bg-sage px-5 py-4 ${resultConfig[result].className}`}
-            >
-              <span className="mt-px shrink-0 text-lg leading-none">
-                {result === "in" ? "✓" : result === "out" ? "✕" : "–"}
-              </span>
-              <div>
-                <p className="font-medium">{resultConfig[result].label}</p>
-                <p className="mt-1 text-sm text-warmgray">
-                  {resultConfig[result].sublabel}
-                </p>
-                {result === "in" && checkedAddress && (
-                  <Link
-                    href={`/menu?${new URLSearchParams({
-                      street: checkedAddress.street,
-                      city: checkedAddress.city,
-                      zip: checkedAddress.zip,
-                    }).toString()}`}
-                    className="mt-3 inline-flex items-center gap-1.5 border-b border-terracotta text-sm font-medium text-terracotta"
-                  >
-                    Continue to order →
-                  </Link>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
+        {content}
       </div>
     </section>
   );

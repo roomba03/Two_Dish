@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getDefaultKitchen, getWeekMenuSchedule } from "@/lib/data/menu";
@@ -76,13 +77,62 @@ export default async function HomePage() {
     : null;
 
   return (
-    <div className="overflow-x-hidden bg-sage text-deep-leaf">
+    <div className="bg-sage text-deep-leaf">
       <IntroSplash />
 
       {/* ── NAV ─────────────────────────────────────────────────────── */}
       <HomeNav profileName={profile?.name ?? null} />
 
       {/* ── HERO ────────────────────────────────────────────────────── */}
+      <section className="relative h-[calc(100vh-4rem)] w-full overflow-hidden">
+        <Image
+          src="/dish-images/TACOS.png"
+          alt="Tacos"
+          fill
+          priority
+          quality={100}
+          sizes="100vw"
+          className="object-cover"
+        />
+      </section>
+
+      {/* ── WHAT WE OFFER ──────────────────────────────────────────── */}
+      <section className="border-t border-herb">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-12 px-6 py-20 md:grid-cols-2">
+          <div>
+            <p className="tfb-eyebrow mb-4">What we offer</p>
+            <h2 className="mb-5 text-4xl leading-tight text-deep-leaf">
+              Home-cooked Hyderabadi food, delivered to your door
+            </h2>
+            <p className="mb-4 text-base leading-relaxed text-warmgray">
+              Two Dish brings Chef Eram&apos;s family recipes straight from
+              her kitchen to yours. Every day we cook exactly one dish —
+              biryani, haleem, kebabs, and more — in small batches, nothing
+              frozen and nothing repeated.
+            </p>
+            <p className="mb-8 text-base leading-relaxed text-warmgray">
+              Place your order by 11:59 PM the night before and pick your
+              evening slot, 6:30 or 7:30 PM. We&apos;ll bring it straight to
+              your door, ready to serve at the table.
+            </p>
+            <Link
+              href="/menu"
+              className="inline-flex items-center gap-2.5 rounded-lg bg-terracotta px-8 py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+            >
+              View this week&apos;s menu
+              <ArrowRight />
+            </Link>
+          </div>
+
+          <DeliveryZoneChecker
+            zone={kitchen?.delivery_zone ?? null}
+            activeZips={kitchen?.active_zips ?? []}
+            variant="embedded"
+          />
+        </div>
+      </section>
+
+      {/* Being redone — old hero disabled below, not deleted.
       <section className="mx-auto flex min-h-[80vh] w-full max-w-7xl flex-col justify-center px-6 py-8">
         <div className="flex flex-col items-center text-center">
           {tomorrowSchedule ? (
@@ -114,16 +164,17 @@ export default async function HomePage() {
             </div>
           )}
 
-          {/* Tagline */}
-          {/* <p className="tfb-rise tfb-delay-3 mb-12 max-w-[36ch] text-lg leading-relaxed text-warmgray">
+          Tagline
+          <p className="tfb-rise tfb-delay-3 mb-12 max-w-[36ch] text-lg leading-relaxed text-warmgray">
             No long lines. No long drives.
             <br />
             Order the dish a day ahead and enjoy it
             <br className="hidden sm:block" />
             in the comfort of your home.
-          </p> */}
+          </p>
         </div>
       </section>
+      */}
 
       {/* ── UPCOMING DAYS PREVIEW ──────────────────────────────────────── */}
       <section className="border-t border-herb">

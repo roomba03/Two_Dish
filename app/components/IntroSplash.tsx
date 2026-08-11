@@ -30,7 +30,7 @@ export default function IntroSplash() {
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-warmgray transition-transform duration-700 ease-in-out ${
+      className={`fixed inset-0 z-[1200] flex flex-col items-center justify-center bg-warmgray transition-transform duration-700 ease-in-out ${
         phase === "exiting" ? "-translate-y-full" : "translate-y-0"
       }`}
     >

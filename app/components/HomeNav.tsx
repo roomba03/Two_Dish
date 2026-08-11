@@ -41,12 +41,12 @@ export default function HomeNav({
   const close = () => setOpen(false);
 
   return (
-    <nav className="tfb-rise sticky top-0 z-50 border-b border-herb bg-sage/95 backdrop-blur">
+    <nav className="tfb-rise sticky top-0 z-[1100] border-b border-herb bg-sage/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <div className="flex items-center gap-4">
           <Link
             href="/"
-            className="font-heading text-xl text-deep-leaf transition-opacity hover:opacity-70"
+            className="font-heading text-2xl text-deep-leaf transition-opacity hover:opacity-70"
           >
             Two Dish Catering Services
           </Link>
