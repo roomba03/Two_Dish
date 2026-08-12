@@ -97,7 +97,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── WHAT WE OFFER ──────────────────────────────────────────── */}
-      <section className="border-t border-herb">
+      <section>
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-12 px-6 py-20 md:grid-cols-2">
           <div>
             <p className="tfb-eyebrow mb-4">What we offer</p>
@@ -177,7 +177,7 @@ export default async function HomePage() {
       */}
 
       {/* ── UPCOMING DAYS PREVIEW ──────────────────────────────────────── */}
-      <section className="border-t border-herb">
+      <section>
         <div className="mx-auto max-w-7xl px-6 py-14">
           <p className="tfb-eyebrow mb-8">Coming up</p>
           <Suspense fallback={<UpcomingDaysPreviewSkeleton />}>
@@ -204,7 +204,7 @@ export default async function HomePage() {
       />
 
       {/* ── HOW IT WORKS ────────────────────────────────────────────── */}
-      <section className="border-t border-herb">
+      <section>
         <div className="mx-auto max-w-7xl px-6 py-14">
           <p className="tfb-eyebrow mb-8">The process</p>
 
@@ -234,7 +234,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── FINAL CTA ───────────────────────────────────────────────── */}
-      <section className="border-t border-herb px-6 py-20 text-center">
+      <section className="px-6 py-20 text-center">
         <p className="tfb-eyebrow mb-5">Ready to eat well?</p>
 
         <h2 className="mx-auto mb-10 max-w-[16ch] text-5xl leading-none text-deep-leaf sm:text-6xl">
@@ -251,7 +251,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── FOOTER ──────────────────────────────────────────────────── */}
-      <footer className="border-t border-herb">
+      <footer>
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-7">
           <span className="font-heading text-base text-warmgray">Two Dish</span>
           <VegetableIcon className="h-5 w-5 text-terracotta" aria-hidden />

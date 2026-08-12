@@ -1,11 +1,47 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutCook } from "@/lib/actions/authActions";
 
+const LINKS = [
+  { href: "/cook", label: "Today's run" },
+  { href: "/cook/menu", label: "Menu" },
+  { href: "/cook/schedule", label: "Schedule" },
+  { href: "/cook/ingredients", label: "Ingredients" },
+  { href: "/cook/zone", label: "Zone" },
+];
+
+function MenuIcon({ open }: { open: boolean }) {
+  if (open) {
+    return (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+        <path
+          d="M5 5l10 10M15 5L5 15"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+      <path
+        d="M3 6h14M3 10h14M3 14h14"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export default function DashboardNav() {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
 
   const linkClass = (href: string) => {
     const isActive =
@@ -28,28 +64,16 @@ export default function DashboardNav() {
           Two Dish
         </Link>
 
-        <nav className="flex items-center gap-8">
-          <Link href="/cook" className={linkClass("/cook")}>
-            Today&apos;s run
-          </Link>
-          <Link href="/cook/menu" className={linkClass("/cook/menu")}>
-            Menu
-          </Link>
-          <Link href="/cook/schedule" className={linkClass("/cook/schedule")}>
-            Schedule
-          </Link>
-          <Link
-            href="/cook/ingredients"
-            className={linkClass("/cook/ingredients")}
-          >
-            Ingredients
-          </Link>
-          <Link href="/cook/zone" className={linkClass("/cook/zone")}>
-            Zone
-          </Link>
+        {/* Desktop nav */}
+        <nav className="hidden items-center gap-8 md:flex">
+          {LINKS.map(({ href, label }) => (
+            <Link key={href} href={href} className={linkClass(href)}>
+              {label}
+            </Link>
+          ))}
         </nav>
 
-        <form action={logoutCook}>
+        <form action={logoutCook} className="hidden md:block">
           <button
             type="submit"
             className="text-sm font-medium text-warmgray transition-opacity hover:opacity-70"
@@ -57,7 +81,44 @@ export default function DashboardNav() {
             Sign out
           </button>
         </form>
+
+        {/* Mobile toggle */}
+        <button
+          type="button"
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+          className="flex h-11 w-11 items-center justify-center text-deep-leaf transition-opacity hover:opacity-70 md:hidden"
+        >
+          <MenuIcon open={open} />
+        </button>
       </div>
+
+      {/* Mobile panel */}
+      {open && (
+        <div className="border-t border-herb bg-sage px-4 py-5 sm:px-6 md:hidden">
+          <nav className="flex flex-col gap-4">
+            {LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={close}
+                className={linkClass(href)}
+              >
+                {label}
+              </Link>
+            ))}
+            <form action={logoutCook}>
+              <button
+                type="submit"
+                className="text-sm font-medium text-warmgray transition-opacity hover:opacity-70"
+              >
+                Sign out
+              </button>
+            </form>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }

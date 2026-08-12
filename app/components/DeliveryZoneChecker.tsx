@@ -213,7 +213,7 @@ export default function DeliveryZoneChecker({
   }
 
   return (
-    <section id="delivery-area" className="border-t border-b border-herb">
+    <section id="delivery-area">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-12 px-6 py-20 md:grid-cols-2">
         {content}
       </div>

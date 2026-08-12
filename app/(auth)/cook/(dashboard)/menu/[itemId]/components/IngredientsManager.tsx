@@ -34,48 +34,50 @@ export default function IngredientsManager({ menuItemId, ingredients }: Props) {
         </p>
       ) : (
         <div className="overflow-hidden rounded-lg border border-herb">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-herb bg-midsage/20">
-                <th className="tfb-eyebrow px-4 py-3 text-left">Ingredient</th>
-                <th className="tfb-eyebrow px-4 py-3 text-right">Qty / meal</th>
-                <th className="tfb-eyebrow px-4 py-3 text-right">Unit</th>
-                <th className="tfb-eyebrow px-4 py-3 text-right">&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-herb">
-              {ingredients.map((ing) => {
-                const boundDelete = deleteIngredient.bind(
-                  null,
-                  ing.id,
-                  menuItemId
-                );
-                return (
-                  <tr key={ing.id} className="hover:bg-midsage/20">
-                    <td className="px-4 py-3 text-sm text-deep-leaf">
-                      {ing.name}
-                    </td>
-                    <td className="px-4 py-3 text-right text-sm text-warmgray">
-                      {ing.per_unit_quantity}
-                    </td>
-                    <td className="px-4 py-3 text-right text-sm text-warmgray">
-                      {ing.unit}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <form action={boundDelete}>
-                        <button
-                          type="submit"
-                          className="text-xs font-medium text-rust transition-opacity hover:opacity-70"
-                        >
-                          Remove
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-herb bg-midsage/20">
+                  <th className="tfb-eyebrow px-4 py-3 text-left">Ingredient</th>
+                  <th className="tfb-eyebrow px-4 py-3 text-right">Qty / meal</th>
+                  <th className="tfb-eyebrow px-4 py-3 text-right">Unit</th>
+                  <th className="tfb-eyebrow px-4 py-3 text-right">&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-herb">
+                {ingredients.map((ing) => {
+                  const boundDelete = deleteIngredient.bind(
+                    null,
+                    ing.id,
+                    menuItemId
+                  );
+                  return (
+                    <tr key={ing.id} className="hover:bg-midsage/20">
+                      <td className="px-4 py-3 text-sm text-deep-leaf">
+                        {ing.name}
+                      </td>
+                      <td className="px-4 py-3 text-right text-sm text-warmgray">
+                        {ing.per_unit_quantity}
+                      </td>
+                      <td className="px-4 py-3 text-right text-sm text-warmgray">
+                        {ing.unit}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <form action={boundDelete}>
+                          <button
+                            type="submit"
+                            className="text-xs font-medium text-rust transition-opacity hover:opacity-70"
+                          >
+                            Remove
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

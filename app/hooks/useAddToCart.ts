@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useCart } from "@/app/components/CartContext";
 
 export type AddToCartParams = {
@@ -16,7 +15,6 @@ export type AddToCartParams = {
 };
 
 export function useAddToCart() {
-  const router = useRouter();
   const { addItem } = useCart();
 
   return (params: AddToCartParams) => {
@@ -29,6 +27,5 @@ export function useAddToCart() {
       city: params.city,
       zip: params.zip,
     });
-    router.push("/cart");
   };
 }

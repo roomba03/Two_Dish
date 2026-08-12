@@ -77,33 +77,35 @@ export default async function IngredientsPage({
           </div>
         ) : (
           <>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-herb">
-                  <th className="tfb-eyebrow px-6 py-3 text-left">Ingredient</th>
-                  <th className="tfb-eyebrow px-6 py-3 text-left">Unit</th>
-                  <th className="tfb-eyebrow px-6 py-3 text-right">
-                    Total needed
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-herb">
-                {ingredients.map((ing) => (
-                  <tr
-                    key={ing.name}
-                    className="transition-colors hover:bg-midsage/20"
-                  >
-                    <td className="px-6 py-4 font-medium text-deep-leaf">
-                      {ing.name}
-                    </td>
-                    <td className="px-6 py-4 text-warmgray">{ing.unit}</td>
-                    <td className="px-6 py-4 text-right text-lg font-medium text-terracotta">
-                      {formatQty(ing.total)}
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-herb">
+                    <th className="tfb-eyebrow px-6 py-3 text-left">Ingredient</th>
+                    <th className="tfb-eyebrow px-6 py-3 text-left">Unit</th>
+                    <th className="tfb-eyebrow px-6 py-3 text-right">
+                      Total needed
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-herb">
+                  {ingredients.map((ing) => (
+                    <tr
+                      key={ing.name}
+                      className="transition-colors hover:bg-midsage/20"
+                    >
+                      <td className="px-6 py-4 font-medium text-deep-leaf">
+                        {ing.name}
+                      </td>
+                      <td className="px-6 py-4 text-warmgray">{ing.unit}</td>
+                      <td className="px-6 py-4 text-right text-lg font-medium text-terracotta">
+                        {formatQty(ing.total)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             <div className="border-t border-herb px-6 py-4 text-right text-xs text-warmgray">
               {ingredients.length} ingredient{ingredients.length !== 1 ? "s" : ""}{" "}

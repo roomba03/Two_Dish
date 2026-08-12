@@ -1,8 +1,10 @@
 import Link from "next/link";
 import DishImage from "./DishImage";
 import { CalendarIcon } from "./icons/DishIcons";
+import AddToCartHoverButton from "./AddToCartHoverButton";
 import { getDefaultKitchen, getWeekMenuSchedule } from "@/lib/data/menu";
 import type { ScheduleRow } from "@/lib/data/menu";
+import { checkDeliveryDateEligibility } from "@/lib/actions/checkoutActions";
 
 const KITCHEN_TZ = "America/Chicago";
 
@@ -29,7 +31,7 @@ function getDayLabel(dateStr: string): { weekday: string; shortDate: string } {
   };
 }
 
-function DayPreviewCard({
+async function DayPreviewCard({
   dateStr,
   schedule,
 }: {
@@ -61,37 +63,52 @@ function DayPreviewCard({
   const item = schedule.menu_items;
   const remaining = schedule.max_capacity - schedule.orders_count;
   const soldOut = remaining <= 0;
+  const eligibility = await checkDeliveryDateEligibility(dateStr);
+  const closed = !eligibility.eligible;
 
   return (
-    <Link
-      href="/menu"
-      className="flex flex-col overflow-hidden rounded-lg border border-herb bg-sage transition-opacity hover:opacity-90"
-    >
-      <div className="relative">
-        <DishImage
-          src={item.image_url}
-          alt={item.name}
-          className="aspect-[4/3] rounded-none"
-        />
-        {soldOut && (
-          <div className="absolute inset-0 flex items-center justify-center bg-warmgray/40">
-            <span className="rounded-md border border-warmgray/50 bg-sage px-3 py-1 text-sm text-warmgray">
-              Sold out
-            </span>
-          </div>
-        )}
-      </div>
-      <div className="flex flex-col gap-1.5 p-4">
-        <div className="flex items-baseline gap-2">
-          <span className="text-sm font-medium text-deep-leaf">{weekday}</span>
-          <span className="text-xs text-warmgray">{shortDate}</span>
+    <div className="group relative flex flex-col overflow-hidden rounded-lg border border-herb bg-sage transition-opacity hover:opacity-90">
+      {/* Stretched link: fills the card so clicking anywhere navigates to
+          the menu, except where the hover button below re-enables its own
+          pointer events over the image. */}
+      <Link href="/menu" aria-label={`View ${item.name} on the menu`} className="absolute inset-0" />
+      <div className="pointer-events-none flex flex-1 flex-col">
+        <div className="relative">
+          <DishImage
+            src={item.image_url}
+            alt={item.name}
+            className="aspect-[4/3] rounded-none"
+          />
+          {(soldOut || closed) && (
+            <div className="absolute inset-0 flex items-center justify-center bg-warmgray/40">
+              <span className="rounded-md border border-warmgray/50 bg-sage px-3 py-1 text-sm text-warmgray">
+                {closed ? "Orders closed" : "Sold out"}
+              </span>
+            </div>
+          )}
+          {!soldOut && !closed && (
+            <AddToCartHoverButton
+              scheduleId={schedule.id}
+              menuItemId={item.id}
+              kitchenId={schedule.kitchen_id}
+              dishName={item.name}
+              price={Number(item.price)}
+              deliveryDate={dateStr}
+            />
+          )}
         </div>
-        <h3 className="text-base leading-tight text-deep-leaf">{item.name}</h3>
-        <span className="text-sm font-medium text-terracotta">
-          ${Number(item.price).toFixed(2)}
-        </span>
+        <div className="flex flex-col gap-1.5 p-4">
+          <div className="flex items-baseline gap-2">
+            <span className="text-sm font-medium text-deep-leaf">{weekday}</span>
+            <span className="text-xs text-warmgray">{shortDate}</span>
+          </div>
+          <h3 className="text-base leading-tight text-deep-leaf">{item.name}</h3>
+          <span className="text-sm font-medium text-terracotta">
+            ${Number(item.price).toFixed(2)}
+          </span>
+        </div>
       </div>
-    </Link>
+    </div>
   );
 }
 

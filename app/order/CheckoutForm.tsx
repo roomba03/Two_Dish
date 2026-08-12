@@ -54,7 +54,9 @@ const TIME_SLOT_LABELS: Record<"early" | "late", string> = {
 
 function inputClass(hasError: boolean): string {
   return [
-    "w-full rounded-lg border bg-sage px-4 py-3 text-sm text-deep-leaf outline-none transition-colors",
+    // text-base (16px), not text-sm — iOS Safari auto-zooms the page on
+    // focus for inputs below 16px.
+    "w-full rounded-lg border bg-sage px-4 py-3 text-base text-deep-leaf outline-none transition-colors",
     hasError
       ? "border-rust focus:border-rust"
       : "border-herb focus:border-terracotta",

@@ -107,7 +107,9 @@ h3 {
   border: 1px solid var(--color-herb);
   background: var(--color-sage);
   padding: 0.75rem 1rem;
-  font-size: 0.875rem;
+  /* 16px, not the 14px used elsewhere in the type scale — iOS Safari
+     auto-zooms the page on focus for inputs below 16px. */
+  font-size: 1rem;
   color: var(--color-deep-leaf);
   outline: none;
   transition: border-color 0.15s;

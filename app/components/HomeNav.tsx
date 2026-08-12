@@ -106,7 +106,7 @@ export default function HomeNav({
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="flex h-8 w-8 items-center justify-center text-deep-leaf transition-opacity hover:opacity-70"
+            className="flex h-11 w-11 items-center justify-center text-deep-leaf transition-opacity hover:opacity-70"
           >
             <MenuIcon open={open} />
           </button>
