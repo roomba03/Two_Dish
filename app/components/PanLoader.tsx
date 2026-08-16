@@ -29,7 +29,6 @@ const CHUNK_START_X = 100;
 const CHUNK_END_X = 230;
 const RIM_Y = 340;
 const GRAVITY = 0.35;
-const CHUNK_COLOR = "#F3EFE4";
 
 // Pan flip cycle, mirrors a wrist flick: dip back, snap up, settle.
 const FLIP_DURATION = 2000;
@@ -38,6 +37,10 @@ const FLICK_PHASE = 0.3;
 // Beat of stillness before the first flick, so the pan doesn't launch
 // into motion the instant the splash mounts.
 const START_DELAY = 400;
+
+// Rest beat between flicks when `repeat` is on, so consecutive flips read
+// as distinct tosses rather than one continuous spin.
+const REPEAT_PAUSE = 900;
 
 // Keyframe times (cyclic — wraps from the last time back to t=0/1).
 const KEYFRAME_TIMES = [0, 0.15, 0.35, 0.55, 0.75];
@@ -113,7 +116,14 @@ function getFlipTransform(phase: number) {
   };
 }
 
-export default function PanLoader() {
+interface PanLoaderProps {
+  // Loops the flick indefinitely (with a rest beat between each) instead
+  // of playing once and settling — used for the inline v9 placement,
+  // which stays on the page rather than unmounting like the splash does.
+  repeat?: boolean;
+}
+
+export default function PanLoader({ repeat = false }: PanLoaderProps = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const panGroupRef = useRef<SVGGElement>(null);
   const shadowRef = useRef<SVGEllipseElement>(null);
@@ -132,9 +142,28 @@ export default function PanLoader() {
     const pivotX = panBBox.x + panBBox.width * 0.5;
     const pivotY = panBBox.y + panBBox.height * 0.5;
 
+    // Live-updated rather than read once — a value snapshotted at mount
+    // (or per-chunk at spawn) can go stale mid-flight if the site version
+    // changes while chunks are still falling (each version's palette can
+    // give this a very different color, e.g. version 8's is green), so
+    // every chunk always draws with whatever this currently holds instead
+    // of a color it captured for itself.
+    let chunkColor = getComputedStyle(document.documentElement)
+      .getPropertyValue("--color-deep-leaf")
+      .trim();
+    const colorObserver = new MutationObserver(() => {
+      chunkColor = getComputedStyle(document.documentElement)
+        .getPropertyValue("--color-deep-leaf")
+        .trim();
+    });
+    colorObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-version"],
+    });
+
     let chunks: Chunk[] = [];
     let animationFrame: number;
-    let hasSpawned = false;
+    let spawnedCycle = -1;
     let originTime: number | null = null;
 
     const spawnChunk = () => {
@@ -172,13 +201,24 @@ export default function PanLoader() {
         return;
       }
 
-      // Play the flick spline through once, then hold at rest — no looping.
+      // Non-repeating: play the flick spline through once, then hold at
+      // rest. Repeating: cycle the flick with a rest pause in between.
       const now = elapsed - START_DELAY;
-      const hasFlipped = now >= FLIP_DURATION;
-      const phase = hasFlipped ? 0 : now / FLIP_DURATION;
+      let phase: number;
+      let cycleIndex: number;
+      if (repeat) {
+        const cycleLength = FLIP_DURATION + REPEAT_PAUSE;
+        cycleIndex = Math.floor(now / cycleLength);
+        const cyclePos = now % cycleLength;
+        phase = cyclePos >= FLIP_DURATION ? 0 : cyclePos / FLIP_DURATION;
+      } else {
+        cycleIndex = 0;
+        const hasFlipped = now >= FLIP_DURATION;
+        phase = hasFlipped ? 0 : now / FLIP_DURATION;
+      }
 
-      if (!hasSpawned && phase >= FLICK_PHASE) {
-        hasSpawned = true;
+      if (phase >= FLICK_PHASE && cycleIndex !== spawnedCycle) {
+        spawnedCycle = cycleIndex;
         spawnBurst();
       }
 
@@ -218,7 +258,7 @@ export default function PanLoader() {
           ctx.quadraticCurveTo(curr.x, curr.y, midX, midY);
         }
         ctx.closePath();
-        ctx.fillStyle = CHUNK_COLOR;
+        ctx.fillStyle = chunkColor;
         ctx.fill();
         ctx.restore();
       }
@@ -229,8 +269,11 @@ export default function PanLoader() {
     };
 
     animationFrame = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(animationFrame);
-  }, []);
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      colorObserver.disconnect();
+    };
+  }, [repeat]);
 
   return (
     <div
@@ -268,7 +311,7 @@ export default function PanLoader() {
           style={{ transformBox: "fill-box", transformOrigin: "50% 50%" }}
         >
           {/* handle, flush with the flat rim */}
-          <rect x="250" y="340" width="140" height="16" rx="8" fill="#F3EFE4" />
+          <rect x="250" y="340" width="140" height="16" rx="8" style={{ fill: "var(--color-deep-leaf)" }} />
 
           {/* pan body, seen edge-on: flat bottom, low sloped walls */}
           <path
@@ -279,7 +322,7 @@ export default function PanLoader() {
                L 120 390
                Q 60 390 60 358
                L 60 340 Z"
-            fill="#F3EFE4"
+            style={{ fill: "var(--color-deep-leaf)" }}
           />
         </g>
       </svg>

@@ -12,6 +12,14 @@ export default function IntroSplash() {
   const [phase, setPhase] = useState<Phase>("intro");
 
   useEffect(() => {
+    // Version 9 drops the loading-screen splash entirely — its pan
+    // animation runs inline above the "What we offer" blurb instead
+    // (see .tfb-offer-loader in page.tsx / globals.css).
+    if (document.documentElement.getAttribute("data-version") === "9") {
+      setPhase("done");
+      return;
+    }
+
     const exitTimer = setTimeout(() => setPhase("exiting"), HOLD_MS);
     const doneTimer = setTimeout(() => setPhase("done"), HOLD_MS + EXIT_MS);
     return () => {
@@ -31,7 +39,7 @@ export default function IntroSplash() {
 
   return (
     <div
-      className={`fixed inset-0 z-[1200] flex flex-col items-center justify-center bg-warmgray transition-transform duration-700 ease-in-out ${
+      className={`tfb-intro-splash fixed inset-0 z-[1200] flex flex-col items-center justify-center bg-warmgray transition-transform duration-700 ease-in-out ${
         phase === "exiting" ? "-translate-y-full" : "translate-y-0"
       }`}
     >

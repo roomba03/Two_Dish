@@ -19,7 +19,7 @@ export default function DishImage({
 
   return (
     <div
-      className={`relative w-full overflow-hidden bg-midsage ${className}`}
+      className={`relative isolate w-full overflow-hidden bg-midsage ${className}`}
     >
       {showPlaceholder ? (
         <div className="flex h-full w-full items-center justify-center">

@@ -44,9 +44,9 @@ export default function DeliveryZoneCheckerMap({
           ([lng, lat]) => [lat, lng] as [number, number]
         );
         const poly = L.polygon(latLngs, {
-          color: "#A9773F",
+          color: "#280004",
           weight: 2,
-          fillColor: "#A9773F",
+          fillColor: "#280004",
           fillOpacity: 0.14,
         }).addTo(map);
         map.fitBounds(poly.getBounds(), { padding: [32, 32] });
@@ -75,7 +75,7 @@ export default function DeliveryZoneCheckerMap({
       if (!mapRef.current) return;
       markerRef.current?.remove();
 
-      const color = resultInZone ? "#A9773F" : "#8C4331";
+      const color = resultInZone ? "#280004" : "#8C4331";
       markerRef.current = L.circleMarker(resultPoint, {
         radius: 9,
         color,

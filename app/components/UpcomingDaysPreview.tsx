@@ -44,7 +44,7 @@ async function DayPreviewCard({
     return (
       <Link
         href="/menu"
-        className="flex flex-col overflow-hidden rounded-lg border border-herb bg-sage transition-opacity hover:opacity-90"
+        className="tfb-shadow-card flex flex-col overflow-hidden rounded-lg border border-herb bg-sage transition-opacity hover:opacity-90"
       >
         <div className="flex aspect-[4/3] w-full items-center justify-center bg-midsage">
           <CalendarIcon className="h-9 w-9 text-terracotta" aria-hidden />
@@ -52,7 +52,7 @@ async function DayPreviewCard({
         <div className="flex flex-col gap-1 p-4">
           <div className="flex items-baseline gap-2">
             <span className="text-sm font-medium text-deep-leaf">{weekday}</span>
-            <span className="text-xs text-warmgray">{shortDate}</span>
+            <span className="tfb-date-label text-xs text-warmgray">{shortDate}</span>
           </div>
           <p className="text-sm text-warmgray">No meal scheduled</p>
         </div>
@@ -67,7 +67,7 @@ async function DayPreviewCard({
   const closed = !eligibility.eligible;
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-lg border border-herb bg-sage transition-opacity hover:opacity-90">
+    <div className="tfb-shadow-card group relative flex flex-col overflow-hidden rounded-lg border border-herb bg-sage transition-opacity hover:opacity-90">
       {/* Stretched link: fills the card so clicking anywhere navigates to
           the menu, except where the hover button below re-enables its own
           pointer events over the image. */}
@@ -100,7 +100,7 @@ async function DayPreviewCard({
         <div className="flex flex-col gap-1.5 p-4">
           <div className="flex items-baseline gap-2">
             <span className="text-sm font-medium text-deep-leaf">{weekday}</span>
-            <span className="text-xs text-warmgray">{shortDate}</span>
+            <span className="tfb-date-label text-xs text-warmgray">{shortDate}</span>
           </div>
           <h3 className="text-base leading-tight text-deep-leaf">{item.name}</h3>
           <span className="text-sm font-medium text-terracotta">
@@ -118,7 +118,7 @@ export function UpcomingDaysPreviewSkeleton() {
       {Array.from({ length: 3 }).map((_, i) => (
         <div
           key={i}
-          className="animate-pulse overflow-hidden rounded-lg border border-herb bg-sage"
+          className="tfb-shadow-card animate-pulse overflow-hidden rounded-lg border border-herb bg-sage"
         >
           <div className="aspect-[4/3] bg-midsage" />
           <div className="flex flex-col gap-2 p-4">

@@ -29,7 +29,10 @@ Never a second accent color anywhere in the app, including admin/dashboard views
 - Border radius 6–10px on every interactive element: buttons, inputs, cards, modals, dropdowns, toasts, photo/placeholder crops. Never 0, never above 12px
 - Inputs and selects use hairline-border treatment (`#DDD3CC`), not heavy boxed borders
 - Dividers between sections: 0.5–1px hairlines in the border color, never a hard box border
-- No drop shadows anywhere, including modals — use hairline borders for separation, since there's no background/surface color contrast to lean on
+- Drop shadows are allowed for elevation — soft and warm-toned only, built from the primary text color (`#3A2B2E`) at low opacity, never pure black and never tinted with the accent color:
+  - Cards, dropdowns, photo/placeholder crops: `0 1px 2px rgba(58,43,46,0.06), 0 6px 16px rgba(58,43,46,0.08)`
+  - Modals and toasts (floating above other content): `0 8px 24px rgba(58,43,46,0.14)`
+  - Shadow adds lift; it doesn't replace the hairline border — keep both
 
 ## Navigation and structural chrome
 
@@ -81,11 +84,12 @@ Never a second accent color anywhere in the app, including admin/dashboard views
 - Soft amber-gold radial glows are allowed, but only as quiet atmosphere behind hero/splash-style full-bleed moments (e.g. the intro loading screen) — never inside cards, forms, or ordinary content sections
 - Amber-gold only (`#A9773F`), at low opacity (~10–15%), broad and soft (large radius, `transparent` falloff) — a bloom, never a visible band or hard edge
 - Max two blooms per screen, placed off-center so they read as ambient light, not decoration
-- Still no neon colors, no second accent color, no drop shadows (box-shadow) — this exception covers background radial-gradient glows only
+- Still no neon colors, no second accent color — glows stay amber-gold only; card/modal elevation uses the drop-shadow spec above instead, not a glow
 
 ## What to avoid, globally
 
-- No gradients, neon colors, or drop shadows on any page, including admin/internal tools — except the sanctioned glow accents above
+- No neon colors on any page, including admin/internal tools — except the sanctioned glow accents above
+- Drop shadows are allowed, but only the warm, low-opacity elevation spec above — never a hard/dark shadow, a colored shadow, or an inner shadow
 - No component introducing its own one-off color or radius not covered above
 - No mixing of icon styles anywhere in the product
 - No second accent color, and no green — this palette was deliberately moved away from a green/terracotta system after testing showed it read as cluttered and clashing

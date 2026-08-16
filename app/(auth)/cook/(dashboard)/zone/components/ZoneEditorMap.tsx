@@ -46,7 +46,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
           ([lng, lat]) => [lat, lng] as [number, number]
         );
         const poly = L.polygon(latLngs, {
-          color: "#A9773F",
+          color: "#280004",
           weight: 2,
           fillOpacity: 0.15,
         }).addTo(map);
@@ -62,8 +62,8 @@ export default function ZoneEditorMap({ existingZone }: Props) {
 
         const marker = L.circleMarker([lat, lng], {
           radius: 6,
-          color: "#A9773F",
-          fillColor: "#A9773F",
+          color: "#280004",
+          fillColor: "#280004",
           fillOpacity: 1,
           weight: 2,
         }).addTo(map);
@@ -78,7 +78,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
           }
           if (next.length >= 3) {
             drawnPolyRef.current = L.polygon(next, {
-              color: "#A9773F",
+              color: "#280004",
               weight: 2,
               fillOpacity: 0.1,
               dashArray: "6 4",
@@ -129,7 +129,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
             .map(([lng, lat]) => [lat, lng] as [number, number]);
           const L = await import("leaflet");
           existingPolyRef.current = L.polygon(latLngs, {
-            color: "#A9773F",
+            color: "#280004",
             weight: 2,
             fillOpacity: 0.15,
           }).addTo(mapRef.current);

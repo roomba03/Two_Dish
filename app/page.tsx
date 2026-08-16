@@ -8,6 +8,7 @@ import DeliveryZoneChecker from "@/app/components/DeliveryZoneChecker";
 import TomorrowDishSpotlight from "@/app/components/TomorrowDishSpotlight";
 import { VegetableIcon } from "@/app/components/icons/DishIcons";
 import IntroSplash from "@/app/components/IntroSplash";
+import PanLoader from "@/app/components/PanLoader";
 import HomeNav from "@/app/components/HomeNav";
 import UpcomingDaysPreview, {
   UpcomingDaysPreviewSkeleton,
@@ -77,14 +78,15 @@ export default async function HomePage() {
     : null;
 
   return (
-    <div className="bg-sage text-deep-leaf">
+    <div className="tfb-page-bg flex flex-col bg-sage text-deep-leaf">
       <IntroSplash />
 
       {/* ── NAV ─────────────────────────────────────────────────────── */}
       <HomeNav profileName={profile?.name ?? null} />
 
       {/* ── HERO ────────────────────────────────────────────────────── */}
-      <section className="relative h-[calc(100vh-4rem)] w-full overflow-hidden">
+      {/* Hidden in version 9 — see .tfb-hero rule in globals.css. */}
+      <section className="tfb-hero relative isolate order-[10] h-[calc(100vh-4rem)] w-full overflow-hidden">
         <Image
           src="/dish-images/TACOS.png"
           alt="Tacos"
@@ -97,18 +99,25 @@ export default async function HomePage() {
       </section>
 
       {/* ── WHAT WE OFFER ──────────────────────────────────────────── */}
-      <section>
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-12 px-6 py-20 md:grid-cols-2">
+      <section className="order-[20]">
+        {/* Version 0 only — offer copy paired side by side with an embedded
+            delivery checker (standalone #delivery-area section below is
+            hidden for this version, see globals.css). Versions 8/9 keep
+            the original single-column layout in .tfb-offer-legacy below. */}
+        <div className="tfb-offer-delivery-combined mx-auto grid max-w-7xl grid-cols-1 items-start gap-12 px-6 py-20 md:grid-cols-2">
           <div>
             <p className="tfb-eyebrow mb-4">What we offer</p>
             <h2 className="mb-5 text-4xl leading-tight text-deep-leaf">
               Home-cooked Hyderabadi food, delivered to your door
             </h2>
             <p className="mb-4 text-base leading-relaxed text-warmgray">
-              Two Dish brings Chef Eram&apos;s family recipes straight from
-              her kitchen to yours. Every day we cook exactly one dish —
-              biryani, haleem, kebabs, and more — in small batches, nothing
-              frozen and nothing repeated.
+              Two Dish is a small home catering business bringing the
+              flavors of Hyderabadi cuisine straight from Chef Eram&apos;s
+              kitchen to yours. Rather than a sprawling menu, we plan a
+              weekly schedule around a single dish each day and cook it
+              fresh in small batches to match that day&apos;s orders.
+              Nothing is made ahead, frozen, or repeated, so every order
+              tastes like it just came off the stove.
             </p>
             <p className="mb-8 text-base leading-relaxed text-warmgray">
               Place your order by 11:59 PM the night before and pick your
@@ -117,18 +126,62 @@ export default async function HomePage() {
             </p>
             <Link
               href="/menu"
-              className="inline-flex items-center gap-2.5 rounded-lg bg-terracotta px-8 py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+              className="tfb-shadow-btn inline-flex items-center gap-2.5 rounded-lg bg-terracotta px-8 py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
             >
               View this week&apos;s menu
               <ArrowRight />
             </Link>
           </div>
-
           <DeliveryZoneChecker
             zone={kitchen?.delivery_zone ?? null}
             activeZips={kitchen?.active_zips ?? []}
             variant="embedded"
           />
+        </div>
+
+        {/* Versions 8/9 — original single-column layout, hidden for
+            version 0 (see .tfb-offer-legacy in globals.css). */}
+        <div className="tfb-offer-legacy hidden mx-auto max-w-3xl px-6 py-20 text-center">
+          {/* Version 9 only — replaces the IntroSplash loading screen; see
+              .tfb-offer-loader in globals.css. */}
+          <div className="tfb-offer-loader mb-2 hidden h-[147px] items-center justify-center overflow-hidden sm:h-[184px] md:h-[207px]">
+            <PanLoader repeat />
+          </div>
+          <p className="tfb-offer-title mb-5 hidden font-heading text-5xl leading-tight text-deep-leaf sm:text-6xl">
+            Two Dish Catering Services
+          </p>
+          <p className="tfb-offer-eyebrow tfb-eyebrow mb-4">What we offer</p>
+          <h2 className="tfb-offer-heading mb-5 text-4xl leading-tight text-deep-leaf">
+            Home-cooked Hyderabadi food, delivered to your door
+          </h2>
+          <p className="tfb-offer-blurb-default mb-4 text-base leading-relaxed text-warmgray">
+            Two Dish is a small home catering business bringing the flavors
+            of Hyderabadi cuisine straight from Chef Eram&apos;s kitchen to
+            yours. Rather than a sprawling menu, we plan a weekly schedule
+            around a single dish each day and cook it fresh in small batches
+            to match that day&apos;s orders. Nothing is made ahead, frozen,
+            or repeated, so every order tastes like it just came off the
+            stove.
+          </p>
+          <p className="tfb-offer-blurb-v9 mb-4 hidden text-base leading-relaxed text-warmgray">
+            Two Dish is a small catering kitchen built around Hyderabadi
+            cuisine. Rather than a sprawling menu, we plan a weekly schedule
+            around a single dish each day and cook it fresh in small batches
+            to match that day&apos;s orders. Nothing frozen, nothing
+            repeated, every order made to match the day&apos;s demand.
+          </p>
+          <p className="mb-8 text-base leading-relaxed text-warmgray">
+            Place your order by 11:59 PM the night before and pick your
+            evening slot, 6:30 or 7:30 PM. We&apos;ll bring it straight to
+            your door, ready to serve at the table.
+          </p>
+          <Link
+            href="/menu"
+            className="inline-flex items-center gap-2.5 rounded-lg bg-terracotta px-8 py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+          >
+            View this week&apos;s menu
+            <ArrowRight />
+          </Link>
         </div>
       </section>
 
@@ -177,7 +230,8 @@ export default async function HomePage() {
       */}
 
       {/* ── UPCOMING DAYS PREVIEW ──────────────────────────────────────── */}
-      <section>
+      {/* tfb-upcoming: order shifted after Delivery in version 9 — see globals.css. */}
+      <section className="tfb-upcoming order-[30]">
         <div className="mx-auto max-w-7xl px-6 py-14">
           <p className="tfb-eyebrow mb-8">Coming up</p>
           <Suspense fallback={<UpcomingDaysPreviewSkeleton />}>
@@ -188,7 +242,7 @@ export default async function HomePage() {
           <div className="mt-10 flex w-full flex-wrap items-center justify-center gap-3.5">
             <Link
               href="/menu"
-              className="inline-flex items-center gap-2.5 rounded-lg bg-terracotta px-8 py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+              className="tfb-shadow-btn inline-flex items-center gap-2.5 rounded-lg bg-terracotta px-8 py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
             >
               View this week&apos;s menu
               <ArrowRight />
@@ -198,22 +252,24 @@ export default async function HomePage() {
       </section>
 
       {/* ── DELIVERY ZONE CHECKER ───────────────────────────────────── */}
+      {/* Order set via #delivery-area in globals.css (base order 40; moved
+          ahead of Upcoming Days Preview in version 9). */}
       <DeliveryZoneChecker
         zone={kitchen?.delivery_zone ?? null}
         activeZips={kitchen?.active_zips ?? []}
       />
 
       {/* ── HOW IT WORKS ────────────────────────────────────────────── */}
-      <section>
+      <section className="order-[50]">
         <div className="mx-auto max-w-7xl px-6 py-14">
           <p className="tfb-eyebrow mb-8">The process</p>
 
-          <div className="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-herb bg-herb sm:grid-cols-3">
+          <div className="tfb-shadow-card tfb-process-grid grid grid-cols-1 gap-px rounded-lg border border-herb bg-herb sm:grid-cols-3">
             {steps.map((step) => (
               <div
                 key={step.num}
-                className={`flex flex-col gap-8 p-11 ${
-                  step.highlight ? "bg-midsage/40" : "bg-sage"
+                className={`tfb-process-card flex flex-col gap-8 p-11 ${
+                  step.highlight ? "tfb-step-highlight" : "bg-sage"
                 }`}
               >
                 <span className="font-heading text-5xl text-terracotta/40">
@@ -234,7 +290,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── FINAL CTA ───────────────────────────────────────────────── */}
-      <section className="px-6 py-20 text-center">
+      <section className="order-[60] px-6 py-20 text-center">
         <p className="tfb-eyebrow mb-5">Ready to eat well?</p>
 
         <h2 className="mx-auto mb-10 max-w-[16ch] text-5xl leading-none text-deep-leaf sm:text-6xl">
@@ -243,7 +299,7 @@ export default async function HomePage() {
 
         <Link
           href="/menu"
-          className="inline-flex items-center gap-2.5 rounded-lg bg-terracotta px-9 py-4.5 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+          className="tfb-shadow-btn inline-flex items-center gap-2.5 rounded-lg bg-terracotta px-9 py-4.5 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
         >
           View the full menu
           <ArrowRight />
@@ -251,7 +307,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── FOOTER ──────────────────────────────────────────────────── */}
-      <footer>
+      <footer className="order-[70]">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-7">
           <span className="font-heading text-base text-warmgray">Two Dish</span>
           <VegetableIcon className="h-5 w-5 text-terracotta" aria-hidden />

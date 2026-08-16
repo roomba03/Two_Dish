@@ -122,7 +122,7 @@ export default function DeliveryZoneChecker({
     <>
       {/* ── Map ── */}
       <div
-        className={`overflow-hidden rounded-lg border border-herb ${
+        className={`tfb-shadow-card isolate overflow-hidden rounded-lg border border-herb ${
           variant === "embedded" ? "h-72" : "h-[420px]"
         }`}
       >
@@ -164,7 +164,7 @@ export default function DeliveryZoneChecker({
             <button
               type="submit"
               disabled={loading || !address.trim()}
-              className="rounded-lg bg-terracotta px-7 py-3.5 text-sm font-medium text-sage transition-opacity hover:opacity-90 disabled:bg-warmgray disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+              className="tfb-shadow-btn rounded-lg bg-terracotta px-7 py-3.5 text-sm font-medium text-sage transition-opacity hover:opacity-90 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
             >
               {loading ? "Checking…" : "Check my address"}
             </button>
