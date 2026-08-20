@@ -11,7 +11,7 @@ function CartShell({
   children,
 }: {
   profileName: string | null;
-  title: string;
+  title?: string;
   subtitle?: string;
   children: React.ReactNode;
 }) {
@@ -29,12 +29,14 @@ function CartShell({
 
         <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center py-16">
           <div className="w-full max-w-sm">
-            <div className="mb-8 text-center">
-              <h1 className="mt-2 text-2xl text-deep-leaf">{title}</h1>
-              {subtitle && (
-                <p className="mt-1 text-sm text-warmgray">{subtitle}</p>
-              )}
-            </div>
+            {title && (
+              <div className="mb-8 text-center">
+                <h1 className="mt-2 text-2xl text-deep-leaf">{title}</h1>
+                {subtitle && (
+                  <p className="mt-1 text-sm text-warmgray">{subtitle}</p>
+                )}
+              </div>
+            )}
 
             <div className="tfb-card p-8">{children}</div>
           </div>
@@ -46,7 +48,7 @@ function CartShell({
 
 function EmptyCart({ profileName }: { profileName: string | null }) {
   return (
-    <CartShell profileName={profileName} title="Your cart">
+    <CartShell profileName={profileName}>
       <div className="text-center">
         <p className="text-deep-leaf">Your cart is empty.</p>
         <p className="mt-1 text-sm text-warmgray">
