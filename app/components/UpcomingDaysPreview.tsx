@@ -46,7 +46,7 @@ async function DayPreviewCard({
         href="/menu"
         className="tfb-shadow-card flex flex-col overflow-hidden rounded-lg border border-herb bg-sage transition-opacity hover:opacity-90"
       >
-        <div className="flex aspect-[4/3] w-full items-center justify-center bg-midsage">
+        <div className="tfb-day-placeholder flex aspect-[4/3] w-full items-center justify-center bg-midsage">
           <CalendarIcon className="h-9 w-9 text-terracotta" aria-hidden />
         </div>
         <div className="flex flex-col gap-1 p-4">

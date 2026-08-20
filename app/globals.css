@@ -144,13 +144,36 @@
    page continuously rather than for a few seconds. background-attachment:
    fixed keeps the two blooms anchored to the viewport as the page scrolls,
    instead of the gradient's percentage positions landing wherever they
-   fall on the full (very tall) page height. */
+   fall on the full (very tall) page height.
+
+   Position is driven by PageGlow.tsx via CSS custom properties, which
+   eases each bloom toward the cursor. The literal values below are the
+   at-rest fallback (no JS / reduced motion), matching the original
+   static blooms; opacity is left at these fallback values always. */
 :root[data-version="9"] .tfb-page-glow {
   background-image:
-    radial-gradient(520px circle at 14% 18%, rgb(255 225 156 / 0.07), transparent 70%),
-    radial-gradient(480px circle at 86% 80%, rgb(255 225 156 / 0.06), transparent 70%);
+    radial-gradient(
+      520px circle at var(--glow-1-x, 14%) var(--glow-1-y, 18%),
+      rgb(255 225 156 / var(--glow-1-o, 0.045)),
+      transparent 70%
+    ),
+    radial-gradient(
+      480px circle at var(--glow-2-x, 86%) var(--glow-2-y, 80%),
+      rgb(255 225 156 / var(--glow-2-o, 0.038)),
+      transparent 70%
+    );
   background-attachment: fixed;
   pointer-events: none;
+}
+
+/* The "no meal scheduled" day-preview placeholder (see .tfb-day-placeholder
+   in UpcomingDaysPreview.tsx / WeeklyMenuGrid.tsx) normally shares
+   --color-midsage with a lot of unrelated UI (form panels, hover rows,
+   dish-image fallbacks) — overridden here on its own class instead of
+   touching that shared token, so only this placeholder shifts to a light
+   yellow instead of the version's pale-mint midsage. */
+:root[data-version="9"] .tfb-day-placeholder {
+  background-color: #fff4dc;
 }
 
 /* The default shadow spec is built from a dark plum-charcoal, which reads

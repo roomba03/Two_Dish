@@ -82,7 +82,7 @@ function NoMenuCard({
 }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-herb bg-sage">
-      <div className="flex aspect-[4/3] w-full items-center justify-center bg-midsage">
+      <div className="tfb-day-placeholder flex aspect-[4/3] w-full items-center justify-center bg-midsage">
         <CalendarIcon className="h-10 w-10 text-terracotta" aria-hidden />
       </div>
       <div className="flex flex-col gap-2 p-4">

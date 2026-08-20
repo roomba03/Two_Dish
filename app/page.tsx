@@ -8,6 +8,7 @@ import DeliveryZoneChecker from "@/app/components/DeliveryZoneChecker";
 import TomorrowDishSpotlight from "@/app/components/TomorrowDishSpotlight";
 import { VegetableIcon } from "@/app/components/icons/DishIcons";
 import IntroSplash from "@/app/components/IntroSplash";
+import PageGlow from "@/app/components/PageGlow";
 import PanLoader from "@/app/components/PanLoader";
 import HomeNav from "@/app/components/HomeNav";
 import UpcomingDaysPreview, {
@@ -79,11 +80,12 @@ export default async function HomePage() {
 
   return (
     <div className="tfb-page-bg relative isolate flex flex-col bg-sage text-deep-leaf">
-      {/* Version 9 only — very subtle ambient glow, see .tfb-page-glow in
-          globals.css. Negative z-index keeps it above the page's own
-          bg-sage but below every section, which are all normal-flow
-          (non-positioned) and so paint on top of it automatically. */}
-      <div aria-hidden className="tfb-page-glow absolute inset-0 -z-10" />
+      {/* Version 9 only — ambient glow that eases toward the cursor, see
+          PageGlow.tsx and .tfb-page-glow in globals.css. Negative z-index
+          keeps it above the page's own bg-sage but below every section,
+          which are all normal-flow (non-positioned) and so paint on top
+          of it automatically. */}
+      <PageGlow />
 
       <IntroSplash />
 
