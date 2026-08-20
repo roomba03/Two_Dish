@@ -43,10 +43,15 @@ export default function RootLayout({
             hiding the IntroSplash loading screen) are already active by
             the time anything renders. VersionSwitcher still owns the
             React-side state/keydown handling; this just closes the gap
-            between first paint and its useEffect. */}
+            between first paint and its useEffect.
+
+            Versions 0 and 8 are disabled for now, so any stored value
+            other than "9" falls back to "9" (the current default). Revert
+            to the old behavior (only overriding when a value is stored and
+            isn't "0") once 0/8 are back in rotation. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var v=localStorage.getItem("tfb-version");if(v&&v!=="0")document.documentElement.setAttribute("data-version",v);}catch(e){}})();`,
+            __html: `(function(){try{var v=localStorage.getItem("tfb-version");if(v!=="9")v="9";document.documentElement.setAttribute("data-version",v);}catch(e){}})();`,
           }}
         />
         <VersionSwitcher />
