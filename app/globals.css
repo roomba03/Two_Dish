@@ -278,11 +278,13 @@
   order: 40;
 }
 
-/* Version 9: Delivery coverage moves up to sit right after What we offer,
+/* Versions 8/9: Delivery coverage moves up to sit right after What we offer,
    ahead of Upcoming Days Preview (order 30), instead of after it. */
+:root[data-version="8"] #delivery-area,
 :root[data-version="9"] #delivery-area {
   order: 21;
 }
+:root[data-version="8"] .tfb-upcoming,
 :root[data-version="9"] .tfb-upcoming {
   order: 22;
 }

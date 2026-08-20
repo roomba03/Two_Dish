@@ -230,7 +230,7 @@ export default async function HomePage() {
       */}
 
       {/* ── UPCOMING DAYS PREVIEW ──────────────────────────────────────── */}
-      {/* tfb-upcoming: order shifted after Delivery in version 9 — see globals.css. */}
+      {/* tfb-upcoming: order shifted after Delivery in versions 8/9 — see globals.css. */}
       <section className="tfb-upcoming order-[30]">
         <div className="mx-auto max-w-7xl px-6 py-14">
           <p className="tfb-eyebrow mb-8">Coming up</p>
@@ -253,7 +253,7 @@ export default async function HomePage() {
 
       {/* ── DELIVERY ZONE CHECKER ───────────────────────────────────── */}
       {/* Order set via #delivery-area in globals.css (base order 40; moved
-          ahead of Upcoming Days Preview in version 9). */}
+          ahead of Upcoming Days Preview in versions 8/9). */}
       <DeliveryZoneChecker
         zone={kitchen?.delivery_zone ?? null}
         activeZips={kitchen?.active_zips ?? []}
