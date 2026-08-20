@@ -61,7 +61,7 @@ export default function SparkleCursor() {
           id,
           x: e.clientX,
           y: e.clientY,
-          size: 7 + Math.random() * 8,
+          size: 7.5 + Math.random() * 8,
           rotation: Math.random() * 360 - 180,
         },
       ]);

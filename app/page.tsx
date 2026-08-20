@@ -78,7 +78,13 @@ export default async function HomePage() {
     : null;
 
   return (
-    <div className="tfb-page-bg flex flex-col bg-sage text-deep-leaf">
+    <div className="tfb-page-bg relative isolate flex flex-col bg-sage text-deep-leaf">
+      {/* Version 9 only — very subtle ambient glow, see .tfb-page-glow in
+          globals.css. Negative z-index keeps it above the page's own
+          bg-sage but below every section, which are all normal-flow
+          (non-positioned) and so paint on top of it automatically. */}
+      <div aria-hidden className="tfb-page-glow absolute inset-0 -z-10" />
+
       <IntroSplash />
 
       {/* ── NAV ─────────────────────────────────────────────────────── */}

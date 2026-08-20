@@ -138,6 +138,21 @@
     radial-gradient(420px circle at 84% 78%, rgb(255 225 156 / 0.14), transparent 70%);
 }
 
+/* Version 9: a very subtle ambient glow behind the whole homepage — same
+   sanctioned amber-gold spec (see DESIGN.md "Glow accents"), just much
+   lower opacity than the intro splash's since this one sits behind the
+   page continuously rather than for a few seconds. background-attachment:
+   fixed keeps the two blooms anchored to the viewport as the page scrolls,
+   instead of the gradient's percentage positions landing wherever they
+   fall on the full (very tall) page height. */
+:root[data-version="9"] .tfb-page-glow {
+  background-image:
+    radial-gradient(520px circle at 14% 18%, rgb(255 225 156 / 0.07), transparent 70%),
+    radial-gradient(480px circle at 86% 80%, rgb(255 225 156 / 0.06), transparent 70%);
+  background-attachment: fixed;
+  pointer-events: none;
+}
+
 /* The default shadow spec is built from a dark plum-charcoal, which reads
    as invisible against this version's already-dark violet background —
    pure black at higher opacity is the only thing that shows up here. */
