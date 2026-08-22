@@ -240,7 +240,7 @@ export default async function HomePage() {
       {/* ── UPCOMING DAYS PREVIEW ──────────────────────────────────────── */}
       {/* tfb-upcoming: order shifted after Delivery in versions 8/9 — see globals.css. */}
       <section className="tfb-upcoming order-[30]">
-        <div className="mx-auto max-w-7xl px-6 py-14">
+        <div className="mx-auto max-w-7xl px-6 py-20">
           <p className="tfb-eyebrow mb-8">Coming up</p>
           <Suspense fallback={<UpcomingDaysPreviewSkeleton />}>
             <UpcomingDaysPreview />
@@ -269,7 +269,7 @@ export default async function HomePage() {
 
       {/* ── HOW IT WORKS ────────────────────────────────────────────── */}
       <section className="order-[50]">
-        <div className="mx-auto max-w-7xl px-6 py-14">
+        <div className="mx-auto max-w-7xl px-6 py-20">
           <p className="tfb-eyebrow mb-8">The process</p>
 
           <div className="tfb-shadow-card tfb-process-grid grid grid-cols-1 gap-px rounded-lg border border-herb bg-herb sm:grid-cols-3">
@@ -299,7 +299,7 @@ export default async function HomePage() {
 
       {/* ── FINAL CTA ───────────────────────────────────────────────── */}
       <section className="order-[60] px-6 py-20 text-center">
-        <p className="tfb-eyebrow mb-5">Ready to eat well?</p>
+        <p className="tfb-eyebrow mb-4">Ready to eat well?</p>
 
         <h2 className="mx-auto mb-10 max-w-[16ch] text-5xl leading-none text-deep-leaf sm:text-6xl">
           See what&apos;s cooking this week.
@@ -307,7 +307,7 @@ export default async function HomePage() {
 
         <Link
           href="/menu"
-          className="tfb-shadow-btn inline-flex items-center gap-2.5 rounded-lg bg-terracotta px-9 py-4.5 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+          className="tfb-shadow-btn inline-flex items-center gap-2.5 rounded-lg bg-terracotta px-8 py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
         >
           View the full menu
           <ArrowRight />

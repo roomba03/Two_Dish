@@ -135,9 +135,9 @@ export default function DeliveryZoneChecker({
 
       {/* ── Form side ── */}
       <div className={variant === "embedded" ? undefined : "pt-2"}>
-        <p className="tfb-eyebrow mb-3.5">Delivery coverage</p>
+        <p className="tfb-eyebrow mb-4">Delivery coverage</p>
 
-        <h2 className="mb-4 text-4xl leading-tight text-deep-leaf">
+        <h2 className="mb-5 text-4xl leading-tight text-deep-leaf">
           Do we deliver to you?
         </h2>
 
@@ -164,7 +164,7 @@ export default function DeliveryZoneChecker({
             <button
               type="submit"
               disabled={loading || !address.trim()}
-              className="tfb-shadow-btn rounded-lg bg-terracotta px-7 py-3.5 text-sm font-medium text-sage transition-opacity hover:opacity-90 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+              className="tfb-shadow-btn rounded-lg bg-terracotta px-8 py-4 text-sm font-medium text-sage transition-opacity hover:opacity-90 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
             >
               {loading ? "Checking…" : "Check my address"}
             </button>
