@@ -15,9 +15,6 @@ export default async function CustomerLoginPage({
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center">
             <h1 className="text-2xl text-deep-leaf">Customer login</h1>
-            <p className="mt-1 text-sm text-warmgray">
-              Sign in to manage your orders and saved address
-            </p>
           </div>
 
           <div className="tfb-card p-8">
