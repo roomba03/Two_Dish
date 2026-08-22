@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useState } from "react";
 import { createMenuItem, type ActionState } from "@/lib/actions/menuActions";
 import DishImageField from "./DishImageField";
 
@@ -14,13 +14,15 @@ export default function AddMenuItemForm() {
   const [state, action, isPending] = useActionState(createMenuItem, initial);
   const [open, setOpen] = useState(false);
   const [formKey, setFormKey] = useState(0);
+  const [prevSuccess, setPrevSuccess] = useState(state.success);
 
-  useEffect(() => {
+  if (state.success !== prevSuccess) {
+    setPrevSuccess(state.success);
     if (state.success) {
       setFormKey((k) => k + 1);
       setOpen(false);
     }
-  }, [state.success]);
+  }
 
   return (
     <div className="tfb-card">

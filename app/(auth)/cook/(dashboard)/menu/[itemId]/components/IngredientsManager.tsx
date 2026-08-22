@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import {
   addIngredient,
   deleteIngredient,
@@ -19,10 +19,12 @@ function Label({ children }: { children: React.ReactNode }) {
 export default function IngredientsManager({ menuItemId, ingredients }: Props) {
   const [state, action, isPending] = useActionState(addIngredient, initial);
   const [formKey, setFormKey] = useState(0);
+  const [prevSuccess, setPrevSuccess] = useState(state.success);
 
-  useEffect(() => {
+  if (state.success !== prevSuccess) {
+    setPrevSuccess(state.success);
     if (state.success) setFormKey((k) => k + 1);
-  }, [state.success]);
+  }
 
   return (
     <div className="flex flex-col gap-6">

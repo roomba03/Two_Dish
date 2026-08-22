@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { createElement, useState } from "react";
 import { getDishIcon } from "./icons/DishIcons";
 
 export default function DishImage({
@@ -15,7 +15,6 @@ export default function DishImage({
 }) {
   const [failed, setFailed] = useState(false);
   const showPlaceholder = !src || failed;
-  const Icon = getDishIcon(alt);
 
   return (
     <div
@@ -23,7 +22,10 @@ export default function DishImage({
     >
       {showPlaceholder ? (
         <div className="flex h-full w-full items-center justify-center">
-          <Icon className="h-12 w-12 text-terracotta" aria-hidden />
+          {createElement(getDishIcon(alt), {
+            className: "h-12 w-12 text-terracotta",
+            "aria-hidden": true,
+          })}
         </div>
       ) : (
         <Image

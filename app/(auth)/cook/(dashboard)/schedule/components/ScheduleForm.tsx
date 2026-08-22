@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import { scheduleMenuItem, type ActionState } from "@/lib/actions/menuActions";
 import type { MenuItem } from "@/lib/data/kitchen";
 
@@ -15,10 +15,12 @@ function Label({ children }: { children: React.ReactNode }) {
 export default function ScheduleForm({ menuItems, today }: Props) {
   const [state, action, isPending] = useActionState(scheduleMenuItem, initial);
   const [formKey, setFormKey] = useState(0);
+  const [prevSuccess, setPrevSuccess] = useState(state.success);
 
-  useEffect(() => {
+  if (state.success !== prevSuccess) {
+    setPrevSuccess(state.success);
     if (state.success) setFormKey((k) => k + 1);
-  }, [state.success]);
+  }
 
   return (
     <div className="tfb-card px-6 py-6">

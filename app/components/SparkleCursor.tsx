@@ -40,11 +40,7 @@ export default function SparkleCursor() {
   }, []);
 
   useEffect(() => {
-    if (!active) {
-      setSparkles([]);
-      return;
-    }
-
+    if (!active) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
@@ -71,7 +67,10 @@ export default function SparkleCursor() {
     };
 
     window.addEventListener("mousemove", handleMove);
-    return () => window.removeEventListener("mousemove", handleMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      setSparkles([]);
+    };
   }, [active]);
 
   if (!active || sparkles.length === 0) return null;

@@ -1,11 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getDefaultKitchen, getWeekMenuSchedule } from "@/lib/data/menu";
-import { checkDeliveryDateEligibility } from "@/lib/actions/checkoutActions";
+import { getDefaultKitchen } from "@/lib/data/menu";
 import { getCustomerFromCookie } from "@/lib/data/account";
 import DeliveryZoneChecker from "@/app/components/DeliveryZoneChecker";
-import TomorrowDishSpotlight from "@/app/components/TomorrowDishSpotlight";
 import { VegetableIcon } from "@/app/components/icons/DishIcons";
 import IntroSplash from "@/app/components/IntroSplash";
 import PageGlow from "@/app/components/PageGlow";
@@ -14,16 +12,6 @@ import HomeNav from "@/app/components/HomeNav";
 import UpcomingDaysPreview, {
   UpcomingDaysPreviewSkeleton,
 } from "@/app/components/UpcomingDaysPreview";
-
-const KITCHEN_TZ = "America/Chicago";
-
-function getTomorrowDateStr(): string {
-  const todayStr = new Intl.DateTimeFormat("en-CA", {
-    timeZone: KITCHEN_TZ,
-  }).format(new Date());
-  const [y, m, d] = todayStr.split("-").map(Number);
-  return new Intl.DateTimeFormat("en-CA").format(new Date(y, m - 1, d + 1));
-}
 
 // ── Arrow icon ────────────────────────────────────────────────────────────────
 
@@ -68,16 +56,6 @@ export default async function HomePage() {
   const kitchen = await getDefaultKitchen();
   const profile = await getCustomerFromCookie();
 
-  const tomorrowStr = getTomorrowDateStr();
-  const tomorrowSchedule = kitchen
-    ? (
-        await getWeekMenuSchedule(kitchen.id, tomorrowStr, tomorrowStr)
-      )[0] ?? null
-    : null;
-  const tomorrowEligibility = tomorrowSchedule
-    ? await checkDeliveryDateEligibility(tomorrowStr)
-    : null;
-
   return (
     <div className="tfb-page-bg relative isolate flex flex-col bg-sage text-deep-leaf">
       {/* Version 9 only — ambient glow that eases toward the cursor, see
@@ -97,7 +75,7 @@ export default async function HomePage() {
       <section className="tfb-hero relative isolate order-[10] h-[calc(100vh-4rem)] w-full overflow-hidden">
         <Image
           src="/dish-images/TACOS.png"
-          alt="Tacos"
+          alt=""
           fill
           priority
           quality={100}
@@ -193,7 +171,14 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Being redone — old hero disabled below, not deleted.
+      {/* Being redone — old hero disabled below, not deleted. Needs, back
+      in HomePage's setup: KITCHEN_TZ + getTomorrowDateStr() to produce
+      tomorrowStr, tomorrowSchedule from getWeekMenuSchedule(kitchen.id,
+      tomorrowStr, tomorrowStr), and tomorrowEligibility from
+      checkDeliveryDateEligibility(tomorrowStr) — plus the
+      TomorrowDishSpotlight import. All were removed from the live module
+      since nothing else used them; see git history before this commit
+      for the exact code.
       <section className="mx-auto flex min-h-[80vh] w-full max-w-7xl flex-col justify-center px-6 py-8">
         <div className="flex flex-col items-center text-center">
           {tomorrowSchedule ? (

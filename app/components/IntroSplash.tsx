@@ -14,8 +14,12 @@ export default function IntroSplash() {
   useEffect(() => {
     // Version 9 drops the loading-screen splash entirely — its pan
     // animation runs inline above the "What we offer" blurb instead
-    // (see .tfb-offer-loader in page.tsx / globals.css).
+    // (see .tfb-offer-loader in page.tsx / globals.css). `data-version`
+    // is set by a blocking script before first paint, but only readable
+    // client-side post-hydration, so this can't be resolved during the
+    // initial render without a server/client markup mismatch.
     if (document.documentElement.getAttribute("data-version") === "9") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPhase("done");
       return;
     }
