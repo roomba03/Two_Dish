@@ -4,13 +4,8 @@ import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
 import { createAuthClient } from "@/lib/supabase/auth";
 import { OrderCheckoutSchema, type OrderCheckoutInput } from "@/lib/validations";
-import {
-  getDefaultKitchen,
-  getScheduleTimeSlotCounts,
-  type GeoJsonPolygon,
-} from "@/lib/data/menu";
-import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
-import { point, polygon } from "@turf/helpers";
+import { getDefaultKitchen } from "@/lib/data/menu";
+import { geocodeAddress, isAddressInZone } from "@/lib/deliveryZone";
 
 // ── Timezone ──────────────────────────────────────────────────────────────────
 const KITCHEN_TZ = "America/Chicago";
@@ -60,41 +55,6 @@ function generateOrderNumber(dateStr: string): string {
   const compact = dateStr.replace(/-/g, "");
   const suffix = Math.random().toString(36).slice(2, 6).toUpperCase();
   return `TFB-${compact}-${suffix}`;
-}
-
-// ── Delivery area helpers ─────────────────────────────────────────────────────
-
-async function geocodeAddress(
-  street: string,
-  city: string,
-  zip: string
-): Promise<[number, number] | null> {
-  try {
-    const q = encodeURIComponent(`${street}, ${city}, ${zip}, US`);
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1&countrycodes=us`,
-      {
-        headers: { "User-Agent": "TheFamilyBusiness/1.0" },
-        cache: "no-store",
-        signal: AbortSignal.timeout(5000),
-      }
-    );
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (!data.length) return null;
-    return [parseFloat(data[0].lon), parseFloat(data[0].lat)]; // [lng, lat] GeoJSON order
-  } catch {
-    return null;
-  }
-}
-
-function isAddressInZone(
-  lngLat: [number, number],
-  zone: GeoJsonPolygon
-): boolean {
-  const pt = point(lngLat);
-  const poly = polygon(zone.coordinates as number[][][]);
-  return booleanPointInPolygon(pt, poly);
 }
 
 // ── Public: Date eligibility check ───────────────────────────────────────────
@@ -192,9 +152,7 @@ export async function submitCheckoutOrder(
   // ── 2. Fetch schedule row ───────────────────────────────────────────────────
   const { data: schedule, error: scheduleError } = await supabase
     .from("menu_schedule")
-    .select(
-      "id, delivery_date, max_capacity, orders_count, menu_items(name, price), kitchen_id"
-    )
+    .select("id, delivery_date, menu_items(name, price), kitchen_id")
     .eq("id", data.scheduleId)
     .single();
 
@@ -213,30 +171,6 @@ export async function submitCheckoutOrder(
       no_menu: "No menu is scheduled for that date.",
     };
     return { success: false, error: messages[eligibility.reason] };
-  }
-
-  // ── 4. Check capacity ───────────────────────────────────────────────────────
-  const remaining = schedule.max_capacity - schedule.orders_count;
-  if (data.quantity > remaining) {
-    return {
-      success: false,
-      error:
-        remaining === 0
-          ? "This day is sold out."
-          : `Only ${remaining} meal${remaining === 1 ? "" : "s"} left. Please reduce your quantity.`,
-    };
-  }
-
-  // ── 4b. Check time slot capacity ────────────────────────────────────────────
-  // A slot fills up once it reaches half the day's capacity — the other half
-  // is reserved for the other slot.
-  const slotCounts = await getScheduleTimeSlotCounts(data.scheduleId);
-  const halfCapacity = schedule.max_capacity / 2;
-  if (slotCounts[data.timeSlot] >= halfCapacity) {
-    return {
-      success: false,
-      error: "This time slot is full. Please choose the other delivery time.",
-    };
   }
 
   // ── 5. Resolve dish snapshot ────────────────────────────────────────────────
@@ -264,41 +198,54 @@ export async function submitCheckoutOrder(
   // ── 7. Mock payment (Day 1) ─────────────────────────────────────────────────
   const mockPaymentIntentId = `mock_pi_${Date.now()}`;
 
-  // ── 8. Write order + increment orders_count ─────────────────────────────────
-  const { error: insertError } = await supabase.from("orders").insert({
-    order_number: orderNumber,
-    customer_id: customerId,
-    schedule_id: data.scheduleId,
-    quantity: data.quantity,
-    time_slot: data.timeSlot,
-    status: "authorized",
-    stripe_payment_intent_id: mockPaymentIntentId,
-    total_price: totalPrice,
-    customer_name: data.customerName,
-    customer_phone: data.customerPhone,
-    delivery_street: data.deliveryStreet,
-    delivery_city: data.deliveryCity,
-    delivery_zip: data.deliveryZip,
-    snapshot_dish_name: menuItem.name,
-    snapshot_unit_price: unitPrice,
-    snapshot_kitchen_id: schedule.kitchen_id,
+  // ── 8. Write order + increment orders_count, atomically ─────────────────────
+  // Delegated to a Postgres function (see supabase/atomic_place_order.sql)
+  // that locks the schedule row, re-checks capacity and time-slot capacity
+  // against the current (not stale) count, and inserts the order — all in
+  // one transaction — so two concurrent checkouts for the last spot can't
+  // both succeed.
+  const { error: placeError } = await supabase.rpc("place_order", {
+    p_order_number: orderNumber,
+    p_customer_id: customerId,
+    p_schedule_id: data.scheduleId,
+    p_quantity: data.quantity,
+    p_time_slot: data.timeSlot,
+    p_stripe_payment_intent_id: mockPaymentIntentId,
+    p_total_price: totalPrice,
+    p_customer_name: data.customerName,
+    p_customer_phone: data.customerPhone,
+    p_delivery_street: data.deliveryStreet,
+    p_delivery_city: data.deliveryCity,
+    p_delivery_zip: data.deliveryZip,
+    p_snapshot_dish_name: menuItem.name,
+    p_snapshot_unit_price: unitPrice,
+    p_snapshot_kitchen_id: schedule.kitchen_id,
   });
 
-  if (insertError) {
-    return { success: false, error: "Failed to place order. Please try again." };
-  }
-
-  const { error: countError } = await supabase
-    .from("menu_schedule")
-    .update({ orders_count: schedule.orders_count + data.quantity })
-    .eq("id", data.scheduleId)
-    .lt("orders_count", schedule.max_capacity);
-
-  if (countError) {
+  if (placeError) {
+    const message = placeError.message ?? "";
+    const capacityMatch = message.match(/CAPACITY_EXCEEDED:(\d+)/);
+    if (capacityMatch) {
+      const remaining = Number(capacityMatch[1]);
+      return {
+        success: false,
+        error:
+          remaining === 0
+            ? "This day is sold out."
+            : `Only ${remaining} meal${remaining === 1 ? "" : "s"} left. Please reduce your quantity.`,
+      };
+    }
+    if (message.includes("SLOT_FULL")) {
+      return {
+        success: false,
+        error: "This time slot is full. Please choose the other delivery time.",
+      };
+    }
     console.error(
-      `[checkoutActions] orders_count update failed for schedule ${data.scheduleId}:`,
-      countError
+      `[checkoutActions] place_order failed for schedule ${data.scheduleId}:`,
+      placeError
     );
+    return { success: false, error: "Failed to place order. Please try again." };
   }
 
   // ── 9. Update customer's saved delivery address ─────────────────────────────

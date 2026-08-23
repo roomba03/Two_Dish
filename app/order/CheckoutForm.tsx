@@ -212,6 +212,7 @@ export default function CheckoutForm({
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<OrderCheckoutInput>({
     resolver: zodResolver(OrderCheckoutSchema),
@@ -259,6 +260,15 @@ export default function CheckoutForm({
       });
     } else {
       setServerError(res.error);
+      if (res.fieldErrors) {
+        for (const [field, messages] of Object.entries(res.fieldErrors)) {
+          if (messages?.[0]) {
+            setError(field as keyof OrderCheckoutInput, {
+              message: messages[0],
+            });
+          }
+        }
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }

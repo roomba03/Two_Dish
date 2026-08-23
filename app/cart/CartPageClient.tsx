@@ -64,8 +64,10 @@ function EmptyCart({ profileName }: { profileName: string | null }) {
 
 export default function CartPageClient({
   profileName,
+  hasSavedAddress,
 }: {
   profileName: string | null;
+  hasSavedAddress: boolean;
 }) {
   const { item } = useCart();
 
@@ -117,6 +119,16 @@ export default function CartPageClient({
         Each order covers one delivery day — place a separate order if
         you&apos;d like to order for another day.
       </p>
+
+      {!item.street && !hasSavedAddress && (
+        <p className="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+          We haven&apos;t confirmed this address is in our delivery zone.{" "}
+          <Link href="/#delivery-area" className="underline">
+            Check your delivery zone
+          </Link>{" "}
+          before checking out.
+        </p>
+      )}
 
       <Link
         href={`/order?${checkoutSearch.toString()}`}

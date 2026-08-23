@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useState } from "react";
 import type { GeoJsonPolygon } from "@/lib/data/menu";
+import { stripUnitDesignator } from "@/lib/deliveryZone";
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
 import { point, polygon } from "@turf/helpers";
 import "leaflet/dist/leaflet.css";
@@ -53,7 +54,7 @@ export default function DeliveryZoneChecker({
     setCheckedAddress(null);
 
     try {
-      const encoded = encodeURIComponent(`${q}, US`);
+      const encoded = encodeURIComponent(`${stripUnitDesignator(q)}, US`);
       const res = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=1&countrycodes=us&addressdetails=1`,
         { headers: { "User-Agent": "TheFamilyBusiness/1.0" } }
@@ -81,9 +82,13 @@ export default function DeliveryZoneChecker({
         const poly = polygon(zone.coordinates as number[][][]);
         setResult(booleanPointInPolygon(pt, poly) ? "in" : "out");
       } else {
-        // No polygon drawn yet — fall back to ZIP list
-        const zipMatch = q.match(/\b(\d{5})\b/);
-        setResult(zipMatch && activeZips.includes(zipMatch[1]) ? "in" : "out");
+        // No polygon drawn yet — fall back to ZIP list. Prefer the ZIP
+        // Nominatim resolved from the address; fall back to scanning the
+        // raw input only if geocoding didn't return one.
+        const resolvedZip = zip || q.match(/\b(\d{5})\b/)?.[0];
+        setResult(
+          resolvedZip && activeZips.includes(resolvedZip) ? "in" : "out"
+        );
       }
     } catch {
       setResult("error");

@@ -4,5 +4,10 @@ import CartPageClient from "./CartPageClient";
 export default async function CartPage() {
   const profile = await getCustomerFromCookie();
 
-  return <CartPageClient profileName={profile?.name ?? null} />;
+  return (
+    <CartPageClient
+      profileName={profile?.name ?? null}
+      hasSavedAddress={!!profile?.delivery_street}
+    />
+  );
 }

@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { createAuthClient } from "@/lib/supabase/auth";
 import { createServerClient } from "@/lib/supabase/server";
+import { getDefaultKitchen } from "@/lib/data/menu";
+import { geocodeAddress, isAddressInZone } from "@/lib/deliveryZone";
 
 export type AuthState = { error?: string; message?: string; success?: boolean };
 export type AddressState = { error?: string; success?: boolean };
@@ -23,6 +25,36 @@ const SignupSchema = z.object({
   deliveryCity: z.string().min(2, "Enter a city"),
   deliveryZip: z.string().length(5, "ZIP code must be exactly 5 digits"),
 });
+
+// ── Delivery zone validation ─────────────────────────────────────────────────
+// Used by signup and saved-address updates so a stored delivery address is
+// never accepted without the same check checkout enforces — otherwise it
+// silently prefills checkout with an address that will fail there anyway.
+
+async function validateAddressInZone(
+  street: string,
+  city: string,
+  zip: string
+): Promise<string | null> {
+  const kitchen = await getDefaultKitchen();
+  if (!kitchen) return null;
+
+  if (kitchen.delivery_zone) {
+    const lngLat = await geocodeAddress(street, city, zip);
+    if (lngLat) {
+      if (!isAddressInZone(lngLat, kitchen.delivery_zone)) {
+        return "We don't deliver to that address yet. Please check that your address is within our delivery area.";
+      }
+      return null;
+    }
+    // Geocoding failed — fall back to ZIP validation below.
+  }
+
+  if (!kitchen.active_zips.includes(zip)) {
+    return `We don't deliver to ZIP ${zip} yet. We currently serve: ${kitchen.active_zips.join(", ")}.`;
+  }
+  return null;
+}
 
 // ── Cookie helper ─────────────────────────────────────────────────────────────
 
@@ -61,6 +93,13 @@ export async function signupCustomer(
 
   const { name, email, phone, password, deliveryStreet, deliveryCity, deliveryZip } =
     parsed.data;
+
+  const zoneError = await validateAddressInZone(
+    deliveryStreet,
+    deliveryCity,
+    deliveryZip
+  );
+  if (zoneError) return { error: zoneError };
 
   const authClient = createAuthClient();
   const { data, error } = await authClient.auth.signUp({ email, password });
@@ -179,6 +218,9 @@ export async function updateSavedAddress(
   if (!street || !city || zip.length !== 5) {
     return { error: "Please fill in a complete delivery address." };
   }
+
+  const zoneError = await validateAddressInZone(street, city, zip);
+  if (zoneError) return { error: zoneError };
 
   const supabase = createServerClient();
   const { error } = await supabase
