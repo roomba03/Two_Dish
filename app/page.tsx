@@ -133,7 +133,7 @@ export default async function HomePage() {
           <div className="tfb-offer-loader mb-2 hidden h-[147px] items-center justify-center overflow-hidden sm:h-[184px] md:h-[207px]">
             <PanLoader repeat />
           </div>
-          <p className="tfb-offer-title mb-5 hidden font-heading text-5xl leading-tight text-deep-leaf sm:text-6xl">
+          <p className="tfb-offer-title mb-5 hidden font-heading text-5xl leading-tight text-terracotta sm:text-6xl">
             Two Dish Catering Services
           </p>
           <p className="tfb-offer-eyebrow tfb-eyebrow mb-4">What we offer</p>
@@ -284,8 +284,6 @@ export default async function HomePage() {
 
       {/* ── FINAL CTA ───────────────────────────────────────────────── */}
       <section className="order-[60] px-6 py-20 text-center">
-        <p className="tfb-eyebrow mb-4">Ready to eat well?</p>
-
         <h2 className="mx-auto mb-10 max-w-[16ch] text-5xl leading-none text-deep-leaf sm:text-6xl">
           See what&apos;s cooking this week.
         </h2>

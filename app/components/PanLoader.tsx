@@ -149,11 +149,11 @@ export default function PanLoader({ repeat = false }: PanLoaderProps = {}) {
     // every chunk always draws with whatever this currently holds instead
     // of a color it captured for itself.
     let chunkColor = getComputedStyle(document.documentElement)
-      .getPropertyValue("--color-deep-leaf")
+      .getPropertyValue("--color-warmgray")
       .trim();
     const colorObserver = new MutationObserver(() => {
       chunkColor = getComputedStyle(document.documentElement)
-        .getPropertyValue("--color-deep-leaf")
+        .getPropertyValue("--color-warmgray")
         .trim();
     });
     colorObserver.observe(document.documentElement, {
@@ -311,7 +311,7 @@ export default function PanLoader({ repeat = false }: PanLoaderProps = {}) {
           style={{ transformBox: "fill-box", transformOrigin: "50% 50%" }}
         >
           {/* handle, flush with the flat rim */}
-          <rect x="250" y="340" width="140" height="16" rx="8" style={{ fill: "var(--color-deep-leaf)" }} />
+          <rect x="250" y="340" width="140" height="16" rx="8" style={{ fill: "var(--color-warmgray)" }} />
 
           {/* pan body, seen edge-on: flat bottom, low sloped walls */}
           <path
@@ -322,7 +322,7 @@ export default function PanLoader({ repeat = false }: PanLoaderProps = {}) {
                L 120 390
                Q 60 390 60 358
                L 60 340 Z"
-            style={{ fill: "var(--color-deep-leaf)" }}
+            style={{ fill: "var(--color-warmgray)" }}
           />
         </g>
       </svg>

@@ -59,7 +59,7 @@ export default function DashboardNav() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="font-heading text-lg text-deep-leaf transition-opacity hover:opacity-70"
+          className="tfb-nav-brand font-heading text-lg text-terracotta transition-opacity hover:opacity-70"
         >
           Two Dish
         </Link>

@@ -123,7 +123,7 @@ export default function SignupForm() {
         Already have an account?{" "}
         <Link
           href="/account/login"
-          className="font-medium text-terracotta underline underline-offset-2 hover:opacity-70"
+          className="font-medium text-warmgray underline underline-offset-2 hover:opacity-70"
         >
           Sign in
         </Link>

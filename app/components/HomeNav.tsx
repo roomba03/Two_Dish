@@ -46,7 +46,7 @@ export default function HomeNav({
         <div className="flex items-center gap-4">
           <Link
             href="/"
-            className="font-heading text-2xl text-deep-leaf transition-opacity hover:opacity-70"
+            className="tfb-nav-brand font-heading text-2xl text-terracotta transition-opacity hover:opacity-70"
           >
             Two Dish Catering Services
           </Link>

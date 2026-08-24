@@ -54,7 +54,7 @@ async function DayPreviewCard({
             <span className="text-sm font-medium text-deep-leaf">{weekday}</span>
             <span className="tfb-date-label text-xs text-warmgray">{shortDate}</span>
           </div>
-          <p className="text-sm text-warmgray">No meal scheduled</p>
+          <p className="text-sm text-deep-leaf">No meal scheduled</p>
         </div>
       </Link>
     );

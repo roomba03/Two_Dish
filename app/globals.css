@@ -113,23 +113,40 @@
   background: var(--color-sage);
 }
 
-/* Version 9 — "Midnight Violet" palette test. Dark violet page, warm peach
-   text and accent, mint secondary text, mint placeholder chips. Dark gold
-   survives only as the dedicated hover-target color below. */
+/* Version 9 — "Midnight Violet" palette test. Dark violet page, one warm
+   ivory used for both primary and secondary text/surfaces, gold reserved
+   for accent (CTAs, links, prices, active states, stat-card labels). Used
+   to run three near-identical pale tones (gold doubling as both
+   --color-deep-leaf and --color-terracotta, plus a separate mint for
+   --color-warmgray/--color-midsage) — gold and mint were close enough in
+   lightness to read as the same "off-white" at text size, which is what
+   made the hierarchy feel arbitrary. Down to two tones now: ivory for
+   text/surfaces, gold as the one accent. */
 :root[data-version="9"] {
   color-scheme: dark;
 
   --background: #3A3042;
-  --foreground: #FFE19C;
+  --foreground: #FBF6E9;
 
   --color-sage: #3A3042;
-  --color-deep-leaf: #FFE19C;
-  --color-herb: rgb(255 225 156 / 0.18);
+  --color-deep-leaf: #FBF6E9;
+  --color-herb: rgb(251 246 233 / 0.18);
   --color-terracotta: #FFE19C;
-  --color-warmgray: #EDFFD9;
-  --color-midsage: #EDFFD9;
+  --color-warmgray: #FBF6E9;
+  --color-midsage: #FBF6E9;
   --color-rust: #E2725B;
   --color-hover-gold: #DB9D47; /* dedicated hover-only target, kept separate from --color-warmgray */
+}
+
+/* Version 9: titles read gold, body/supporting text reads ivory — the one
+   exception to --color-deep-leaf being the default text color everywhere.
+   Covers every real heading tag; non-heading elements styled to look like
+   a title (site wordmark links, the inline offer title) opt in directly
+   via text-terracotta in their own markup instead of living here. */
+:root[data-version="9"] h1,
+:root[data-version="9"] h2,
+:root[data-version="9"] h3 {
+  color: var(--color-terracotta);
 }
 
 [data-version="9"] .tfb-glow {
@@ -223,6 +240,16 @@
   color: var(--color-hover-gold);
   border-color: var(--color-hover-gold);
   opacity: 1;
+}
+
+/* The site wordmark is a title, not a nav link — carve it out of the
+   uniform nav-link color above so it gets the same gold every other
+   title gets. */
+:root[data-version="9"] nav a.tfb-nav-brand {
+  color: var(--color-terracotta);
+}
+:root[data-version="9"] nav a.tfb-nav-brand:hover {
+  color: var(--color-hover-gold);
 }
 
 /* Same treatment site-wide: any light-yellow (terracotta-token) button or
