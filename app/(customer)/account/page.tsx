@@ -15,18 +15,21 @@ function formatDate(dateStr: string): string {
 }
 
 function StatusBadge({ status }: { status: string }) {
+  // Three visually distinct tiers so a glance at the column tells the story:
+  // outline = awaiting/cancelled, solid terracotta = actively being made,
+  // solid deep-leaf = done.
   const styles: Record<string, string> = {
-    authorized: "border-warmgray/40 text-warmgray",
-    paid: "border-warmgray/40 text-warmgray",
-    preparing: "border-warmgray/40 text-warmgray",
-    delivered: "border-warmgray/40 text-warmgray",
-    pending: "border-warmgray/40 text-warmgray",
-    cancelled: "border-rust/40 text-rust",
-    refunded: "border-rust/40 text-rust",
+    pending: "border border-herb text-warmgray",
+    authorized: "border border-herb text-warmgray",
+    paid: "border border-herb text-warmgray",
+    preparing: "border border-terracotta bg-terracotta text-sage",
+    delivered: "border border-deep-leaf bg-deep-leaf text-sage",
+    cancelled: "border border-rust/40 text-rust",
+    refunded: "border border-rust/40 text-rust",
   };
-  const cls = styles[status] ?? "border-warmgray/40 text-warmgray";
+  const cls = styles[status] ?? "border border-herb text-warmgray";
   return (
-    <span className={`rounded-md border px-2.5 py-0.5 text-xs font-medium ${cls}`}>
+    <span className={`rounded-md px-2.5 py-0.5 text-xs font-medium ${cls}`}>
       {status}
     </span>
   );

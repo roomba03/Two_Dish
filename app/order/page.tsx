@@ -96,7 +96,7 @@ export default async function OrderPage({
           !checkedCity &&
           !checkedZip &&
           !profile?.delivery_street && (
-            <p className="mb-6 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+            <p className="mb-6 rounded-lg border border-rust/40 bg-sage px-3 py-2 text-sm text-rust">
               We haven&apos;t confirmed this address is in our delivery
               zone.{" "}
               <Link href="/#delivery-area" className="underline">

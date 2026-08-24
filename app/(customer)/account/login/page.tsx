@@ -1,14 +1,6 @@
 import LoginForm from "./LoginForm";
-import { ERRORS } from "@/app/api/auth/customer-login/route";
 
-export default async function CustomerLoginPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const { error } = await searchParams;
-  const errorMessage = error ? (ERRORS[error] ?? "Something went wrong.") : undefined;
-
+export default function CustomerLoginPage() {
   return (
     <div className="relative min-h-[calc(100vh-4rem)] px-4">
       <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center py-16">
@@ -18,7 +10,7 @@ export default async function CustomerLoginPage({
           </div>
 
           <div className="tfb-card p-8">
-            <LoginForm error={errorMessage} />
+            <LoginForm />
           </div>
         </div>
       </div>

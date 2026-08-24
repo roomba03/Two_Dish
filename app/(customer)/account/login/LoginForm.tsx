@@ -1,22 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useActionState } from "react";
+import { loginCustomer, type AuthState } from "@/lib/actions/customerAuthActions";
 import PasswordInput from "@/app/components/PasswordInput";
 
-export default function LoginForm({ error }: { error?: string }) {
-  const [pending, setPending] = useState(false);
+const initial: AuthState = {};
+
+export default function LoginForm() {
+  const [state, action, isPending] = useActionState(loginCustomer, initial);
 
   return (
-    <form
-      method="POST"
-      action="/api/auth/customer-login"
-      onSubmit={() => setPending(true)}
-      className="flex flex-col gap-5"
-    >
-      {error && (
+    <form action={action} className="flex flex-col gap-5">
+      {state.error && (
         <div className="rounded-lg border border-rust/40 bg-sage px-4 py-3 text-sm text-rust">
-          {error}
+          {state.error}
         </div>
       )}
 
@@ -42,15 +40,15 @@ export default function LoginForm({ error }: { error?: string }) {
         />
       </div>
 
-      <button type="submit" disabled={pending} className="tfb-btn-primary w-full mt-1">
-        {pending ? "Signing in…" : "Sign in"}
+      <button type="submit" disabled={isPending} className="tfb-btn-primary w-full mt-1">
+        {isPending ? "Signing in…" : "Sign in"}
       </button>
 
       <p className="text-center text-sm text-warmgray">
         Don&apos;t have an account?{" "}
         <Link
           href="/account/signup"
-          className="font-medium text-terracotta underline underline-offset-2 hover:opacity-70"
+          className="font-medium text-warmgray underline underline-offset-2 hover:opacity-70"
         >
           Sign up
         </Link>

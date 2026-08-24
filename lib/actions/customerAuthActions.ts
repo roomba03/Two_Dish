@@ -8,7 +8,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { getDefaultKitchen } from "@/lib/data/menu";
 import { geocodeAddress, isAddressInZone } from "@/lib/deliveryZone";
 
-export type AuthState = { error?: string; message?: string; success?: boolean };
+export type AuthState = { error?: string; message?: string };
 export type AddressState = { error?: string; success?: boolean };
 
 // ── Schemas ───────────────────────────────────────────────────────────────────
@@ -184,7 +184,7 @@ export async function loginCustomer(
   }
 
   await setCustomerSession(data.session.access_token);
-  return { success: true };
+  redirect("/account");
 }
 
 // ── Logout ────────────────────────────────────────────────────────────────────
