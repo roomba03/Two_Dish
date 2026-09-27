@@ -208,7 +208,7 @@ input.tfb-input:read-only,
 textarea.tfb-input:read-only {
   cursor: not-allowed;
   color: var(--color-warmgray);
-  background: rgb(217 201 188 / 0.35);
+  background: color-mix(in srgb, var(--color-midsage) 28%, transparent);
   border-color: var(--color-herb);
 }
 

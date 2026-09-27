@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { GeoJsonPolygon } from "@/lib/data/menu";
+import { getMapColors } from "./mapColors";
 
 type Props = {
   zone: GeoJsonPolygon | null;
@@ -44,9 +45,9 @@ export default function DeliveryZoneCheckerMap({
           ([lng, lat]) => [lat, lng] as [number, number]
         );
         const poly = L.polygon(latLngs, {
-          color: "#280004",
+          color: getMapColors().zone,
           weight: 2,
-          fillColor: "#280004",
+          fillColor: getMapColors().zone,
           fillOpacity: 0.14,
         }).addTo(map);
         map.fitBounds(poly.getBounds(), { padding: [32, 32] });
@@ -75,7 +76,8 @@ export default function DeliveryZoneCheckerMap({
       if (!mapRef.current) return;
       markerRef.current?.remove();
 
-      const color = resultInZone ? "#280004" : "#8C4331";
+      const { zone: zoneColor, outside } = getMapColors();
+      const color = resultInZone ? zoneColor : outside;
       markerRef.current = L.circleMarker(resultPoint, {
         radius: 9,
         color,

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import type { GeoJsonPolygon } from "@/lib/data/menu";
 import { saveDeliveryZone, clearDeliveryZone } from "@/lib/actions/zoneActions";
+import { getMapColors } from "@/app/components/mapColors";
 
 type Props = {
   existingZone: GeoJsonPolygon | null;
@@ -46,7 +47,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
           ([lng, lat]) => [lat, lng] as [number, number]
         );
         const poly = L.polygon(latLngs, {
-          color: "#280004",
+          color: getMapColors().zone,
           weight: 2,
           fillOpacity: 0.15,
         }).addTo(map);
@@ -62,8 +63,8 @@ export default function ZoneEditorMap({ existingZone }: Props) {
 
         const marker = L.circleMarker([lat, lng], {
           radius: 6,
-          color: "#280004",
-          fillColor: "#280004",
+          color: getMapColors().zone,
+          fillColor: getMapColors().zone,
           fillOpacity: 1,
           weight: 2,
         }).addTo(map);
@@ -78,7 +79,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
           }
           if (next.length >= 3) {
             drawnPolyRef.current = L.polygon(next, {
-              color: "#280004",
+              color: getMapColors().zone,
               weight: 2,
               fillOpacity: 0.1,
               dashArray: "6 4",
@@ -129,7 +130,7 @@ export default function ZoneEditorMap({ existingZone }: Props) {
             .map(([lng, lat]) => [lat, lng] as [number, number]);
           const L = await import("leaflet");
           existingPolyRef.current = L.polygon(latLngs, {
-            color: "#280004",
+            color: getMapColors().zone,
             weight: 2,
             fillOpacity: 0.15,
           }).addTo(mapRef.current);

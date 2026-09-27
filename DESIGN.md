@@ -28,6 +28,9 @@ Components never use raw hex values. They use Tailwind classes built from these 
 - **"No meal scheduled" placeholders** (`.tfb-day-placeholder`) use a light yellow `#FFF4DC`. Their calendar icon (`.tfb-day-placeholder-icon`) uses the violet page color, because gold on pale yellow can't be read.
 - Use one accent only. Don't add a second accent color or neon colors anywhere, including the cook dashboard.
 - Errors appear as `rust` text or inside a `rust/40` hairline box, never as a filled red banner.
+- **Maps use tokens too.** Leaflet can't read CSS variables, so the maps get their colors from `getMapColors()` (`app/components/mapColors.ts`), which reads the tokens at runtime.
+  - The delivery zone is drawn in the violet page color (`sage`), because gold disappears on OpenStreetMap's light tiles.
+  - An address outside the zone gets a `rust` marker.
 - **Faded gold still has to be readable.** Decorative text in translucent gold, such as the large "01 / 02 / 03" process numbers, stays at `terracotta/50` or above. That gives 3.67:1 on the violet page, above the 3:1 minimum for large text. `/40` fails.
 
 ## Typography
@@ -71,7 +74,7 @@ Shadows are pure black at a fairly high opacity, because softer tinted shadows c
 - **Inputs** use `.tfb-input` and `.tfb-label`: a hairline border on the page color.
   - On focus, the border turns gold and a 2px gold `focus-visible` ring appears.
   - On error, the border turns `rust`.
-  - Disabled and read-only inputs get a taupe wash, `warmgray` text and a not-allowed cursor.
+  - Disabled and read-only inputs get a faint ivory wash (`midsage` at 28%), `warmgray` text and a not-allowed cursor.
 - **Focus rings** are always a 2px gold outline with a 2px offset, never the browser's default blue.
 - **Disabled buttons** drop to 50% opacity and lose their shadow.
 
@@ -122,8 +125,3 @@ Shadows are pure black at a fairly high opacity, because softer tinted shadows c
   - Outline: waiting or cancelled.
   - Solid accent: being prepared.
   - Solid primary: delivered.
-
-## Known gaps (code that doesn't follow this doc yet)
-
-- The Leaflet maps (delivery checker and zone editor) draw the zone in `#280004` maroon, left over from the retired light palette. Leaflet can't read CSS variables, and the map tiles are light, so it's still readable, but it isn't a token color.
-- The taupe wash on disabled inputs (`rgb(217 201 188 / 0.35)`) is also left over from the light palette.
