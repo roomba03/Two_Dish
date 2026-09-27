@@ -71,7 +71,7 @@ Sessions are Supabase access tokens stored in the httpOnly cookies `cook-session
 
 ## Design
 
-- [`DESIGN.md`](DESIGN.md) is the design system: the "Midnight Violet" palette tokens, typography, elevation, motion and layout rules.
+- [`DESIGN.md`](DESIGN.md) is the design system: color tokens, typography, elevation, motion and layout rules.
 - [`CHANGELOG.md`](CHANGELOG.md) is the design history: each major visual change and why it was made.
 
 Update both whenever you make a significant design change.
