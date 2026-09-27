@@ -142,24 +142,10 @@ export default function PanLoader({ repeat = false }: PanLoaderProps = {}) {
     const pivotX = panBBox.x + panBBox.width * 0.5;
     const pivotY = panBBox.y + panBBox.height * 0.5;
 
-    // Live-updated rather than read once — a value snapshotted at mount
-    // (or per-chunk at spawn) can go stale mid-flight if the site version
-    // changes while chunks are still falling (each version's palette can
-    // give this a very different color, e.g. version 8's is green), so
-    // every chunk always draws with whatever this currently holds instead
-    // of a color it captured for itself.
-    let chunkColor = getComputedStyle(document.documentElement)
+    // Canvas can't use CSS variables directly, so read the token once.
+    const chunkColor = getComputedStyle(document.documentElement)
       .getPropertyValue("--color-warmgray")
       .trim();
-    const colorObserver = new MutationObserver(() => {
-      chunkColor = getComputedStyle(document.documentElement)
-        .getPropertyValue("--color-warmgray")
-        .trim();
-    });
-    colorObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-version"],
-    });
 
     let chunks: Chunk[] = [];
     let animationFrame: number;
@@ -271,7 +257,6 @@ export default function PanLoader({ repeat = false }: PanLoaderProps = {}) {
     animationFrame = requestAnimationFrame(loop);
     return () => {
       cancelAnimationFrame(animationFrame);
-      colorObserver.disconnect();
     };
   }, [repeat]);
 

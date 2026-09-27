@@ -47,12 +47,12 @@ async function DayPreviewCard({
         className="tfb-shadow-card flex flex-col overflow-hidden rounded-lg border border-herb bg-sage transition-opacity hover:opacity-90"
       >
         <div className="tfb-day-placeholder flex aspect-[4/3] w-full items-center justify-center bg-midsage">
-          <CalendarIcon className="h-9 w-9 text-terracotta" aria-hidden />
+          <CalendarIcon className="tfb-day-placeholder-icon h-9 w-9 text-terracotta" aria-hidden />
         </div>
         <div className="flex flex-col gap-1 p-4">
           <div className="flex items-baseline gap-2">
             <span className="text-sm font-medium text-deep-leaf">{weekday}</span>
-            <span className="tfb-date-label text-xs text-warmgray">{shortDate}</span>
+            <span className="text-xs text-warmgray">{shortDate}</span>
           </div>
           <p className="text-sm text-deep-leaf">No meal scheduled</p>
         </div>
@@ -100,7 +100,7 @@ async function DayPreviewCard({
         <div className="flex flex-col gap-1.5 p-4">
           <div className="flex items-baseline gap-2">
             <span className="text-sm font-medium text-deep-leaf">{weekday}</span>
-            <span className="tfb-date-label text-xs text-warmgray">{shortDate}</span>
+            <span className="text-xs text-warmgray">{shortDate}</span>
           </div>
           <h3 className="text-base leading-tight text-deep-leaf">{item.name}</h3>
           <span className="text-sm font-medium text-terracotta">

@@ -81,9 +81,9 @@ function NoMenuCard({
   shortDate: string;
 }) {
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg border border-herb bg-sage">
+    <div className="tfb-shadow-card flex flex-col overflow-hidden rounded-lg border border-herb bg-sage">
       <div className="tfb-day-placeholder flex aspect-[4/3] w-full items-center justify-center bg-midsage">
-        <CalendarIcon className="h-10 w-10 text-terracotta" aria-hidden />
+        <CalendarIcon className="tfb-day-placeholder-icon h-10 w-10 text-terracotta" aria-hidden />
       </div>
       <div className="flex flex-col gap-2 p-4">
         <div className="flex items-baseline gap-2">
@@ -127,7 +127,7 @@ async function DayCard({
   const item = schedule.menu_items;
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-lg border border-herb bg-sage">
+    <article className="tfb-shadow-card flex flex-col overflow-hidden rounded-lg border border-herb bg-sage">
       <DishImageArea
         imageUrl={item.image_url}
         dishName={item.name}
@@ -198,7 +198,7 @@ export function WeeklyMenuGridSkeleton() {
       {Array.from({ length: 7 }).map((_, i) => (
         <div
           key={i}
-          className="animate-pulse overflow-hidden rounded-lg border border-herb bg-sage"
+          className="tfb-shadow-card animate-pulse overflow-hidden rounded-lg border border-herb bg-sage"
         >
           <div className="aspect-[4/3] bg-midsage" />
           <div className="flex flex-col gap-3 p-4">

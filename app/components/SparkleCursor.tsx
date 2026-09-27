@@ -1,7 +1,7 @@
 "use client";
 
-// Version 9 only — a trail of small gold sparkles follows the cursor.
-// Mounted site-wide in layout.tsx since v9's palette is also site-wide.
+// A trail of small ivory sparkles follows the cursor. Mounted site-wide in
+// layout.tsx.
 import { useEffect, useRef, useState } from "react";
 
 interface Sparkle {
@@ -20,27 +20,10 @@ const SPAWN_INTERVAL = 45;
 const LIFETIME = 650;
 
 export default function SparkleCursor() {
-  const [active, setActive] = useState(false);
   const [sparkles, setSparkles] = useState<Sparkle[]>([]);
   const lastSpawn = useRef(0);
 
   useEffect(() => {
-    const checkVersion = () =>
-      setActive(
-        document.documentElement.getAttribute("data-version") === "9",
-      );
-    checkVersion();
-
-    const observer = new MutationObserver(checkVersion);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-version"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!active) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
@@ -71,9 +54,9 @@ export default function SparkleCursor() {
       window.removeEventListener("mousemove", handleMove);
       setSparkles([]);
     };
-  }, [active]);
+  }, []);
 
-  if (!active || sparkles.length === 0) return null;
+  if (sparkles.length === 0) return null;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[2000]" aria-hidden>

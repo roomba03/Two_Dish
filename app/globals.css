@@ -1,173 +1,53 @@
 @import "tailwindcss";
 
 /* ── Design tokens ────────────────────────────────────────────────────────────
-   See DESIGN.md. Warm cream, one amber-gold accent. Never pure black/white,
-   never a second accent, never green. Drop shadows are allowed for
-   elevation — soft, warm-toned only, see DESIGN.md's spec. */
+   See DESIGN.md. "Midnight Violet": dark violet page, one warm ivory for all
+   text and surfaces, pale gold as the single accent. The token names (sage,
+   herb, terracotta…) are leftovers from an earlier green/terracotta palette —
+   read them as role names, not color descriptions. */
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  --background: #FAF8F2; /* warm off-white — default everywhere, incl. checkout/account/admin */
-  --foreground: #3A2B2E; /* plum-charcoal — primary text/headlines */
+  --background: #3A3042;
+  --foreground: #FBF6E9;
 }
 
 @theme {
-  --color-sage: #FAF8F2; /* background/page */
-  --color-deep-leaf: #3A2B2E; /* primary text/headlines */
-  --color-herb: #DDD3CC; /* card/surface hairline border */
-  --color-terracotta: #280004; /* accent: CTAs, prices, links, active states, line art */
-  --color-warmgray: #6B564F; /* secondary text, captions, metadata, disabled */
-  --color-midsage: #D9C9BC; /* placeholder image blocks */
-  --color-rust: #8C4331; /* error states — muted brick, never stock red */
+  --color-sage: #3A3042; /* page background and card fill — one surface everywhere */
+  --color-deep-leaf: #FBF6E9; /* primary text */
+  --color-herb: rgb(251 246 233 / 0.18); /* hairline borders and dividers */
+  --color-terracotta: #FFE19C; /* the one accent: CTAs, links, prices, headings, line art */
+  --color-warmgray: #FBF6E9; /* secondary text — deliberately the same ivory as primary */
+  --color-midsage: #FBF6E9; /* placeholder blocks, skeletons, subtle tints */
+  --color-rust: #E2725B; /* errors */
+  --color-hover-gold: #DB9D47; /* hover target for interactive gold/ivory */
 
   --font-sans: var(--font-karla);
   --font-heading: var(--font-cormorant);
 
-  /* Border radius: 6–10px everywhere, never 0, never above 10px */
+  /* Border radius: 6–10px everywhere, never 0, never above 12px */
   --radius-md: 0.375rem; /* 6px */
   --radius-lg: 0.5rem; /* 8px */
   --radius-xl: 0.625rem; /* 10px */
 }
 
-/* ── Versioned palettes ───────────────────────────────────────────────────────
-   Site "versions" are switched at runtime (see VersionSwitcher.tsx) by
-   pressing a number key, which toggles a data-version attribute on <html>.
-   0 always returns to the main palette defined above. Add a new
-   [data-version="N"] block here for each additional version. */
-
-/* Version 8 — "Parchment & Moss" palette test. Warm-parchment page, forest
-   ink headlines, espresso secondary text, moss/sienna accents, a cocoa
-   hover deepen, and a muted-ochre tiny highlight. ".tfb-card" surfaces
-   (account/checkout/cook-dashboard) use the dedicated "Card / surface"
-   linen tone instead of the page background — see below. */
-:root[data-version="8"] {
-  color-scheme: light;
-
-  --background: #F3EEE5;
-  --foreground: #28362F;
-
-  --color-sage: #F3EEE5;
-  --color-deep-leaf: #28362F; /* Primary dark — Forest Ink */
-  --color-herb: #E8E3D8; /* Card/surface — Soft Linen, reused as the hairline border tone */
-  --color-terracotta: #A75F43; /* Autumn accent — Burnt Sienna: CTAs, prices, links, active states */
-  --color-warmgray: #493B35; /* Secondary dark — Espresso */
-  --color-midsage: #66745C; /* Forest accent — Deep Moss: placeholder/secondary surface blocks */
-  --color-rust: #8C4331; /* not in the source palette — reused from the main palette's muted brick for legible errors */
-  --color-cocoa: #795849; /* Coffee accent — text-safe hover deepen for the sienna accent */
-  --color-ochre: #C39A5B; /* Tiny highlight — Muted Ochre, background-only (too light for reliable text contrast) */
-}
-
-/* Background gradient — a soft diagonal deepening from Parchment toward
-   Linen, built from tones already in this version's palette rather than
-   introducing a new one. Applied to body (site-wide) and to the homepage's
-   own opaque wrapper (.tfb-page-bg), which otherwise sits on top of body
-   and would hide it. */
-:root[data-version="8"] body,
-:root[data-version="8"] .tfb-page-bg {
-  background-image: linear-gradient(160deg, #f3eee5 0%, #ece4d3 55%, #e8e3d8 100%);
-}
-
-[data-version="8"] .tfb-glow {
-  background-image:
-    radial-gradient(480px circle at 18% 22%, rgb(195 154 91 / 0.18), transparent 70%),
-    radial-gradient(420px circle at 84% 78%, rgb(195 154 91 / 0.15), transparent 70%);
-}
-
-/* Hover treatment for the sienna accent: buttons deepen via an ochre
-   background wash (dark label text stays legible on top of it), while
-   text/border-only accents (links, outlines) deepen to cocoa instead —
-   cocoa has real contrast as text on this light bg, ochre doesn't. */
-:root[data-version="8"] a.bg-terracotta:hover,
-:root[data-version="8"] button.bg-terracotta:hover,
-:root[data-version="8"] .tfb-btn-primary:hover {
-  background-color: var(--color-ochre);
-  opacity: 1;
-}
-:root[data-version="8"] a.text-terracotta:hover,
-:root[data-version="8"] button.text-terracotta:hover {
-  color: var(--color-cocoa);
-  opacity: 1;
-}
-:root[data-version="8"] a.border-terracotta:hover,
-:root[data-version="8"] button.border-terracotta:hover,
-:root[data-version="8"] .tfb-btn-secondary:hover {
-  border-color: var(--color-cocoa);
-}
-:root[data-version="8"] .tfb-btn-secondary:hover {
-  color: var(--color-cocoa);
-  opacity: 1;
-}
-
-/* "Coming up" card dates: small cocoa highlight instead of the muted
-   secondary-text color. */
-:root[data-version="8"] .tfb-date-label {
-  color: var(--color-cocoa);
-}
-
-/* ".tfb-card" is the site's real card surface (account/checkout/cook
-   dashboard) — redefining --color-sage *inside* its own scope means every
-   "bg-sage" descendant picks up the linen surface automatically. Text
-   colors are unchanged since both surfaces are light enough to share them. */
-:root[data-version="8"] .tfb-card {
-  --color-sage: #E8E3D8;
-  background: var(--color-sage);
-}
-
-/* Version 9 — "Midnight Violet" palette test. Dark violet page, one warm
-   ivory used for both primary and secondary text/surfaces, gold reserved
-   for accent (CTAs, links, prices, active states, stat-card labels). Used
-   to run three near-identical pale tones (gold doubling as both
-   --color-deep-leaf and --color-terracotta, plus a separate mint for
-   --color-warmgray/--color-midsage) — gold and mint were close enough in
-   lightness to read as the same "off-white" at text size, which is what
-   made the hierarchy feel arbitrary. Down to two tones now: ivory for
-   text/surfaces, gold as the one accent. */
-:root[data-version="9"] {
-  color-scheme: dark;
-
-  --background: #3A3042;
-  --foreground: #FBF6E9;
-
-  --color-sage: #3A3042;
-  --color-deep-leaf: #FBF6E9;
-  --color-herb: rgb(251 246 233 / 0.18);
-  --color-terracotta: #FFE19C;
-  --color-warmgray: #FBF6E9;
-  --color-midsage: #FBF6E9;
-  --color-rust: #E2725B;
-  --color-hover-gold: #DB9D47; /* dedicated hover-only target, kept separate from --color-warmgray */
-}
-
-/* Version 9: titles read gold, body/supporting text reads ivory — the one
-   exception to --color-deep-leaf being the default text color everywhere.
-   Covers every real heading tag; non-heading elements styled to look like
-   a title (site wordmark links, the inline offer title) opt in directly
-   via text-terracotta in their own markup instead of living here. */
-:root[data-version="9"] h1,
-:root[data-version="9"] h2,
-:root[data-version="9"] h3 {
+/* Titles read gold, body/supporting text reads ivory. Covers every real
+   heading tag; non-heading elements styled to look like a title (the nav
+   wordmark, the homepage offer title) opt in with text-terracotta. */
+h1,
+h2,
+h3 {
   color: var(--color-terracotta);
 }
 
-[data-version="9"] .tfb-glow {
-  background-image:
-    radial-gradient(480px circle at 18% 22%, rgb(255 225 156 / 0.16), transparent 70%),
-    radial-gradient(420px circle at 84% 78%, rgb(255 225 156 / 0.14), transparent 70%);
-}
-
-/* Version 9: a very subtle ambient glow behind the whole homepage — same
-   sanctioned amber-gold spec (see DESIGN.md "Glow accents"), just much
-   lower opacity than the intro splash's since this one sits behind the
-   page continuously rather than for a few seconds. background-attachment:
-   fixed keeps the two blooms anchored to the viewport as the page scrolls,
-   instead of the gradient's percentage positions landing wherever they
-   fall on the full (very tall) page height.
+/* A very subtle ambient glow behind the whole homepage — see DESIGN.md
+   "Motion and atmosphere". background-attachment: fixed keeps the two
+   blooms anchored to the viewport as the page scrolls.
 
    Position is driven by PageGlow.tsx via CSS custom properties, which
    eases each bloom toward the cursor. The literal values below are the
-   at-rest fallback (no JS / reduced motion), matching the original
-   static blooms; opacity is left at these fallback values always. */
-:root[data-version="9"] .tfb-page-glow {
+   at-rest fallback (no JS / reduced motion). */
+.tfb-page-glow {
   background-image:
     radial-gradient(
       520px circle at var(--glow-1-x, 14%) var(--glow-1-y, 18%),
@@ -183,197 +63,59 @@
   pointer-events: none;
 }
 
-/* The "no meal scheduled" day-preview placeholder (see .tfb-day-placeholder
-   in UpcomingDaysPreview.tsx / WeeklyMenuGrid.tsx) normally shares
-   --color-midsage with a lot of unrelated UI (form panels, hover rows,
-   dish-image fallbacks) — overridden here on its own class instead of
-   touching that shared token, so only this placeholder shifts to a light
-   yellow instead of the version's pale-mint midsage. */
-:root[data-version="9"] .tfb-day-placeholder {
+/* The "no meal scheduled" day placeholder (UpcomingDaysPreview.tsx /
+   WeeklyMenuGrid.tsx) gets its own light yellow instead of the shared
+   --color-midsage, which a lot of unrelated UI also uses. The gold accent
+   icon all but disappears on that yellow, so it takes the violet page
+   color instead. */
+.tfb-day-placeholder {
   background-color: #fff4dc;
 }
-
-/* The default shadow spec is built from a dark plum-charcoal, which reads
-   as invisible against this version's already-dark violet background —
-   pure black at higher opacity is the only thing that shows up here. */
-:root[data-version="9"] .tfb-card,
-:root[data-version="9"] .tfb-shadow-card {
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 0.25),
-    0 6px 20px rgb(0 0 0 / 0.35);
-}
-:root[data-version="9"] .tfb-card[aria-modal="true"] {
-  box-shadow: 0 10px 32px rgb(0 0 0 / 0.5);
+.tfb-day-placeholder-icon {
+  color: var(--color-sage);
 }
 
-/* Same reasoning applied to the button "3D" edge/shadow — pure black
-   instead of plum-charcoal so the raised/pressed effect actually shows. */
-:root[data-version="9"] .tfb-btn-primary,
-:root[data-version="9"] .tfb-shadow-btn {
-  box-shadow:
-    4px 4px 0 rgb(0 0 0 / 0.35),
-    0 8px 18px rgb(0 0 0 / 0.3);
-}
-:root[data-version="9"] .tfb-btn-primary:hover,
-:root[data-version="9"] .tfb-shadow-btn:hover {
-  box-shadow:
-    5px 5px 0 rgb(0 0 0 / 0.35),
-    0 10px 22px rgb(0 0 0 / 0.35);
-}
-:root[data-version="9"] .tfb-btn-primary:active,
-:root[data-version="9"] .tfb-shadow-btn:active {
-  box-shadow:
-    0 0 0 rgb(0 0 0 / 0.35),
-    0 2px 6px rgb(0 0 0 / 0.2);
-}
-
-/* Nav bar text: uniform light yellow, dark gold on hover — overrides the
-   mixed deep-leaf/warmgray/terracotta text colors nav links otherwise use.
-   Also covers the "Order online" pill's border-terracotta outline. */
-:root[data-version="9"] nav a,
-:root[data-version="9"] nav button {
+/* Nav bar text: uniform ivory, dark gold on hover — overrides the mixed
+   deep-leaf/warmgray/terracotta text colors nav links otherwise use. Also
+   covers the "Order online" pill's border-terracotta outline. */
+nav a,
+nav button {
   color: var(--color-deep-leaf);
   border-color: var(--color-deep-leaf);
 }
-:root[data-version="9"] nav a:hover,
-:root[data-version="9"] nav button:hover {
+nav a:hover,
+nav button:hover {
   color: var(--color-hover-gold);
   border-color: var(--color-hover-gold);
   opacity: 1;
 }
 
 /* The site wordmark is a title, not a nav link — carve it out of the
-   uniform nav-link color above so it gets the same gold every other
-   title gets. */
-:root[data-version="9"] nav a.tfb-nav-brand {
+   uniform nav-link color above so it gets the same gold every other title
+   gets. */
+nav a.tfb-nav-brand {
   color: var(--color-terracotta);
 }
-:root[data-version="9"] nav a.tfb-nav-brand:hover {
+nav a.tfb-nav-brand:hover {
   color: var(--color-hover-gold);
 }
 
-/* Same treatment site-wide: any light-yellow (terracotta-token) button or
-   link darkens to gold on hover instead of just fading. Scoped to actual
-   links/buttons so it doesn't affect passive text like prices or icons
-   that happen to share the same color class. */
-:root[data-version="9"] a.bg-terracotta:hover,
-:root[data-version="9"] button.bg-terracotta:hover,
-:root[data-version="9"] .tfb-btn-primary:hover {
+/* Any gold (terracotta-token) button or link darkens to hover-gold instead
+   of just fading. Scoped to actual links/buttons so it doesn't affect
+   passive text like prices or icons that share the same color class. */
+a.bg-terracotta:hover,
+button.bg-terracotta:hover {
   background-color: var(--color-hover-gold);
   opacity: 1;
 }
-:root[data-version="9"] a.text-terracotta:hover,
-:root[data-version="9"] button.text-terracotta:hover {
+a.text-terracotta:hover,
+button.text-terracotta:hover {
   color: var(--color-hover-gold);
   opacity: 1;
 }
-:root[data-version="9"] a.border-terracotta:hover,
-:root[data-version="9"] button.border-terracotta:hover,
-:root[data-version="9"] .tfb-btn-secondary:hover {
+a.border-terracotta:hover,
+button.border-terracotta:hover {
   border-color: var(--color-hover-gold);
-}
-:root[data-version="9"] .tfb-btn-secondary:hover {
-  color: var(--color-hover-gold);
-  opacity: 1;
-}
-
-/* "Coming up" card dates: light yellow instead of the (now pale-mint)
-   warmgray secondary-text color. */
-:root[data-version="9"] .tfb-date-label {
-  color: var(--color-deep-leaf);
-}
-
-/* Hero photo: hidden — versions share the same markup, so this is done as
-   a display toggle rather than actually removing the section from page.tsx. */
-:root[data-version="9"] .tfb-hero {
-  display: none;
-}
-
-/* IntroSplash loading screen: hidden via CSS, not just IntroSplash.tsx's
-   own JS check — the blocking script in layout.tsx sets data-version
-   before first paint, so this rule is already active by the time the
-   splash would otherwise flash on screen, before React's effects run. */
-:root[data-version="9"] .tfb-intro-splash {
-  display: none;
-}
-
-/* Version 9: pan animation runs inline above "What we offer" instead of as
-   the IntroSplash loading screen (which is skipped for this version — see
-   IntroSplash.tsx). Hidden by default for every other version. */
-:root[data-version="9"] .tfb-offer-loader {
-  display: flex;
-}
-
-/* Version 9: title also appears underneath the pan animation, in addition
-   to its usual spot in the nav (top-left) — not a replacement. */
-:root[data-version="9"] .tfb-offer-title {
-  display: block;
-}
-
-/* Version 9: drops the "Home-cooked Hyderabadi..." heading (redundant now
-   that the title sits above it) and swaps in blurb copy that doesn't name
-   Chef Eram, in favor of the inline title doing that framing instead. */
-:root[data-version="9"] .tfb-offer-heading,
-:root[data-version="9"] .tfb-offer-blurb-default,
-:root[data-version="9"] .tfb-offer-eyebrow {
-  display: none;
-}
-:root[data-version="9"] .tfb-offer-blurb-v9 {
-  display: block;
-}
-
-/* Version 0 only: "What we offer" is paired side by side with an embedded
-   delivery checker instead of stacking as separate sections. Versions 8/9
-   keep the original single-column "What we offer" (.tfb-offer-legacy) and
-   the standalone #delivery-area section further down the page. */
-:root[data-version] .tfb-offer-delivery-combined {
-  display: none;
-}
-:root[data-version] .tfb-offer-legacy {
-  display: block;
-}
-:root:not([data-version]) #delivery-area {
-  display: none;
-}
-
-/* Homepage section order — base order matches source order (see order-[N]
-   classes in page.tsx). #delivery-area's base order lives here since that
-   section is rendered by DeliveryZoneChecker, not inline in page.tsx. */
-#delivery-area {
-  order: 40;
-}
-
-/* Versions 8/9: Delivery coverage moves up to sit right after What we offer,
-   ahead of Upcoming Days Preview (order 30), instead of after it. */
-:root[data-version="8"] #delivery-area,
-:root[data-version="9"] #delivery-area {
-  order: 21;
-}
-:root[data-version="8"] .tfb-upcoming,
-:root[data-version="9"] .tfb-upcoming {
-  order: 22;
-}
-
-/* Subtle "highlighted card" wash — same tint modifier trick as bg-midsage/40,
-   but the percentage is tuned per version since the same alpha reads as a
-   tasteful tint on a light page and a muddy patch on a dark one. */
-.tfb-step-highlight {
-  background-color: color-mix(in srgb, var(--color-midsage) 40%, transparent);
-}
-/* Version 9: the tint reads as a muddy patch against this dark palette
-   rather than a tasteful highlight, so the middle card just matches the
-   other two instead. */
-[data-version="9"] .tfb-step-highlight {
-  background-color: var(--color-sage);
-}
-/* Version 8: same reasoning — the moss-green midsage tint reads as an odd
-   green patch against this warm palette, so match the other two cards. */
-[data-version="8"] .tfb-step-highlight {
-  background-color: var(--color-sage);
-}
-/* Version 0: all three cards plain, no tint on any of them. */
-:root:not([data-version]) .tfb-process-grid > div {
-  background-color: var(--color-sage);
 }
 
 @theme inline {
@@ -391,8 +133,7 @@ body {
 }
 
 /* Subtle film-grain texture — a fixed SVG fractal-noise layer blended with
-   `overlay` so it reads as paper grain, not a flat tint. Shared by the
-   whole-app layer (body::before) and any element using .tfb-grain. */
+   `overlay` so it reads as paper grain, not a flat tint. */
 :root {
   --grain-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
@@ -407,37 +148,6 @@ body::before {
   background-repeat: repeat;
   background-size: 180px 180px;
   background-image: var(--grain-noise);
-}
-
-/* Version 0's background is close to white, where `overlay` blend mode is
-   nearly a no-op (it preserves extremes, only pushing midtones) — the
-   shared grain above is effectively invisible there. `multiply` darkens
-   regardless of base lightness, so this version gets its own stronger
-   variant instead of the shared one. */
-:root:not([data-version]) {
-  --grain-noise-v0: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-:root:not([data-version]) body::before {
-  background-image: var(--grain-noise-v0);
-  mix-blend-mode: multiply;
-  opacity: 0.2;
-}
-
-.tfb-grain {
-  pointer-events: none;
-  mix-blend-mode: overlay;
-  background-repeat: repeat;
-  background-size: 180px 180px;
-  background-image: var(--grain-noise);
-}
-
-/* Sanctioned glow accent — see DESIGN.md "Glow accents". Two soft amber-gold
-   blooms, low opacity, broad falloff. Hero/splash moments only. */
-.tfb-glow {
-  pointer-events: none;
-  background-image:
-    radial-gradient(480px circle at 18% 22%, rgb(169 119 63 / 0.14), transparent 70%),
-    radial-gradient(420px circle at 84% 78%, rgb(169 119 63 / 0.12), transparent 70%);
 }
 
 h1,
@@ -514,8 +224,8 @@ textarea.tfb-input:read-only {
 .tfb-shadow-btn {
   border-radius: var(--radius-lg);
   box-shadow:
-    4px 4px 0 rgb(58 43 46 / 0.25),
-    0 8px 18px rgb(58 43 46 / 0.16);
+    4px 4px 0 rgb(0 0 0 / 0.35),
+    0 8px 18px rgb(0 0 0 / 0.3);
   transform: translate(0, 0);
   transition:
     transform 0.1s ease-out,
@@ -533,15 +243,19 @@ textarea.tfb-input:read-only {
 .tfb-shadow-btn:hover {
   transform: translate(-1px, -1px);
   box-shadow:
-    5px 5px 0 rgb(58 43 46 / 0.25),
-    0 10px 22px rgb(58 43 46 / 0.2);
+    5px 5px 0 rgb(0 0 0 / 0.35),
+    0 10px 22px rgb(0 0 0 / 0.35);
+}
+.tfb-btn-primary:hover {
+  background-color: var(--color-hover-gold);
+  opacity: 1;
 }
 .tfb-btn-primary:active,
 .tfb-shadow-btn:active {
   transform: translate(4px, 4px);
   box-shadow:
-    0 0 0 rgb(58 43 46 / 0.25),
-    0 2px 6px rgb(58 43 46 / 0.12);
+    0 0 0 rgb(0 0 0 / 0.35),
+    0 2px 6px rgb(0 0 0 / 0.2);
 }
 .tfb-btn-primary:disabled {
   cursor: not-allowed;
@@ -562,10 +276,14 @@ textarea.tfb-input:read-only {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--color-terracotta);
-  transition: opacity 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    opacity 0.15s;
 }
 .tfb-btn-secondary:hover {
-  opacity: 0.7;
+  border-color: var(--color-hover-gold);
+  color: var(--color-hover-gold);
 }
 .tfb-btn-secondary:disabled {
   cursor: not-allowed;
@@ -581,14 +299,14 @@ textarea.tfb-input:read-only {
   border: 1px solid var(--color-herb);
   background: var(--color-sage);
   box-shadow:
-    0 1px 2px rgb(58 43 46 / 0.06),
-    0 6px 16px rgb(58 43 46 / 0.08);
+    0 1px 2px rgb(0 0 0 / 0.25),
+    0 6px 20px rgb(0 0 0 / 0.35);
 }
 
 /* Floating above other content (modals, alertdialogs) gets the stronger
    elevation tier instead of the base card shadow. */
 .tfb-card[aria-modal="true"] {
-  box-shadow: 0 8px 24px rgb(58 43 46 / 0.14);
+  box-shadow: 0 10px 32px rgb(0 0 0 / 0.5);
 }
 
 /* Same card-tier shadow as .tfb-card, for homepage elements that are
@@ -596,8 +314,8 @@ textarea.tfb-input:read-only {
    (CTA buttons, preview tiles, "how it works" steps, delivery checker). */
 .tfb-shadow-card {
   box-shadow:
-    0 1px 2px rgb(58 43 46 / 0.06),
-    0 6px 16px rgb(58 43 46 / 0.08);
+    0 1px 2px rgb(0 0 0 / 0.25),
+    0 6px 20px rgb(0 0 0 / 0.35);
 }
 
 /* "How it works" step cards: sit flush with their neighbors (gap-px grid,
@@ -639,19 +357,11 @@ textarea.tfb-input:read-only {
   transform: translateY(-6px);
   border-radius: var(--radius-lg);
   box-shadow:
-    0 2px 4px rgb(58 43 46 / 0.1),
-    0 14px 28px rgb(58 43 46 / 0.18);
-}
-/* Same reasoning as the version 9 .tfb-shadow-card override above — the
-   default plum-charcoal shadow is invisible against this version's dark
-   background, so the lift needs a pure-black shadow to actually read. */
-:root[data-version="9"] .tfb-process-card:hover {
-  box-shadow:
     0 2px 4px rgb(0 0 0 / 0.3),
     0 14px 28px rgb(0 0 0 / 0.4);
 }
 
-/* ── Version 9: sparkle cursor ────────────────────────────────────────────── */
+/* ── Sparkle cursor ──────────────────────────────────────────────────────── */
 /* See SparkleCursor.tsx. Wrapper positions at the cursor point (untouched
    by the animation); the inner span does the pop/spin/fade so the two
    transforms don't fight over the same property. */

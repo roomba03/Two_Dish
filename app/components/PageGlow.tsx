@@ -1,11 +1,11 @@
 "use client";
 
-// Version 9 only — the two ambient corner blooms (see .tfb-page-glow in
+// The two ambient corner blooms (see .tfb-page-glow in
 // globals.css) ease toward the cursor. Position is pushed straight onto
 // the DOM via CSS custom properties every rAF tick rather than through
 // React state, since a state-driven re-render on every mousemove/frame
 // would be wasteful.
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 interface Blob {
   x: number;
@@ -31,27 +31,11 @@ function makeBlobs(): Blob[] {
 }
 
 export default function PageGlow() {
-  const [active, setActive] = useState(false);
   const elRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const checkVersion = () =>
-      setActive(
-        document.documentElement.getAttribute("data-version") === "9",
-      );
-    checkVersion();
-
-    const observer = new MutationObserver(checkVersion);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-version"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
     const el = elRef.current;
-    if (!active || !el) return;
+    if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const blobs = makeBlobs();
@@ -87,9 +71,7 @@ export default function PageGlow() {
       window.removeEventListener("mousemove", handleMove);
       cancelAnimationFrame(raf);
     };
-  }, [active]);
-
-  if (!active) return null;
+  }, []);
 
   return (
     <div

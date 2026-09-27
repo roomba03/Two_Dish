@@ -1,95 +1,122 @@
-# Design system — Two Dish
+# Design system: Two Dish
 
-Home-cooked Hyderabadi food delivery. Warm, grounded, single-neutral surfaces with one amber-gold accent doing all the contrast work. Line art as the identity layer, real photography for anything orderable.
+Two Dish delivers home-cooked Hyderabadi food. The design uses one dark violet surface for every page, warm ivory for text, and pale gold as the single accent. Line art carries the brand's identity, and anything you can order is shown with a real photo.
 
-## Colors
+There is one palette, defined as tokens in `app/globals.css`. Earlier experiments with several palettes you could switch between have been retired. See [CHANGELOG.md](CHANGELOG.md) for how the design got here.
 
-| Role | Hex | Notes |
+## Color tokens
+
+Components never use raw hex values. They use Tailwind classes built from these tokens, such as `bg-sage` or `text-terracotta`. The token names come from an older green/terracotta palette, so read them as **role names**, not color descriptions.
+
+| Token | Role | Value |
 |---|---|---|
-| Background/page | `#F3EFE4` | Warm cream. Single neutral used everywhere — nav, cards, checkout, account, admin views. No separate "surface" color. |
-| Card/surface border | `#DDD3CC` | 1px hairline border differentiates cards from background — never a different fill color. |
-| Primary text/headlines | `#3A2B2E` | Warm plum-charcoal. |
-| Secondary text/captions/metadata | `#6B564F` | Warm taupe. |
-| Accent (CTAs, links, active/selected states, prices) | `#A9773F` | Warm amber-gold. The only accent color in the system — sparingly, never a large background fill except on primary buttons. |
-| Placeholder image blocks | `#D9C9BC` | Warm taupe-rose. |
-| Placeholder icon / line art | `#A9773F` | Matches accent, ties placeholders to the identity layer. |
-| Error states | muted brick/rust | Warm, not a stock saturated red. |
+| `sage` | Page background and card fill. The same surface is used everywhere | `#3A3042` dark violet |
+| `deep-leaf` | Primary text | `#FBF6E9` warm ivory |
+| `warmgray` | Secondary text, captions, metadata | `#FBF6E9`, deliberately the same ivory |
+| `herb` | Hairline borders and dividers | `rgb(251 246 233 / 0.18)`, a translucent ivory |
+| `terracotta` | **The one accent.** Used for CTAs, links, prices, active states, line art and all headings | `#FFE19C` pale gold |
+| `midsage` | Photo-placeholder blocks, skeletons, subtle tints | `#FBF6E9` |
+| `rust` | Errors | `#E2725B` |
+| `hover-gold` | Hover color for anything gold or ivory that is interactive | `#DB9D47` |
 
-Never a second accent color anywhere in the app, including admin/dashboard views. Never pure black or pure white. Green is not part of this palette.
+### Rules
+
+- **Two tones only.** Ivory is for all text and surfaces, and gold is the accent. Don't add a third pale tone: gold next to mint was tried and read as the same off-white at text size.
+- **Headings are gold.** `h1`–`h3` use `terracotta` globally. Anything else styled as a title opts in with `text-terracotta`, such as the nav wordmark `.tfb-nav-brand` or the "Two Dish Catering Services" offer title.
+- **Nav links are ivory** and turn `hover-gold` on hover. This includes the outlined "Order online" pill. The wordmark stays gold.
+- **Interactive gold gets deeper on hover.** Links and buttons using `bg-`, `text-` or `border-terracotta`, plus `.tfb-btn-primary` and `.tfb-btn-secondary`, move to `hover-gold`. Passive gold such as prices and icons doesn't change on hover.
+- **"No meal scheduled" placeholders** (`.tfb-day-placeholder`) use a light yellow `#FFF4DC`. Their calendar icon (`.tfb-day-placeholder-icon`) uses the violet page color, because gold on pale yellow can't be read.
+- Use one accent only. Don't add a second accent color or neon colors anywhere, including the cook dashboard.
+- Errors appear as `rust` text or inside a `rust/40` hairline box, never as a filled red banner.
 
 ## Typography
 
-- Headings (h1–h3), every page: **Cormorant Garamond**, weight 500
-- Body copy, nav labels, buttons, form fields, table content: **Karla** or **Work Sans**, weight 400
-- Sentence case everywhere — nav items, buttons, form labels, error messages, page titles
-- No bold beyond weight 500. No all-caps except tiny eyebrow labels (12px, letter-spacing 0.05em)
+- Headings (`h1`–`h3`) use **Cormorant Garamond** at weight 500, through `--font-heading` / `font-heading`.
+- Everything else uses **Karla** at weight 400 or 500: body text, nav, buttons, forms and tables. It's set through `--font-sans`.
+- Only weights 400 and 500 are loaded. Nothing is bolder than 500.
+- Use sentence case everywhere. The only all-caps text is the small eyebrow label `.tfb-eyebrow`: 12px, `0.05em` tracking, weight 500, `warmgray`.
+- Inputs are 16px, the only size above the 14px UI scale, because iOS Safari zooms in when an input under 16px gets focus.
+- Nav links are 14px and grow to 16px on hover (`hover:text-[16px]`).
 
 ## Shape and edges
 
-- Border radius 6–10px on every interactive element: buttons, inputs, cards, modals, dropdowns, toasts, photo/placeholder crops. Never 0, never above 12px
-- Inputs and selects use hairline-border treatment (`#DDD3CC`), not heavy boxed borders
-- Dividers between sections: 0.5–1px hairlines in the border color, never a hard box border
-- Drop shadows are allowed for elevation — soft and warm-toned only, built from the primary text color (`#3A2B2E`) at low opacity, never pure black and never tinted with the accent color:
-  - Cards, dropdowns, photo/placeholder crops: `0 1px 2px rgba(58,43,46,0.06), 0 6px 16px rgba(58,43,46,0.08)`
-  - Modals and toasts (floating above other content): `0 8px 24px rgba(58,43,46,0.14)`
-  - Shadow adds lift; it doesn't replace the hairline border — keep both
+- Radii come from tokens only: `rounded-md` is 6px, `rounded-lg` is 8px and `rounded-xl` is 10px. The default for cards, buttons and inputs is 8px. Never go above 12px.
+- There are two exceptions:
+  - `rounded-full` is for small circular marks: the cart-count badge, the signed-in status dot and the order-confirmation icon disc.
+  - `rounded-none` is for photos that sit flush inside a card whose rounded corners already clip them.
+- Borders are 1px hairlines in `herb`. Section dividers use `.tfb-divider`. Don't use heavy boxed borders.
 
-## Navigation and structural chrome
+## Elevation
 
-- Header/footer stay on the same cream background as the rest of the page, separated only by a hairline border — no contrasting bar color
-- Active nav item indicated with amber-gold underline or text color, not a filled pill
-- Footer uses the amber-gold line-art motif as a small divider element
+Shadows are pure black at a fairly high opacity, because softer tinted shadows can't be seen on the dark violet background.
 
-## Forms and interactive states
+- **Cards** (`.tfb-card`, or `.tfb-shadow-card` on hand-built elements) have a hairline border plus `0 1px 2px rgb(0 0 0/.25), 0 6px 20px rgb(0 0 0/.35)`. Always keep both the border and the shadow.
+- **Modals** (`.tfb-card[aria-modal="true"]`) use `0 10px 32px rgb(0 0 0/.5)`.
+- **Primary buttons** (`.tfb-btn-primary`, or `.tfb-shadow-btn` on hand-built CTAs) are styled like raised keys.
+  - At rest, they have a solid `4px 4px 0` edge plus a soft ambient shadow.
+  - On hover, the button moves 1px up and left, and the edge grows to 5px.
+  - When pressed, the button moves 4px down and right, so the edge disappears into the page.
+- **"How it works" process cards** sit flush against each other in a grid with 1px gaps. A hovered card lifts 6px, rounds its corners and gets its own shadow.
+- Shadows are never colored and never inset.
 
-- Buttons: amber-gold fill for primary actions only (one per view), amber-gold outline/ghost style for secondary
-- Focus states: visible amber-gold outline ring, never browser-default blue
-- Hover states: slight background darken (cream → half-step darker), not a color change
-- Disabled elements: warm taupe text/border, never grayed out to the point of looking broken
+## Buttons, links and forms
 
-## Empty, loading, and error states
+- **Primary buttons** have a gold fill, page-color text and the raised-key shadow.
+- **Secondary buttons** (`.tfb-btn-secondary`) have a gold outline on a transparent background. On hover, both the outline and the text turn `hover-gold`.
+- **Text links** are `warmgray` or `terracotta`. Ivory links fade to 70% on hover, and gold links turn `hover-gold`.
+- **Inputs** use `.tfb-input` and `.tfb-label`: a hairline border on the page color.
+  - On focus, the border turns gold and a 2px gold `focus-visible` ring appears.
+  - On error, the border turns `rust`.
+  - Disabled and read-only inputs get a taupe wash, `warmgray` text and a not-allowed cursor.
+- **Focus rings** are always a 2px gold outline with a 2px offset, never the browser's default blue.
+- **Disabled buttons** drop to 50% opacity and lose their shadow.
 
-- Empty states: one line-art icon (amber-gold) plus one sentence in warm taupe
-- Loading states: simple, in amber-gold or warm taupe, no clashing colors
-- Error messages: plain language, muted-rust text, never a red banner
+## Motion and atmosphere
 
-## Photography
+- **Entrances:** `.tfb-rise` fades each element in and moves it up 28px over 0.8s. Delays are staggered with `.tfb-delay-1` through `.tfb-delay-5`. The sticky nav rises when the page loads.
+- **Film grain:** a fixed SVG noise layer covers the whole app (`body::before`), blended with `overlay` so it reads as paper grain rather than a flat tint.
+- **Ambient glow:** two very faint gold blooms sit behind the homepage (`.tfb-page-glow`, about 4% opacity). They drift slowly toward the cursor, controlled by `PageGlow.tsx`. They only move part of the way toward the cursor, so they feel like ambient light, not like something tracking the mouse. Don't put glows inside cards or forms. Cards get their lift from shadows.
+- **Sparkle cursor:** small ivory four-pointed stars follow the mouse across the whole site (`SparkleCursor.tsx`). Each one pops, spins and fades over 650ms, and a new one appears at most every 45ms.
+- **Pan loader:** a line-art frying pan with food pieces popping out, drawn in `warmgray` (`PanLoader.tsx`). It loops at the top of the homepage, above the offer title.
+- All motion driven by the cursor is turned off when the user has `prefers-reduced-motion` set.
 
-- Every menu/order card uses a real photo of the dish — non-negotiable, people order sight-unseen
-- Consistent crop and aspect ratio (e.g. 4:3 or 1:1), 6–10px radius, across every instance — cart, checkout, order history, not just the menu page
-- No filters or heavy color grading — natural, true-to-food color. No stock photography.
+## Navigation and structure
 
-## Photo placeholders (until real images exist)
+- **Customer nav (`HomeNav`):** sticky, `bg-sage/95` with backdrop blur and a hairline border underneath, on the same background as the page.
+  - It contains the gold serif wordmark "Two Dish Catering Services", the auth links, "Delivery area", an outlined "Order online" pill and the cart icon.
+  - Below the `md` breakpoint it collapses into a hamburger menu.
+- **Which nav each area uses:**
+  - The homepage, menu, cart, checkout and auth pages use `HomeNav`.
+  - The signed-in account area uses `AccountNav`.
+  - The cook dashboard uses `DashboardNav`.
+- **Homepage order, top to bottom:**
+  1. Nav
+  2. Pan loader, then the "Two Dish Catering Services" title and the offer copy
+  3. Delivery-area checker
+  4. "Coming up" (the next 3 days)
+  5. "The process"
+  6. Final call to action
+  7. Footer
+- **Footer:** the wordmark in `warmgray` and one line-art icon in gold.
 
-- Placeholder block: solid `#D9C9BC`, same aspect ratio and radius as the eventual real photo, so layout doesn't shift on swap-in
-- Center a single amber-gold line-art icon inside the placeholder, ideally matched to the dish type (grain icon for biryani, vegetable icon for baghara baingan, etc.) rather than one generic icon repeated everywhere
-- No "image coming soon" text, no camera icons, no gray-with-diagonal-lines default
-- Build the photo component with an automatic fallback: if no `src` is provided, render the placeholder + icon — don't hand-place placeholder divs per card
-- Prioritize having 6–10 dish-appropriate line-art icons ready before writing much component code, since they're doing double duty as identity accents and photo stand-ins
+## Photography and placeholders
 
-## Line art (identity layer, non-photo contexts)
-
-- Single-color line art, 1–1.2px stroke, no fills, amber-gold (`#A9773F`)
-- Used for: section dividers, hero/story content, empty states, order confirmation screens, packaging/email graphics, and photo placeholders
-- Never mixed with emoji or filled icon styles
+- Every dish you can order shows a real photo (`DishImage`). Photos use the same **4:3** crop everywhere, with no filters and no stock photography.
+- If a dish has no photo, or the photo fails to load, `DishImage` automatically shows a `midsage` block with a gold line-art icon matched to the dish name (`getDishIcon`). Don't use "coming soon" text or camera icons.
+- Line art is drawn in one color with a 1.15px stroke and no fills (`app/components/icons/DishIcons.tsx`). Don't mix it with emoji or filled icon styles.
 
 ## Layout and spacing
 
-- Minimum 24px between sections, 16px internal card padding, at all breakpoints — reduce columns on mobile rather than compressing spacing
-- Ingredient callouts (2–4 words, e.g. "saffron, mint") sit under the dish name, below the photo/placeholder
-- Menu/order grids: 3 columns desktop → 2 tablet → 1 mobile, never horizontal scroll to fake more columns
+- Page content uses `max-w-7xl` with `px-6`. Checkout and account pages are narrower (`max-w-5xl`), and auth and cart cards are `max-w-sm`.
+- Homepage sections use `py-20`. Cards have at least 16px of padding inside. Keep at least 24px between sections at every screen size.
+- Grids go from 3 columns on desktop to 2 on tablet (the menu) to 1 on mobile. On small screens, drop columns rather than squeeze the spacing. Never use horizontal scrolling to fit in extra columns.
+- Order-history status badges come in three styles:
+  - Outline: waiting or cancelled.
+  - Solid accent: being prepared.
+  - Solid primary: delivered.
 
-## Glow accents (sanctioned exception)
+## Known gaps (code that doesn't follow this doc yet)
 
-- Soft amber-gold radial glows are allowed, but only as quiet atmosphere behind hero/splash-style full-bleed moments (e.g. the intro loading screen) — never inside cards, forms, or ordinary content sections
-- Amber-gold only (`#A9773F`), at low opacity (~10–15%), broad and soft (large radius, `transparent` falloff) — a bloom, never a visible band or hard edge
-- Max two blooms per screen, placed off-center so they read as ambient light, not decoration
-- Still no neon colors, no second accent color — glows stay amber-gold only; card/modal elevation uses the drop-shadow spec above instead, not a glow
-
-## What to avoid, globally
-
-- No neon colors on any page, including admin/internal tools — except the sanctioned glow accents above
-- Drop shadows are allowed, but only the warm, low-opacity elevation spec above — never a hard/dark shadow, a colored shadow, or an inner shadow
-- No component introducing its own one-off color or radius not covered above
-- No mixing of icon styles anywhere in the product
-- No second accent color, and no green — this palette was deliberately moved away from a green/terracotta system after testing showed it read as cluttered and clashing
+- The cook dashboard builds its own uppercase labels (`text-xs uppercase tracking-wider`) instead of using `.tfb-eyebrow`.
+- The Leaflet maps (delivery checker and zone editor) draw the zone in `#280004` maroon, left over from the retired light palette. Leaflet can't read CSS variables, and the map tiles are light, so it's still readable, but it isn't a token color.
+- The taupe wash on disabled inputs (`rgb(217 201 188 / 0.35)`) is also left over from the light palette.
