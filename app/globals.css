@@ -171,6 +171,12 @@ h3 {
   font-weight: 500;
   color: var(--color-warmgray);
 }
+/* Gold variant for cook-dashboard stat labels ("Total meals", "Revenue"…).
+   Needed as a class because this unlayered rule beats Tailwind's layered
+   text-terracotta utility. */
+.tfb-eyebrow-accent {
+  color: var(--color-terracotta);
+}
 
 /* Shared form/button primitives — keeps every input & button on the same
    hairline-border, 6–10px-radius, single-accent treatment. */

@@ -39,7 +39,7 @@ function StatCard({
 }) {
   return (
     <div className="tfb-card p-5">
-      <p className="mb-2 text-xs font-medium uppercase tracking-wider text-terracotta">
+      <p className="tfb-eyebrow tfb-eyebrow-accent mb-2">
         {label}
       </p>
       <p className="text-3xl font-medium text-warmgray">{value}</p>
@@ -280,7 +280,7 @@ export default function ProductionBoard({
       {/* ── Revenue + capacity bar ────────────────────────────────── */}
       <div className="tfb-card flex items-center justify-between px-6 py-4">
         <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-terracotta">
+          <p className="tfb-eyebrow tfb-eyebrow-accent">
             Revenue
           </p>
           <p className="text-xl font-medium text-warmgray">
@@ -288,7 +288,7 @@ export default function ProductionBoard({
           </p>
         </div>
         <div className="text-right">
-          <p className="text-xs font-medium uppercase tracking-wider text-terracotta">
+          <p className="tfb-eyebrow tfb-eyebrow-accent">
             Capacity
           </p>
           <p className="text-xl font-medium text-warmgray">

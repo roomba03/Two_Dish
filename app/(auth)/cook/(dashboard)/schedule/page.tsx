@@ -84,7 +84,7 @@ export default async function SchedulePage() {
                           {formatDate(day)}
                         </span>
                         {isToday && (
-                          <span className="rounded-md border border-terracotta/40 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-terracotta">
+                          <span className="rounded-md border border-terracotta/40 px-2 py-0.5 text-xs font-medium text-terracotta">
                             Today
                           </span>
                         )}

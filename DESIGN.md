@@ -35,7 +35,10 @@ Components never use raw hex values. They use Tailwind classes built from these 
 - Headings (`h1`–`h3`) use **Cormorant Garamond** at weight 500, through `--font-heading` / `font-heading`.
 - Everything else uses **Karla** at weight 400 or 500: body text, nav, buttons, forms and tables. It's set through `--font-sans`.
 - Only weights 400 and 500 are loaded. Nothing is bolder than 500.
-- Use sentence case everywhere. The only all-caps text is the small eyebrow label `.tfb-eyebrow`: 12px, `0.05em` tracking, weight 500, `warmgray`.
+- Use sentence case everywhere, including badges such as the schedule's "Today" tag.
+- The only all-caps text is the small eyebrow label `.tfb-eyebrow`: 12px, `0.05em` tracking, weight 500, `warmgray`.
+  - Cook-dashboard stat labels ("Total meals", "Revenue", "Capacity") add `.tfb-eyebrow-accent` to turn gold.
+  - Don't hand-roll `uppercase tracking-*` anywhere.
 - Inputs are 16px, the only size above the 14px UI scale, because iOS Safari zooms in when an input under 16px gets focus.
 - Nav links are 14px and grow to 16px on hover (`hover:text-[16px]`).
 
@@ -122,6 +125,5 @@ Shadows are pure black at a fairly high opacity, because softer tinted shadows c
 
 ## Known gaps (code that doesn't follow this doc yet)
 
-- The cook dashboard builds its own uppercase labels (`text-xs uppercase tracking-wider`) instead of using `.tfb-eyebrow`.
 - The Leaflet maps (delivery checker and zone editor) draw the zone in `#280004` maroon, left over from the retired light palette. Leaflet can't read CSS variables, and the map tiles are light, so it's still readable, but it isn't a token color.
 - The taupe wash on disabled inputs (`rgb(217 201 188 / 0.35)`) is also left over from the light palette.
