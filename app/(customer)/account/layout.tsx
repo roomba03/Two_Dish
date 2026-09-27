@@ -1,6 +1,6 @@
-import { cookies } from "next/headers";
 import AccountNav from "./components/AccountNav";
 import HomeNav from "@/app/components/HomeNav";
+import { getCustomerUserId } from "@/lib/data/account";
 
 export const metadata = {
   title: "My Account — Two Dish",
@@ -11,8 +11,7 @@ export default async function AccountLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const hasSession = cookieStore.has("customer-session");
+  const hasSession = !!(await getCustomerUserId());
 
   // Login / signup pages: same site-wide nav as the homepage.
   if (!hasSession) {

@@ -14,10 +14,7 @@ export default async function OrderPage({
 
   const scheduleId =
     typeof params.scheduleId === "string" ? params.scheduleId : "";
-  const dishName =
-    typeof params.dishName === "string"
-      ? decodeURIComponent(params.dishName)
-      : "";
+  const dishName = typeof params.dishName === "string" ? params.dishName : "";
   const deliveryDate =
     typeof params.deliveryDate === "string" ? params.deliveryDate : "";
   const price =
@@ -28,13 +25,14 @@ export default async function OrderPage({
   }
 
   // Address carried forward from the delivery-zone checker, if the customer
-  // just verified their address is within the delivery area.
+  // just verified their address is within the delivery area. searchParams
+  // values arrive already decoded — decoding again would throw on a "%".
   const checkedStreet =
-    typeof params.street === "string" ? decodeURIComponent(params.street) : "";
+    typeof params.street === "string" ? params.street : "";
   const checkedCity =
-    typeof params.city === "string" ? decodeURIComponent(params.city) : "";
+    typeof params.city === "string" ? params.city : "";
   const checkedZip =
-    typeof params.zip === "string" ? decodeURIComponent(params.zip) : "";
+    typeof params.zip === "string" ? params.zip : "";
 
   const [capacity, slotCounts] = await Promise.all([
     getScheduleCapacity(scheduleId),

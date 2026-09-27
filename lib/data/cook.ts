@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { createServerClient } from "@/lib/supabase/server";
+import { requireCook } from "@/lib/cookSession";
 import { getDefaultKitchen } from "@/lib/data/menu";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -49,6 +50,8 @@ export type IngredientLine = {
 
 export const getProductionRunRange = cache(
   async (startDate: string, endDate: string): Promise<ProductionRun | null> => {
+    await requireCook();
+
     const kitchen = await getDefaultKitchen();
     if (!kitchen) return null;
 
@@ -156,6 +159,8 @@ export const getProductionRunRange = cache(
 
 export const getIngredientList = cache(
   async (date: string): Promise<IngredientLine[]> => {
+    await requireCook();
+
     const kitchen = await getDefaultKitchen();
     if (!kitchen) return [];
 

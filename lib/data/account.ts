@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
+import { createAuthClient } from "@/lib/supabase/auth";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -27,31 +28,21 @@ export type CustomerOrder = {
 
 // ── Session helpers ────────────────────────────────────────────────────────────
 
-// Decodes the customer-session JWT locally to extract the user ID.
-// The cookie is httpOnly so it can't be forged client-side; expiry is
-// checked against the `exp` claim to catch genuinely stale tokens.
-export async function getCustomerUserId(): Promise<string | null> {
+// Verifies the customer-session token with Supabase rather than just
+// decoding it — an httpOnly cookie can't be read by page scripts, but anyone
+// can still set one by hand, so an unverified `sub` claim would let a forged
+// token read another customer's profile and orders.
+export const getCustomerUserId = cache(async (): Promise<string | null> => {
   const cookieStore = await cookies();
   const token = cookieStore.get("customer-session")?.value;
   if (!token) return null;
 
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
-
-    // base64url → base64 → JSON
-    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-    const padded = base64.padEnd(base64.length + (4 - (base64.length % 4)) % 4, "=");
-    const payload = JSON.parse(Buffer.from(padded, "base64").toString("utf8"));
-
-    if (!payload.sub) return null;
-    if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) return null;
-
-    return payload.sub as string;
-  } catch {
-    return null;
-  }
-}
+  const authClient = createAuthClient();
+  const {
+    data: { user },
+  } = await authClient.auth.getUser(token);
+  return user?.id ?? null;
+});
 
 // ── Queries ────────────────────────────────────────────────────────────────────
 

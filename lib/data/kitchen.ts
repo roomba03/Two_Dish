@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { createServerClient } from "@/lib/supabase/server";
+import { requireCook } from "@/lib/cookSession";
 import { getDefaultKitchen, type MenuItem } from "@/lib/data/menu";
 
 export type { MenuItem };
@@ -20,6 +21,8 @@ export type ScheduleEntry = {
 };
 
 export const getAllMenuItems = cache(async (): Promise<MenuItem[]> => {
+  await requireCook();
+
   const kitchen = await getDefaultKitchen();
   if (!kitchen) return [];
 
@@ -37,6 +40,8 @@ export const getMenuItemWithIngredients = cache(
   async (
     itemId: string
   ): Promise<{ item: MenuItem; ingredients: IngredientRow[] } | null> => {
+    await requireCook();
+
     const supabase = createServerClient();
 
     const { data: item } = await supabase
@@ -61,6 +66,8 @@ export const getMenuItemWithIngredients = cache(
 );
 
 export const getUpcomingSchedule = cache(async (): Promise<ScheduleEntry[]> => {
+  await requireCook();
+
   const kitchen = await getDefaultKitchen();
   if (!kitchen) return [];
 

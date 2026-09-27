@@ -98,7 +98,7 @@ export async function submitCheckoutOrder(
   }
   const data = parsed.data;
 
-  // ── 1b. Validate delivery area ─────────────────────────────────────────────
+  // ── 2. Validate delivery area ─────────────────────────────────────────────
   const kitchen = await getDefaultKitchen();
   if (!kitchen) {
     return { success: false, error: "Service temporarily unavailable." };
@@ -149,7 +149,7 @@ export async function submitCheckoutOrder(
 
   const supabase = createServerClient();
 
-  // ── 2. Fetch schedule row ───────────────────────────────────────────────────
+  // ── 3. Fetch schedule row ───────────────────────────────────────────────────
   const { data: schedule, error: scheduleError } = await supabase
     .from("menu_schedule")
     .select("id, delivery_date, menu_items(name, price), kitchen_id")
@@ -160,7 +160,7 @@ export async function submitCheckoutOrder(
     return { success: false, error: "Menu item not found." };
   }
 
-  // ── 3. Enforce the 11:59 PM time lock ──────────────────────────────────────
+  // ── 4. Enforce the 11:59 PM time lock ──────────────────────────────────────
   const eligibility = await checkDeliveryDateEligibility(schedule.delivery_date);
   if (!eligibility.eligible) {
     const messages: Record<typeof eligibility.reason, string> = {

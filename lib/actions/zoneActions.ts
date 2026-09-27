@@ -1,37 +1,15 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { createServerClient } from "@/lib/supabase/server";
-import { createAuthClient } from "@/lib/supabase/auth";
+import { getVerifiedCookId } from "@/lib/cookSession";
 import { getDefaultKitchen, type GeoJsonPolygon } from "@/lib/data/menu";
 
 export type ZoneResult = { success: true } | { success: false; error: string };
 
-async function verifyCookSession(): Promise<boolean> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("cook-session")?.value;
-  if (!token) return false;
-
-  const authClient = createAuthClient();
-  const {
-    data: { user },
-  } = await authClient.auth.getUser(token);
-  if (!user) return false;
-
-  const supabase = createServerClient();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  return !!profile && ["cook", "admin"].includes(profile.role);
-}
-
 export async function saveDeliveryZone(
   geoJson: GeoJsonPolygon
 ): Promise<ZoneResult> {
-  if (!(await verifyCookSession())) {
+  if (!(await getVerifiedCookId())) {
     return { success: false, error: "Unauthorized." };
   }
 
@@ -57,7 +35,7 @@ export async function saveDeliveryZone(
 }
 
 export async function clearDeliveryZone(): Promise<ZoneResult> {
-  if (!(await verifyCookSession())) {
+  if (!(await getVerifiedCookId())) {
     return { success: false, error: "Unauthorized." };
   }
 

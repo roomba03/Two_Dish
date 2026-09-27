@@ -1,24 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 import { z } from "zod";
 import { createServerClient } from "@/lib/supabase/server";
-import { createAuthClient } from "@/lib/supabase/auth";
 import { getDefaultKitchen } from "@/lib/data/menu";
+import { getVerifiedCookId } from "@/lib/cookSession";
 
 export type ActionState = { error?: string; success?: boolean };
 
-async function getCookUserId(): Promise<string | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("cook-session")?.value;
-  if (!token) return null;
-  const authClient = createAuthClient();
-  const {
-    data: { user },
-  } = await authClient.auth.getUser(token);
-  return user?.id ?? null;
-}
+const NOT_SIGNED_IN = "Not signed in.";
 
 // ── Menu Items ─────────────────────────────────────────────────────────────────
 
@@ -115,6 +105,7 @@ export async function createMenuItem(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  if (!(await getVerifiedCookId())) return { error: NOT_SIGNED_IN };
   const kitchen = await getDefaultKitchen();
   if (!kitchen) return { error: "Kitchen not found." };
 
@@ -144,6 +135,7 @@ export async function updateMenuItem(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  if (!(await getVerifiedCookId())) return { error: NOT_SIGNED_IN };
   const id = (formData.get("id") as string) ?? "";
   if (!id) return { error: "Missing dish ID." };
 
@@ -183,6 +175,7 @@ export async function updateMenuItem(
 }
 
 export async function deleteMenuItem(id: string, _formData: FormData): Promise<void> {
+  if (!(await getVerifiedCookId())) return;
   const supabase = createServerClient();
 
   const { data: existing } = await supabase
@@ -211,6 +204,7 @@ export async function addIngredient(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  if (!(await getVerifiedCookId())) return { error: NOT_SIGNED_IN };
   const menuItemId = (formData.get("menu_item_id") as string) ?? "";
   if (!menuItemId) return { error: "Missing dish ID." };
 
@@ -243,6 +237,7 @@ export async function deleteIngredient(
   menuItemId: string,
   _formData: FormData
 ): Promise<void> {
+  if (!(await getVerifiedCookId())) return;
   const supabase = createServerClient();
   await supabase.from("ingredients").delete().eq("id", ingredientId);
   revalidatePath(`/cook/menu/${menuItemId}`);
@@ -265,11 +260,11 @@ export async function scheduleMenuItem(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const cookId = await getVerifiedCookId();
+  if (!cookId) return { error: NOT_SIGNED_IN };
+
   const kitchen = await getDefaultKitchen();
   if (!kitchen) return { error: "Kitchen not found." };
-
-  const cookId = await getCookUserId();
-  if (!cookId) return { error: "Not signed in." };
 
   const parsed = ScheduleSchema.safeParse({
     delivery_date: (formData.get("delivery_date") as string) ?? "",
@@ -325,6 +320,7 @@ export async function unscheduleDate(
   scheduleId: string,
   _formData: FormData
 ): Promise<void> {
+  if (!(await getVerifiedCookId())) return;
   const supabase = createServerClient();
 
   // Only allow removal if no orders have been placed for this day. Re-check
