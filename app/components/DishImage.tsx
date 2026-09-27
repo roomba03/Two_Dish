@@ -32,7 +32,9 @@ export default function DishImage({
           src={src}
           alt={alt}
           fill
-          sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 14vw"
+          // Cards are full-width on mobile, two-up on tablet, and ~400px in
+          // the 3-column desktop grid (max-w-7xl).
+          sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 400px"
           className="object-cover"
           onError={() => setFailed(true)}
         />

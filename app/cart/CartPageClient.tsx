@@ -19,7 +19,7 @@ function CartShell({
     <div className="min-h-screen">
       <HomeNav profileName={profileName} showAuthLinks={false} />
 
-      <div className="relative min-h-[calc(100vh-4rem)] px-4">
+      <main className="relative min-h-[calc(100vh-4rem)] px-4">
         <Link
           href="/menu"
           className="absolute left-4 top-4 inline-flex items-center gap-1.5 text-sm text-warmgray transition-opacity hover:opacity-70 sm:left-6 sm:top-6"
@@ -41,7 +41,7 @@ function CartShell({
             <div className="tfb-card p-8">{children}</div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
@@ -49,6 +49,9 @@ function CartShell({
 function EmptyCart({ profileName }: { profileName: string | null }) {
   return (
     <CartShell profileName={profileName}>
+      {/* No visible heading here by design, but screen readers still need
+          one to orient on the page. */}
+      <h1 className="sr-only">Your cart</h1>
       <div className="text-center">
         <p className="text-deep-leaf">Your cart is empty.</p>
         <p className="mt-1 text-sm text-warmgray">

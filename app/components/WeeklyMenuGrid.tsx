@@ -143,7 +143,7 @@ async function DayCard({
 
         {/* Dish info */}
         <div className="flex flex-col gap-1">
-          <h3 className="text-lg leading-tight text-deep-leaf">{item.name}</h3>
+          <h2 className="text-lg leading-tight text-deep-leaf">{item.name}</h2>
           <p className="line-clamp-2 text-sm leading-relaxed text-warmgray">
             {item.description}
           </p>

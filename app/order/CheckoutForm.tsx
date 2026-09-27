@@ -152,7 +152,7 @@ function ConfirmationView({
         </svg>
       </div>
 
-      <h1 className="mb-2 text-3xl text-deep-leaf">Order confirmed</h1>
+      <h2 className="mb-2 text-3xl text-deep-leaf">Order confirmed</h2>
       <p className="mb-8 text-warmgray">We will confirm shortly.</p>
 
       <div className="mb-6 rounded-lg border border-herb bg-midsage/30 px-6 py-5">

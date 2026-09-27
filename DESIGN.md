@@ -22,12 +22,13 @@ Components never use raw hex values. They use Tailwind classes built from these 
 ### Rules
 
 - **Two tones only.** Ivory is for all text and surfaces, and gold is the accent. Don't add a third pale tone: gold next to mint was tried and read as the same off-white at text size.
-- **Headings are gold.** `h1`–`h3` use `terracotta` globally. Anything else styled as a title opts in with `text-terracotta`, such as the nav wordmark `.tfb-nav-brand` or the "Two Dish Catering Services" offer title.
+- **Headings are gold.** `h1`–`h3` use `terracotta` globally. Anything else styled as a title opts in with `text-terracotta`, such as the nav wordmark `.tfb-nav-brand`.
 - **Nav links are ivory** and turn `hover-gold` on hover. This includes the outlined "Order online" pill. The wordmark stays gold.
 - **Interactive gold gets deeper on hover.** Links and buttons using `bg-`, `text-` or `border-terracotta`, plus `.tfb-btn-primary` and `.tfb-btn-secondary`, move to `hover-gold`. Passive gold such as prices and icons doesn't change on hover.
 - **"No meal scheduled" placeholders** (`.tfb-day-placeholder`) use a light yellow `#FFF4DC`. Their calendar icon (`.tfb-day-placeholder-icon`) uses the violet page color, because gold on pale yellow can't be read.
 - Use one accent only. Don't add a second accent color or neon colors anywhere, including the cook dashboard.
 - Errors appear as `rust` text or inside a `rust/40` hairline box, never as a filled red banner.
+- **Faded gold still has to be readable.** Decorative text in translucent gold, such as the large "01 / 02 / 03" process numbers, stays at `terracotta/50` or above. That gives 3.67:1 on the violet page, above the 3:1 minimum for large text. `/40` fails.
 
 ## Typography
 
@@ -77,7 +78,7 @@ Shadows are pure black at a fairly high opacity, because softer tinted shadows c
 - **Film grain:** a fixed SVG noise layer covers the whole app (`body::before`), blended with `overlay` so it reads as paper grain rather than a flat tint.
 - **Ambient glow:** two very faint gold blooms sit behind the homepage (`.tfb-page-glow`, about 4% opacity). They drift slowly toward the cursor, controlled by `PageGlow.tsx`. They only move part of the way toward the cursor, so they feel like ambient light, not like something tracking the mouse. Don't put glows inside cards or forms. Cards get their lift from shadows.
 - **Sparkle cursor:** small ivory four-pointed stars follow the mouse across the whole site (`SparkleCursor.tsx`). Each one pops, spins and fades over 650ms, and a new one appears at most every 45ms.
-- **Pan loader:** a line-art frying pan with food pieces popping out, drawn in `warmgray` (`PanLoader.tsx`). It loops at the top of the homepage, above the offer title.
+- **Pan loader:** a line-art frying pan with food pieces popping out, drawn in `warmgray` (`PanLoader.tsx`). It loops at the top of the homepage, above the page title.
 - All motion driven by the cursor is turned off when the user has `prefers-reduced-motion` set.
 
 ## Navigation and structure
@@ -91,13 +92,17 @@ Shadows are pure black at a fairly high opacity, because softer tinted shadows c
   - The cook dashboard uses `DashboardNav`.
 - **Homepage order, top to bottom:**
   1. Nav
-  2. Pan loader, then the "Two Dish Catering Services" title and the offer copy
+  2. Pan loader, then the page's `h1` ("Two Dish Catering Services") and the offer copy
   3. Delivery-area checker
   4. "Coming up" (the next 3 days)
   5. "The process"
   6. Final call to action
   7. Footer
 - **Footer:** the wordmark in `warmgray` and one line-art icon in gold.
+- **Page structure for accessibility:**
+  - Every page has exactly one `h1` and wraps its content (everything between the nav and the footer) in `<main>`.
+  - Heading levels never skip. On the menu, dish names are `h2` because they sit directly under the page `h1`.
+  - Visual size comes from classes, not from the heading level.
 
 ## Photography and placeholders
 

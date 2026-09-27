@@ -6,7 +6,7 @@ export default function CookLoginPage() {
     <div className="min-h-screen">
       <HomeNav profileName={null} showAuthLinks={false} />
 
-      <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-16">
+      <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-16">
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center">
             <h1 className="text-2xl text-deep-leaf">Kitchen staff login</h1>
@@ -19,7 +19,7 @@ export default function CookLoginPage() {
             <LoginForm />
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

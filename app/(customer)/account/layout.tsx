@@ -18,7 +18,7 @@ export default async function AccountLayout({
     return (
       <div className="min-h-screen">
         <HomeNav profileName={null} showAuthLinks={false} />
-        {children}
+        <main>{children}</main>
       </div>
     );
   }
